@@ -26,7 +26,7 @@ public class CFlowExtension<R> extends AbstractJavaCPS<R> {
 			public Iterator<Integer> iterator() {
 				return IntStream.range(0, v).iterator();
 			}
-		}), err), i -> body);
+		}), err), i /* ingored */ -> body);
 	}
 
 	public SD<R> Unless(ED<Boolean> cond, SD<R> body) {
