@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class AbstractJavaCPS<R> {
 	protected R typePreserving(SD<R> body) {
@@ -86,9 +87,11 @@ public class AbstractJavaCPS<R> {
 		return (rho, sigma, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, err), err);
 	}
 	
-	public SD<R> Seq(List<SD<R>> ss) {
-		assert ss.size() > 0;
-		return ss.stream().reduce(this::Seq2).get();
+	@SafeVarargs
+	public final SD<R> Seq(SD<R>... ss) {
+		SD<R>[] params = ss;
+		assert params.length > 0;
+		return Stream.of(params).reduce(this::Seq2).get();
 	}
 	
 	public SD<R> Return(ED<R> e) {

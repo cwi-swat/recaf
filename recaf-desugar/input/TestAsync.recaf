@@ -7,7 +7,7 @@ public class TestAsync {
     	if (1 > 5) {
        		return 42;
      	}
-     	
+     
      	return 41;
   	}
 }
