@@ -13,6 +13,7 @@ public class TestMaybe {
      int x = 3;
      println("maybe");
      if (7 > 5) {
+       println("Yes");
        return 42;
      }
   }
