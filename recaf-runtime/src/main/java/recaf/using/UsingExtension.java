@@ -6,15 +6,15 @@ import java.util.function.Function;
 
 import recaf.core.AbstractJavaCPS;
 import recaf.core.ED;
+import recaf.core.Ref;
 import recaf.core.SD;
 
 public class UsingExtension<R> extends AbstractJavaCPS<R> {
 	
-	@SuppressWarnings("unchecked")
 	public R Method(SD<R> body) {
-		R result[] = (R[]) new Object[] {null};
-		body.accept(r -> { result[0] = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
-		return result[0];
+		Ref<R> result = new Ref<>();
+		body.accept(r -> { result.x = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
+		return result.x;
 	}
 	
 	public SD<R> Using(ED<Closeable> resource, Function<Closeable, SD<R>> body) {

@@ -5,12 +5,9 @@ import java.util.function.Function;
 
 import recaf.core.AbstractJavaCPS;
 import recaf.core.ED;
+import recaf.core.Ref;
 import recaf.core.SD;
 
-
-class Ref<X> {
-	public X x ;
-}
 
 public class MaybeExtension<R> extends AbstractJavaCPS<R> {
 
