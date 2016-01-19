@@ -1,8 +1,6 @@
 
-
-import java.util.Optional;
-
 import recaf.maybe.MaybeExtension;
+import java.util.Optional;
  
 public class TestIt {
   
