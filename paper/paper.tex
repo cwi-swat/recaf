@@ -1,0 +1,172 @@
+\documentclass{sigplanconf}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage{languages}
+
+\begin{document}
+
+\noindent
+\textbf{CWI Internship Proposal: \\
+Modular and Concise Semantic Polymorphism}
+\\
+\mbox{}\\
+\textbf{Student}: Aggelos Biboudis, \url{biboudis@di.uoa.gr} \\
+\textbf{Advisor}: Yannis Smaragdakis, Associate Professor, \\\url{yannis@smaragd.org}\\
+\textbf{Internship Advisor}: Tijs van der Storm, \\Senior Researcher, \url{storm@cwi.nl}\\
+\textbf{Preferred CWI Research Group}: Software Analysis and
+Transformation (SWAT)\\
+
+\paragraph{Overview.}
+
+Over the years, many programming language extensibility mechanisms have
+been proposed for interesting programming models (e.g., asynchronous
+programming~\cite{bierman_pause_2012}, actor-based concurrency,
+parallel programming, workflows, database
+queries~\cite{meijer_linq:_2006}). % Traditionally, such computations
+% are composed by manual resource management, boilerplate code, manual
+% handling of callbacks that may lead to code smells and bugs very
+% quickly.
+\fs{}~\emph{computation expressions}~\cite{petricek_f_2014}, macros,
+Haskell Embedded DSLs (shallow/deep, do-notation for monads) are
+mechanisms that create a familiar look--and--feel syntactically
+without fixing the semantics of written code. Currently, vanilla
+\java{} lacks such kind of lightweight extensibility.
+
+The goal of the proposed work is to introduce such syntactic
+flexibility using \emph{Object
+  Algebras}~\cite{oliveira_extensibility_2012} (hereafter
+\textbf{OAs}) as a device for the description of the semantics. OAs
+are simple to understand, they solve the expression problem, they have
+attracted a lot of attention in the research community in the area of
+interpreters and have a simple model of development. Overall, this
+will achieve an elegant and concise way in \java{} to author libraries
+that affect the semantics of code.
+
+The proposed work is an excellent fit for my background, as well as
+that of the hosting team. In the past I have studied and applied OAs
+in the domain of Streams APIs, which can be regarded as a DSL with
+pluggable semantics \cite{biboudis_streams_2015}. The motivating
+observation for the current proposal is that \fs{}'s builders of
+computation expressions~\cite[Chapter~6.3.10]{syme_f_2012} have an 1-1
+correspondence with the signature of an OA. Also, a collaboration with
+Tijs van der Storm, will be highly fruitful as he is involved to a
+great degree with the advancements of
+OAs~\cite{oliveira_feature-oriented_2013}, uses them for DSL
+construction in~\cite{gouseti_extensible_2014} and has recently
+brought together OAs and modular interpreters
+in~\cite{inostroza_modular_2015}.
+
+\paragraph{Background.}
+
+In \fs{} asynchronous workflows are designated with the \verb|async|
+label which corresponds to a computation expression defined in the
+standard library e.g.,
+
+\begin{lstlisting}[style=fsharp]
+let getLength url = async {
+  let! html = fetchAsync url
+  do! Async.Sleep 1000
+  return html.Length
+}
+\end{lstlisting}
+
+The corresponding translation is syntax-driven:
+
+\begin{lstlisting}[style=fsharp]
+async.Bind(fetchAsync(url), fun html ->
+  async.Bind(Async.Sleep 1000, fun () ->
+    async.Return(html.Length)))
+\end{lstlisting}
+
+I would like to propose a similar functionality for \java{}. Let's see
+a simplified example:
+
+\begin{lstlisting}[style=java]
+void run(CompExp<Integer> Lang) {
+  Integer answer = Lang { 
+    System.out.println("Welcome...");
+    return 42;
+  }
+}
+\end{lstlisting}
+
+\noindent\verb|lang { }|, an interface for an independently developed
+object, defines the semantics of this block of code.
+
+% If we follow the translation of computation expressions loosely, the
+% code above could resemble to the \fs{} translation. Although \fs{}
+% doesn't support higher-kinded types---so \verb|lang { }| for an
+% abstract \verb|lang| is nonsensical there---I would like to
+% investigate if this design could be feasible for \java{}. If I follow
+% \fs{} closely I can generate code for each instantiation of
+% \verb|lang| or use blocks of code under concrete names of computation
+% expressions only (e.g., \verb|async|).
+
+\paragraph{Goal.}
+
+The primary goal of this project is to support computation expressions
+in \java{} giving developers a nice way to implement asynchrony,
+sequencing and more, as easy-to-develop libraries. Using OAs as the
+protocol between computation expressions in \java{} and implementation
+of the semantics will provide a highly elegant, concise, modular, and
+powerful programming model for extensible semantics. This goal can be
+divided in sub-goals in the context of the internship:
+
+\begin{itemize}{}{}
+\item study the state--of--the--art in EDSLs for Haskell and \fs{}.
+\item extend the parser of \java{} with a way to annotate blocks with labels.
+\item design the translation of labeled block into a desugared form.
+\item create a case study (e.g., streams
+  using~\cite{biboudis_streams_2015}).
+\end{itemize}
+
+Secondly, I would like to investigate whether computation expression
+composition is feasible.
+
+\paragraph{Research Challenges.}
+I consider \java{} as candidate language for the
+implementation. \java{} is not equipped with either higher--kinded
+types or implicits, but \scala{}
+is~\cite{oliveira_type_2010,moors_generics_2008}. Implementation in
+the former could provide a limited, verbose but a desirable feature to
+library authors for \java{} developers. Implementation in \scala{}
+could be much more elegant and concise. The goal of this project is to
+create a syntactic extension facility for computation
+expressions. % This requires intervention to the \verb|javac| compiler
+% and a protocol for modular extensions based on OAs. For rapid
+% prototyping I can also use the JastAddJ
+% compiler~\cite{ekman_jastadd_2007} which I have experience with.
+
+Regarding the third sub-task, the fact that \emph{monads do not
+  compose} has been identified in Steele's
+paper~\cite{steele_building_1994}. There are three approaches to solve
+this problem (as identified in~\cite{kiselyov_freer_2015}): monad
+transformers~\cite{liang_monad_1995}, the free monad as used
+in~\cite{swierstra_data_2008} and side--effect--request
+handlers~\cite{cartwright_extensible_1994}. One interesting research
+question is to study the differences between these three and identify
+early on, if I can borrow one technique and apply it to our
+design. Lightweight monad programming in
+ML~\cite{swamy_lightweight_2011} is also related to this proposal.
+This is an aspect that deserves further study.
+
+\section{Related Work}
+Introduction to Programming with Shift and Reset:
+
+Scala-Virtualized:
+
+Implementing First-Class Polymorphic Delimited Continuations by a Type-Directed Selective CPS-Transform:
+
+
+The F# Computation Zoo:
+
+From Monads to Effects and Back:
+
+Representing Monads:
+
+Spicing Up Dart with Side Effects:
+
+\bibliographystyle{abbrv}
+\renewcommand{\baselinestretch}{0.7}
+{\tiny\bibliography{proposal}}
+\end{document}
