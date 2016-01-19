@@ -29,6 +29,7 @@ syntax Stm
    
 syntax Item
   = KId Expr ":" Stm
+  | KId FormalParam ":" Stm
   ;
    
 syntax Rest

@@ -103,6 +103,12 @@ Expr item2cps((Item)`<KId kw> <Expr e>: <Stm stm>`)
     Expr ecps := expr2cps(e),
     Expr stmcps := stm2cps(stm);
   
+Expr item2cps((Item)`<KId kw> <FormalParam f>: <Stm stm>`)
+  = (Expr)`$alg.<Id method>((<FormalParam f>) -\> { return <Expr stmcps>; })`
+  when 
+    Id method := [Id]capitalize("<kw>"),
+    Expr stmcps := stm2cps(stm);
+
 
 //////
 
