@@ -1,8 +1,7 @@
 module Plugin
 
-import lang::java::ExtJava;
-import lang::java::CPSJava;
-import lang::java::PPJava;
+import lang::recaf::ExtJava;
+import lang::recaf::CPSJava;
 import ParseTree;
 
 import IO;

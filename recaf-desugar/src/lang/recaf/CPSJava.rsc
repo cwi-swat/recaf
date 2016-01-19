@@ -1,6 +1,6 @@
-module lang::java::CPSJava
+module lang::recaf::CPSJava
 
-import lang::java::ExtJava;
+import lang::recaf::ExtJava;
 import List;
 import String;
   
