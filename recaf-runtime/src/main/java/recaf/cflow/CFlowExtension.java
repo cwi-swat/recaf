@@ -2,14 +2,11 @@ package recaf.cflow;
 
 import recaf.core.AbstractJavaCPS;
 import recaf.core.ED;
-import recaf.core.Ref;
 import recaf.core.SD;
 
 public class CFlowExtension<R> extends AbstractJavaCPS<R> {
 	public R Method(SD<R> body) {
-		Ref<R> result = new Ref<>();
-		body.accept(r -> { result.x = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
-		return result.x;
+		return typePreserving(body);
 	}
 	
 	public SD<R> Until(ED<Boolean> cond, SD<R> body) {
