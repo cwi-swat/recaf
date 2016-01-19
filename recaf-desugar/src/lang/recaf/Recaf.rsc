@@ -1,4 +1,4 @@
-module lang::recaf::ExtJava
+module lang::recaf::Recaf
 
 extend lang::java::\syntax::Java15;
 
