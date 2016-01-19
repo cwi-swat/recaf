@@ -1,4 +1,4 @@
-package builders.core;
+package recaf.core;
 
 public interface K0 {
 	void call();

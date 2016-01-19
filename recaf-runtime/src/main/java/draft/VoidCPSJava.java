@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import builders.core.ED;
-import builders.core.K0;
-import builders.core.SD;
+import recaf.core.ED;
+import recaf.core.K0;
+import recaf.core.SD;
 
 
 

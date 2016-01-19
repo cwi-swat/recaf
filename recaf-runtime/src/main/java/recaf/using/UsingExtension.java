@@ -1,12 +1,12 @@
-package builders.using;
+package recaf.using;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.function.Function;
 
-import builders.core.AbstractJavaCPS;
-import builders.core.ED;
-import builders.core.SD;
+import recaf.core.AbstractJavaCPS;
+import recaf.core.ED;
+import recaf.core.SD;
 
 public class UsingExtension<R> extends AbstractJavaCPS<R> {
 	

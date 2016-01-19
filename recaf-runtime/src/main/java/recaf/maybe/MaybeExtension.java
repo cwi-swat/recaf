@@ -1,11 +1,11 @@
-package builders.maybe;
+package recaf.maybe;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-import builders.core.AbstractJavaCPS;
-import builders.core.ED;
-import builders.core.SD;
+import recaf.core.AbstractJavaCPS;
+import recaf.core.ED;
+import recaf.core.SD;
 
 
 class Ref<X> {
