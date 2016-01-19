@@ -6,6 +6,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class AbstractJavaCPS<R> {
+	protected R typePreserving(SD<R> body) {
+		Ref<R> result = new Ref<>();
+		body.accept(r -> { result.x = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
+		return result.x;
+	}
+	
+	
 	public <T> ED<T> Exp(Supplier<T> e) {
 		return (k, err) -> {
 			T t = null;

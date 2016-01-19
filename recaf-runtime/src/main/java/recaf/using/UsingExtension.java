@@ -10,11 +10,8 @@ import recaf.core.SD;
 
 public class UsingExtension<R> extends AbstractJavaCPS<R> {
 	
-	@SuppressWarnings("unchecked")
 	public R Method(SD<R> body) {
-		R result[] = (R[]) new Object[] {null};
-		body.accept(r -> { result[0] = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
-		return result[0];
+		return typePreserving(body);
 	}
 	
 	public SD<R> Using(ED<Closeable> resource, Function<Closeable, SD<R>> body) {
