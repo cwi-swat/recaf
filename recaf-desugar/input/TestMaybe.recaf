@@ -2,7 +2,7 @@
 import recaf.maybe.MaybeExtension;
 import java.util.Optional;
  
-public class TestIt {
+public class TestMaybe {
   
   Optional<Integer> maybe(@Builder MaybeExtension<Integer> alg) {
      if (1 > 5) {
