@@ -35,6 +35,12 @@ Expr stm2cps((Stm)`<KId ext>! <Expr e>;`)
     Expr ecps := expr2cps(e),
     Id method := [Id]capitalize("<ext>");
 
+Expr stm2cps((Stm)`<KId ext>!* <Expr e>;`) 
+  = (Expr)`$alg.<Id method>(<Expr ecps>)`
+  when
+    Expr ecps := expr2cps(e),
+    Id method := [Id]capitalize("<ext>Star");
+
 
 // for like
 Expr stm2cps((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`) 

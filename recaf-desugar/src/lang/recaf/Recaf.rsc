@@ -9,6 +9,7 @@ syntax KId
 syntax Stm
    // return -like
    = KId "!" Expr ";" // ! is needed, otherwise amb with local var dec.
+   | KId "!*" Expr ";"
    
    // for, while and try like
    | KId "(" FormalParam ":" Expr ")" Stm
