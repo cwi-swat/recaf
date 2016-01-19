@@ -164,7 +164,7 @@ Expr block2cps((Block)`{<Stm s> <BlockStm+ ss>}`)
 Expr block2cps((Block)`{<Type t> <{VarDec ","}+ vs>; <BlockStm+ ss>}`) 
   = varDecs2cps(t, vs, sscps)
   when
-    Expr sscps := block2cps((Block)`{<BlockStm* ss>}`);
+    Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`);
 
 Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k) {
    for (VarDec vd <- reverse([ v | v <- vs])) {
@@ -174,11 +174,14 @@ Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k) {
 }   
 
 Expr varDec2cps(Type t, (VarDec)`<Id x>`, Expr k) 
-  = (Expr)`$alg.\<<Type t>\>Decl(null, <Id x> -\> {return <Expr k>;})`;
+  = (Expr)`$alg.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
+  when
+     Type t2 := boxed(t);
   
 Expr varDec2cps(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k) 
-  = (Expr)`$alg.\<<Type t>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`$alg.\<<Type t2>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
   when
+    Type t2 := boxed(t),
     Expr ecps := varInit2cps(t, e);
 
 Expr varInit2cps(Type t, (VarInit)`<Expr e>`)
@@ -250,6 +253,15 @@ Expr catch2cps((CatchClause)`catch (<Type t> <Id x>) <Block b>`)
 
 Expr expr2cps(Expr e)
   = (Expr)`$alg.Exp(() -\> { return <Expr e>; })`;
+
+Type boxed((Type)`int`) = (Type)`Integer`;
+Type boxed((Type)`long`) = (Type)`Long`;
+Type boxed((Type)`boolean`) = (Type)`Boolean`;
+Type boxed((Type)`double`) = (Type)`Double`;
+Type boxed((Type)`float`) = (Type)`Float`;
+Type boxed((Type)`char`) = (Type)`Character`;
+
+default Type boxed(Type t) = t; 
 
 //
 //Expr exprTop(Expr e) 

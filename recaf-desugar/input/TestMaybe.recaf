@@ -3,9 +3,17 @@ import recaf.maybe.MaybeExtension;
 import java.util.Optional;
  
 public class TestMaybe {
+
+  static Void println(Object o) {
+    System.out.println(o);
+    return null;
+  }
   
   Optional<Integer> maybe(@Builder MaybeExtension<Integer> alg) {
+     int x = 3;
      if (1 > 5) {
+       println("1");
+       println(x);
        return 42;
      }
   }
