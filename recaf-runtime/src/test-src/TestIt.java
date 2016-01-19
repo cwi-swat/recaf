@@ -1,12 +1,11 @@
 
- 
+
 import java.util.Optional;
 
 import recaf.maybe.MaybeExtension;
  
 public class TestIt {
   
-
   Optional<Integer> maybe(MaybeExtension<Integer> alg) {
   MaybeExtension<Integer> $alg = alg;   
   return (Optional<Integer>)$alg.Method($alg.If($alg.Exp(() -> { return 1 > 5; }), $alg.Return($alg.Exp(() -> { return 42; }))));
