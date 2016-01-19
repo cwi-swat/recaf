@@ -1,7 +1,6 @@
 package recaf.core;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -89,9 +88,8 @@ public class AbstractJavaCPS<R> {
 	
 	@SafeVarargs
 	public final SD<R> Seq(SD<R>... ss) {
-		SD<R>[] params = ss;
-		assert params.length > 0;
-		return Stream.of(params).reduce(this::Seq2).get();
+		assert ss.length > 0;
+		return Stream.of(ss).reduce(this::Seq2).get();
 	}
 	
 	public SD<R> Return(ED<R> e) {

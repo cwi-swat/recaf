@@ -11,9 +11,8 @@ public class TestMaybe {
   
   Optional<Integer> maybe(@Builder MaybeExtension<Integer> alg) {
      int x = 3;
-     if (1 > 5) {
-       println("1");
-       println(x);
+     println("maybe");
+     if (7 > 5) {
        return 42;
      }
   }
@@ -23,9 +22,10 @@ public class TestMaybe {
        return x + 1;
      }
   }
+  
   public static void main(String args[]) {
      Object x;
-     x  = new TestIt().readOptional(new MaybeExtension<Integer>());
+     x  = new TestMaybe().readOptional(new MaybeExtension<Integer>());
      System.out.println(x);
   }
   

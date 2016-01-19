@@ -1,13 +1,13 @@
-import recaf.maybe.MaybeExtension;
-import java.util.Optional;
+ 
+import java.util.concurrent.CompletableFuture;
+import recaf.async.AsyncExtension;
  
 public class TestAsync {
 	
-	Async<Integer> op(@Builder AsyncExtension<Integer> alg) {
+	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
     	if (1 > 5) {
        		return 42;
      	}
-     
      	return 41;
   	}
 }
