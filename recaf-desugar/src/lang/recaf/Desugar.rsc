@@ -10,17 +10,16 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
      case (MethodDec)`<RefType rt> <Id meth>(@Builder <Type t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<RefType rt> <Id meth>(<Type t> <Id alg>, <{FormalParam ","}* fs>) {
-                     '  <Type t> $alg = <Id alg>;   
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
-        when cps := method2cps(b) 
+        when cps := method2cps(b, alg) 
    }
 }
 
-Expr method2cps(Block b) 
-  = (Expr)`$alg.Method(<Expr bcps>)`
+Expr method2cps(Block b, Id alg) 
+  = (Expr)`<Id alg>.Method(<Expr bcps>)`
   when
-    bcps := block2cps(b);
+    bcps := block2cps(b, alg);
 
 //TypeParams? ResultType Id "(" {FormalParam ","}* ")" Throws? 
   //|  deprMethodDecHead: (MethodMod | Anno)* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Dim+ Throws?
@@ -29,236 +28,236 @@ Expr method2cps(Block b)
 /// Extensions
 
 // return-like
-Expr stm2cps((Stm)`<KId ext>! <Expr e>;`) 
-  = (Expr)`$alg.<Id method>(<Expr ecps>)`
+Expr stm2cps((Stm)`<KId ext>! <Expr e>;`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>)`
   when
-    Expr ecps := expr2cps(e),
+    Expr ecps := expr2cps(e, alg),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2cps((Stm)`<KId ext>!* <Expr e>;`) 
-  = (Expr)`$alg.<Id method>(<Expr ecps>)`
+Expr stm2cps((Stm)`<KId ext>!* <Expr e>;`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>)`
   when
-    Expr ecps := expr2cps(e),
+    Expr ecps := expr2cps(e, alg),
     Id method := [Id]capitalize("<ext>Star");
 
 
 // for like
-Expr stm2cps((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`) 
-  = (Expr)`$alg.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
+Expr stm2cps((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
   when 
-    Expr ecps := expr2cps(e),
-    Expr scps := stm2cps(s),
+    Expr ecps := expr2cps(e, alg),
+    Expr scps := stm2cps(s, alg),
     Id method := [Id]capitalize("<ext>");
 
 // while like
-Expr stm2cps((Stm)`<KId ext> (<Expr c>) <Block b>`) 
-  = (Expr)`$alg.<Id method>(<Expr ecps>, <Expr bcps>)`
+Expr stm2cps((Stm)`<KId ext> (<Expr c>) <Block b>`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr bcps>)`
   when 
-    Expr ecps := expr2cps(c),
-    Expr bcps := block2cps(b),
+    Expr ecps := expr2cps(c, alg),
+    Expr bcps := block2cps(b, alg),
     Id method := [Id]capitalize("<ext>");
 
 // try-like
-Expr stm2cps((Stm)`<KId ext> <Block b>`) 
-  = (Expr)`$alg.<Id method>(<Expr bcps>)`
+Expr stm2cps((Stm)`<KId ext> <Block b>`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr bcps>)`
   when 
-    Expr bcps := block2cps(b),
+    Expr bcps := block2cps(b, alg),
     Id method := [Id]capitalize("<ext>");
 
 // switch-like
-Expr stm2cps((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`) 
-  = (Expr)`$alg.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr itemscps>;})`
+Expr stm2cps((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr itemscps>;})`
   when 
-    Expr ecps := expr2cps(e),
-    Expr itemscps := items2cps([ i | i <- items ]),
+    Expr ecps := expr2cps(e, alg),
+    Expr itemscps := items2cps([ i | i <- items ], alg),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2cps((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`) 
-  = (Expr)`$alg.<Id method>(<Expr ecps>, <Expr itemscps>)`
+Expr stm2cps((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr itemscps>)`
   when 
-    Expr ecps := expr2cps(e),
-    Expr itemscps := items2cps([ i | i <- items ]),
+    Expr ecps := expr2cps(e, alg),
+    Expr itemscps := items2cps([ i | i <- items ], alg),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2cps((Stm)`<KId ext> {<Item+ items>}`) 
-  = (Expr)`$alg.<Id method>(<Expr itemscps>)`
+Expr stm2cps((Stm)`<KId ext> {<Item+ items>}`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr itemscps>)`
   when 
-    Expr itemscps := items2cps([ i | i <- items ]),
+    Expr itemscps := items2cps([ i | i <- items ], alg),
     Id method := [Id]capitalize("<ext>");
 
 
-Expr items2cps(list[Item] items:[])
+Expr items2cps(list[Item] items:[], Id alg)
   = (Expr)`java.util.Arrays.asList()`;
 
-Expr items2cps(list[Item] items:[Item x, *xs])
+Expr items2cps(list[Item] items:[Item x, *xs], Id alg)
   = (Expr)`java.util.Arrays.asList(<Expr xcps>, <{Expr ","}* es>)`
   when
-    Expr xcps := item2cps(x),
-    (Expr)`java.util.Arrays.asList(<{Expr ","}* es>)` := items2cps(xs);
+    Expr xcps := item2cps(x, alg),
+    (Expr)`java.util.Arrays.asList(<{Expr ","}* es>)` := items2cps(xs, alg);
 
-Expr item2cps((Item)`<KId kw> <Expr e>: <Stm stm>`)
-  = (Expr)`$alg.<Id method>(<Expr ecps>, <Expr stmcps>)`
+Expr item2cps((Item)`<KId kw> <Expr e>: <Stm stm>`, Id alg)
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr stmcps>)`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr ecps := expr2cps(e),
-    Expr stmcps := stm2cps(stm);
+    Expr ecps := expr2cps(e, alg),
+    Expr stmcps := stm2cps(stm, alg);
   
-Expr item2cps((Item)`<KId kw> <FormalParam f>: <Stm stm>`)
-  = (Expr)`$alg.<Id method>((<FormalParam f>) -\> { return <Expr stmcps>; })`
+Expr item2cps((Item)`<KId kw> <FormalParam f>: <Stm stm>`, Id alg)
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmcps>; })`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr stmcps := stm2cps(stm);
+    Expr stmcps := stm2cps(stm, alg);
 
 
 //////
 
 
-Expr stm2cps((Stm)`continue <Id x>;`) 
-  = (Expr)`$alg.Continue(<Expr label>)`
+Expr stm2cps((Stm)`continue <Id x>;`, Id alg) 
+  = (Expr)`<Id alg>.Continue(<Expr label>)`
   when 
     Expr label := [Expr]"\"<x>\"";
   
-Expr stm2cps((Stm)`continue;`) 
-  = (Expr)`$alg.Continue()`;
+Expr stm2cps((Stm)`continue;`, Id alg) 
+  = (Expr)`<Id alg>.Continue()`;
 
-Expr stm2cps((Stm)`break <Id x>;`) 
-  = (Expr)`$alg.Break(<Expr label>)`
+Expr stm2cps((Stm)`break <Id x>;`, Id alg) 
+  = (Expr)`<Id alg>.Break(<Expr label>)`
   when 
     Expr label := [Expr]"\"<x>\"";
   
-Expr stm2cps((Stm)`break;`) 
-  = (Expr)`$alg.Break()`;
+Expr stm2cps((Stm)`break;`, Id alg) 
+  = (Expr)`<Id alg>.Break()`;
 
 
-Expr stm2cps((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`) 
-  = (Expr)`$alg.For(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
+Expr stm2cps((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg) 
+  = (Expr)`<Id alg>.For(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
   when 
-    Expr ecps := expr2cps(e),
-    Expr scps := stm2cps(s);
+    Expr ecps := expr2cps(e, alg),
+    Expr scps := stm2cps(s, alg);
  
     
-Expr stm2cps((Stm)`throw <Expr e>;`) 
-  = (Expr)`$alg.Throw(<Expr ecps>)`
+Expr stm2cps((Stm)`throw <Expr e>;`, Id alg) 
+  = (Expr)`<Id alg>.Throw(<Expr ecps>)`
   when
-    Expr ecps := expr2cps(e);
+    Expr ecps := expr2cps(e, alg);
 
-Expr stm2cps((Stm)`return <Expr e>;`) 
-  = (Expr)`$alg.Return(<Expr ecps>)`
+Expr stm2cps((Stm)`return <Expr e>;`, Id alg) 
+  = (Expr)`<Id alg>.Return(<Expr ecps>)`
   when
-    Expr ecps := expr2cps(e);
+    Expr ecps := expr2cps(e, alg);
 
 
-Expr stm2cps((Stm)`return;`) 
-  = (Expr)`$alg.Return()`;
+Expr stm2cps((Stm)`return;`, Id alg) 
+  = (Expr)`<Id alg>.Return()`;
 
-Expr stm2cps((Stm)`;`) = (Expr)`$alg.Empty()`;
+Expr stm2cps((Stm)`;`, Id alg) = (Expr)`<Id alg>.Empty()`;
 
-Expr stm2cps((Stm)`<Block b>`) = block2cps(b);
+Expr stm2cps((Stm)`<Block b>`, Id alg) = block2cps(b, alg);
 
 // TODO: ClassDec as blockstm
-Expr block2cps((Block)`{}`) = (Expr)`$alg.Empty()`;
+Expr block2cps((Block)`{}`, Id alg) = (Expr)`<Id alg>.Empty()`;
 
-Expr block2cps((Block)`{<Stm s>}`) = stm2cps(s);
+Expr block2cps((Block)`{<Stm s>}`, Id alg) = stm2cps(s, alg);
 
-Expr block2cps((Block)`{<Stm s> <BlockStm+ ss>}`) 
-  = (Expr)`$alg.Seq(<Expr scps>, <Expr sscps>)`
+Expr block2cps((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg) 
+  = (Expr)`<Id alg>.Seq(<Expr scps>, <Expr sscps>)`
   when
-    Expr scps := stm2cps(s),
-    Expr sscps := block2cps((Block)`{<BlockStm* ss>}`);
+    Expr scps := stm2cps(s, alg),
+    Expr sscps := block2cps((Block)`{<BlockStm* ss>}`, alg);
 
 // todo: annos/modifiers
-Expr block2cps((Block)`{<Type t> <{VarDec ","}+ vs>; <BlockStm+ ss>}`) 
-  = varDecs2cps(t, vs, sscps)
+Expr block2cps((Block)`{<Type t> <{VarDec ","}+ vs>; <BlockStm+ ss>}`, Id alg) 
+  = varDecs2cps(t, vs, sscps, alg)
   when
-    Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`);
+    Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`, alg);
 
-Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k) {
+Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k, Id alg) {
    for (VarDec vd <- reverse([ v | v <- vs])) {
-     k = varDec2cps(t, vd, k);
+     k = varDec2cps(t, vd, k, alg);
    }
    return k;
 }   
 
-Expr varDec2cps(Type t, (VarDec)`<Id x>`, Expr k) 
-  = (Expr)`$alg.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
+Expr varDec2cps(Type t, (VarDec)`<Id x>`, Expr k, Id alg) 
+  = (Expr)`<Id alg>.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
   when
      Type t2 := boxed(t);
   
-Expr varDec2cps(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k) 
-  = (Expr)`$alg.\<<Type t2>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+Expr varDec2cps(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg) 
+  = (Expr)`<Id alg>.\<<Type t2>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
   when
     Type t2 := boxed(t),
-    Expr ecps := varInit2cps(t, e);
+    Expr ecps := varInit2cps(t, e, alg);
 
-Expr varInit2cps(Type t, (VarInit)`<Expr e>`)
-  = expr2cps(e);
+Expr varInit2cps(Type t, (VarInit)`<Expr e>`, Id alg)
+  = expr2cps(e, alg);
 
-Expr varInit2cps(Type t, (VarInit)`{<{VarInit ","}* inits>,}`)
+Expr varInit2cps(Type t, (VarInit)`{<{VarInit ","}* inits>,}`, Id alg)
   = TODO; 
 
-Expr varInit2cps(Type t, (VarInit)`{<{VarInit ","}* inits>}`)
+Expr varInit2cps(Type t, (VarInit)`{<{VarInit ","}* inits>}`, Id alg)
   = TODO; 
 
-Expr stm2cps((Stm)`<Id l>: <Stm s>`)
-   = (Expr)`$alg.Labeled(<Expr label>, <Expr scps>)`
+Expr stm2cps((Stm)`<Id l>: <Stm s>`, Id alg)
+   = (Expr)`<Id alg>.Labeled(<Expr label>, <Expr scps>)`
    when 
      Expr label := [Expr]"\"<l>\"",
-     Expr scps := stm2cps(s);
+     Expr scps := stm2cps(s, alg);
      
-Expr stm2cps((Stm)`if (<Expr c>) <Stm s>`) 
-  = (Expr)`$alg.If(<Expr ecps>, <Expr scps>)`
+Expr stm2cps((Stm)`if (<Expr c>) <Stm s>`, Id alg) 
+  = (Expr)`<Id alg>.If(<Expr ecps>, <Expr scps>)`
   when 
-    Expr ecps := expr2cps(c),
-    Expr scps := stm2cps(s);
+    Expr ecps := expr2cps(c, alg),
+    Expr scps := stm2cps(s, alg);
 
-Expr stm2cps((Stm)`if (<Expr c>) <Stm s1> else <Stm s2>`) 
-  = (Expr)`$alg.If(<Expr ecps>, <Expr s1cps>, <Expr s2cps>)`
+Expr stm2cps((Stm)`if (<Expr c>) <Stm s1> else <Stm s2>`, Id alg) 
+  = (Expr)`<Id alg>.If(<Expr ecps>, <Expr s1cps>, <Expr s2cps>)`
   when 
-    Expr ecps := expr2cps(c),
-    Expr s1cps := stm2cps(s1),
-    Expr s2cps := stm2cps(s2);
+    Expr ecps := expr2cps(c, alg),
+    Expr s1cps := stm2cps(s1, alg),
+    Expr s2cps := stm2cps(s2, alg);
   
-Expr stm2cps((Stm)`while (<Expr c>) <Stm s>`) 
-  = (Expr)`$alg.While(<Expr ecps>, <Expr scps>)`
+Expr stm2cps((Stm)`while (<Expr c>) <Stm s>`, Id alg) 
+  = (Expr)`<Id alg>.While(<Expr ecps>, <Expr scps>)`
   when 
-    Expr ecps := expr2cps(c),
-    Expr scps := stm2cps(s);
+    Expr ecps := expr2cps(c, alg),
+    Expr scps := stm2cps(s, alg);
 
     
-Expr stm2cps((Stm)`do <Stm s> while (<Expr c>);`) 
-  = (Expr)`$alg.Do(<Expr scps>, <Expr ecps>)`
+Expr stm2cps((Stm)`do <Stm s> while (<Expr c>);`, Id alg) 
+  = (Expr)`<Id alg>.Do(<Expr scps>, <Expr ecps>)`
   when 
-    Expr scps := stm2cps(s),
-    Expr ecps := expr2cps(c);
+    Expr scps := stm2cps(s, alg),
+    Expr ecps := expr2cps(c, alg);
 
-Expr stm2cps((Stm)`<Expr e>;`) 
-  = (Expr)`$alg.ExpStat(<Expr ecps>)`
+Expr stm2cps((Stm)`<Expr e>;`, Id alg) 
+  = (Expr)`<Id alg>.ExpStat(<Expr ecps>)`
   when
-    Expr ecps := expr2cps(e);
+    Expr ecps := expr2cps(e, alg);
 
-Expr stm2cps((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`)
-  = (Expr)`$alg.TryCatchFinally(<Expr bodycps>, <Expr catchescps>, <Expr fincps>)`
+Expr stm2cps((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`, Id alg)
+  = (Expr)`<Id alg>.TryCatchFinally(<Expr bodycps>, <Expr catchescps>, <Expr fincps>)`
   when 
-    Expr bodycps := block2cps(body),
-    Expr catchescps := catches2cps(catches),
-    Expr fincps := block2cps(body); 
+    Expr bodycps := block2cps(body, alg),
+    Expr catchescps := catches2cps(catches, alg),
+    Expr fincps := block2cps(body, alg); 
 
-Expr stm2cps((Stm)`try <Block body> <CatchClause+ catches>`)
-  = (Expr)`$alg.TryCatch(<Expr bodycps>, <Expr catchescps>)`
+Expr stm2cps((Stm)`try <Block body> <CatchClause+ catches>`, Id alg)
+  = (Expr)`<Id alg>.TryCatch(<Expr bodycps>, <Expr catchescps>)`
   when 
-    Expr bodycps := block2cps(body),
-    Expr catchescps := catches2cps(catches);
+    Expr bodycps := block2cps(body, alg),
+    Expr catchescps := catches2cps(catches, alg);
 
 
 // "catch"  "(" FormalParam ")" Block
 
-Expr catch2cps((CatchClause)`catch (<Type t> <Id x>) <Block b>`)
-  =  (Expr)`$alg.Catch(<Type t>.class, (<Type t> <Id x>) -\> {return <Expr bcps>;})`
+Expr catch2cps((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg)
+  =  (Expr)`<Id alg>.Catch(<Type t>.class, (<Type t> <Id x>) -\> {return <Expr bcps>;})`
   when
-    Expr bcps := block2cps(b);
+    Expr bcps := block2cps(b, alg);
 
-Expr expr2cps(Expr e)
-  = (Expr)`$alg.Exp(() -\> { return <Expr e>; })`;
+Expr expr2cps(Expr e, Id alg)
+  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })`;
 
 Type boxed((Type)`int`) = (Type)`Integer`;
 Type boxed((Type)`long`) = (Type)`Long`;

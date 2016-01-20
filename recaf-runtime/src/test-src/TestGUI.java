@@ -13,10 +13,9 @@ public class TestGUI {
 	}
 
 	Void h2(GUIExtension alg, String title) {
-		GUIExtension $alg = alg;
-		return (Void) $alg.Method($alg.Tag($alg.Exp(() -> {
+		return (Void) alg.Method(alg.Tag(alg.Exp(() -> {
 			return "h2";
-		}), $alg.Echo($alg.Exp(() -> {
+		}), alg.Echo(alg.Exp(() -> {
 			return title;
 		}))));
 	}
@@ -30,25 +29,24 @@ public class TestGUI {
 	}
 
 	Void theGUI(GUIExtension alg, int n) {
-		GUIExtension $alg = alg;
-		return (Void) $alg.Method($alg.Seq($alg.ExpStat($alg.Exp(() -> {
+		return (Void) alg.Method(alg.Seq(alg.ExpStat(alg.Exp(() -> {
 			return h2(alg, "Demo");
-		})), $alg.Tag($alg.Exp(() -> {
+		})), alg.Tag(alg.Exp(() -> {
 			return "div";
-		}), $alg.For($alg.Exp(() -> {
+		}), alg.For(alg.Exp(() -> {
 			return range(n);
 		}), (Integer i) -> {
-			return $alg.Tag($alg.Exp(() -> {
+			return alg.Tag(alg.Exp(() -> {
 				return "p";
-			}), $alg.Seq($alg.Echo($alg.Exp(() -> {
+			}), alg.Seq(alg.Echo(alg.Exp(() -> {
 				return "Hello & goodbye " + i + "!\n";
-			})), $alg.Button($alg.Exp(() -> {
+			})), alg.Button(alg.Exp(() -> {
 				return "Click " + i;
-			}), $alg.If($alg.Exp(() -> {
+			}), alg.If(alg.Exp(() -> {
 				return i % 2 == 0;
-			}), $alg.ExpStat($alg.Exp(() -> {
+			}), alg.ExpStat(alg.Exp(() -> {
 				return println("clicked even button " + i);
-			})), $alg.ExpStat($alg.Exp(() -> {
+			})), alg.ExpStat(alg.Exp(() -> {
 				return println("clicked odd button " + i);
 			}))))));
 		}))));
