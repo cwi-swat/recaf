@@ -14,9 +14,7 @@ public class MaybeExtension<R> extends AbstractJavaCPS<R> {
 	public Optional<R> Method(SD<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();
 		body.accept(r -> { ref.x = Optional.of(r); }, 
-				() -> { 
-					System.out.println("Empty"); 
-					ref.x = Optional.empty(); }, 
+				() -> {  ref.x = Optional.empty(); }, 
 				exc -> { throw new RuntimeException(exc); });
 		return ref.x;
 	}

@@ -73,6 +73,8 @@ public class AbstractJavaCPS<R> {
 	}
 		
 	public SD<R> While(ED<Boolean> e, SD<R> s) {
+		// break: call sigma,
+		// continue go back to call.
 		return (rho, sigma, err) -> {
 			new K0() {
 				public void call() {
@@ -80,6 +82,30 @@ public class AbstractJavaCPS<R> {
 				}
 			}.call();
 		};
+	}
+
+	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
+		return Seq2(s, While(e, s));
+	}
+	
+	public SD<R> Labeled(String label, SD<R> s) {
+		return null;
+	}
+	
+	public SD<R> Break(String label) {
+		return null;
+	}
+
+	public SD<R> Continue(String label) {
+		return null;
+	}
+
+	public SD<R> Break() {
+		return null;
+	}
+
+	public SD<R> Continue() {
+		return null;
 	}
 
 	protected SD<R> Seq2(SD<R> s1, SD<R> s2) {
@@ -96,6 +122,10 @@ public class AbstractJavaCPS<R> {
 		return (rho, sigma, err) -> e.accept(rho, err);
 	}
 	
+	public SD<R> Return() {
+		return (rho, sigma, err) -> rho.accept(null);
+	}
+
 	public <T extends Throwable> SD<R> Throw(ED<T> e) {
 		return (rho, sigma, err) -> e.accept(r -> err.accept(r), err);
 	}
