@@ -41,12 +41,16 @@ public class TestGUI {
 			return $alg.Tag($alg.Exp(() -> {
 				return "p";
 			}), $alg.Seq($alg.Echo($alg.Exp(() -> {
-				return "Hello " + i;
+				return "Hello & goodbye " + i + "!\n";
 			})), $alg.Button($alg.Exp(() -> {
 				return "Click " + i;
+			}), $alg.If($alg.Exp(() -> {
+				return i % 2 == 0;
 			}), $alg.ExpStat($alg.Exp(() -> {
-				return println("clicked button " + i);
-			})))));
+				return println("clicked even button " + i);
+			})), $alg.ExpStat($alg.Exp(() -> {
+				return println("clicked odd button " + i);
+			}))))));
 		}))));
 	}
 

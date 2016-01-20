@@ -32,9 +32,14 @@ public class TestGUI {
     tag ("div") {
       for (Integer i: range(n)) {
          tag ("p") {
-           echo! "Hello " + i;
+           echo! "Hello & goodbye " + i + "!\n";
            button ("Click " + i ) {
-             println("clicked button " + i);
+             if (i % 2 == 0) { 
+               println("clicked even button " + i);
+             }
+             else {
+               println("clicked odd button " + i);
+             }
            }
          }
       }
