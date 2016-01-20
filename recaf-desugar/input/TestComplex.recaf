@@ -1,0 +1,35 @@
+ 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import recaf.async.AsyncExtension;
+ 
+public class TestComplex {
+	
+	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
+    	if (1 < 2) {	
+       		return 42;
+     	}
+     	return 41;
+  	}
+  	
+	CompletableFuture<Integer> op2(@Builder AsyncExtension<Integer> alg) {
+    	if (1 < 2) {
+    		//x = await op(alg)
+    		//y = await op(alg)
+    		//return x + y;
+       		await(Integer x : op(alg)) {
+       		 await(Integer y: op(alg)) { 
+       		   return x + y; 
+       		 } 
+       		}
+     	}
+     	return 41;
+  	}
+  	
+  	public static void main(String[] args) throws InterruptedException, ExecutionException{
+  		Integer answer = new TestComplex().op2(new AsyncExtension<Integer>()).get();
+  		
+  		System.out.println(answer);
+  	}
+}
