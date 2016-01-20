@@ -11,6 +11,10 @@ import recaf.core.SD;
 
 public class MaybeExtension<R> extends AbstractJavaCPS<R> {
 
+	// TODO: separate Method from Maybe
+	// have different names for these methods, since we cannot override and
+	// change the return type.
+	
 	public Optional<R> Method(SD<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();
 		body.accept(r -> { ref.x = Optional.of(r); }, 

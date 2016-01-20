@@ -18,11 +18,21 @@ public class TestMaybe {
      }
   }
   
+  Optional<Integer> readOptional() {
+    return readOptional(new MaybeExtension<Integer>());
+  }
+  
+  
   Optional<Integer> readOptional(@Builder MaybeExtension<Integer> alg) {
      maybe (Integer x: maybe(alg)) {
        return x + 1;
      }
   }
+  
+  void doSomething() {
+    int x = 10;
+    
+  } 
   
   public static void main(String args[]) {
      Object x;
