@@ -1,0 +1,54 @@
+
+import recaf.gui.GUIExtension;
+import recaf.gui.RenderGUI;
+import recaf.gui.HandleGUI;
+import java.util.stream.IntStream;
+import java.util.Iterator;
+
+public class TestGUI {
+
+  static Void println(Object o) {
+    System.out.println(o);
+    return null;
+  }
+  
+  Void h2(@Builder GUIExtension alg, String title) {
+    tag ("h2") {
+      echo! title;
+    }
+  }
+  
+  Iterable<Integer> range(int n) {
+    return new Iterable<Integer>() {
+       public Iterator<Integer> iterator() {
+         return IntStream.range(0, n).iterator();
+       }
+    };
+  }
+
+  Void theGUI(@Builder GUIExtension alg, int n) {
+    h2(alg, "Demo");
+    
+    tag ("div") {
+      for (Integer i: range(n)) {
+         tag ("p") {
+           echo! "Hello " + i;
+           button ("Click " + i ) {
+             println("clicked button " + i);
+           }
+         }
+      }
+    }
+  }
+  
+  public static void main(String args[]) {
+    RenderGUI alg = new RenderGUI();
+    TestGUI tg = new TestGUI();
+    tg.theGUI(alg, 10);
+    String html = alg.getHTML();
+    System.out.println(html);
+    HandleGUI handle = new HandleGUI("id2");
+    tg.theGUI(handle, 10);
+  }
+
+}
