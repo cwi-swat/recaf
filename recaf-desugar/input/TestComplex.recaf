@@ -6,13 +6,22 @@ import recaf.async.AsyncExtension;
  
 public class TestComplex {
 	
+	public void pause(long sleeptime) {
+	    try {
+    	    Thread.sleep(sleeptime);
+    	} catch (InterruptedException ex) {
+        	
+    	}
+	}
+
 	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
     	if (1 < 2) {	
+    		pause(5000);
        		return 42;
      	}
      	return 41;
   	}
-  	
+
 	CompletableFuture<Integer> op2(@Builder AsyncExtension<Integer> alg) {
     	if (1 < 2) {
     		//x = await op(alg)
@@ -24,12 +33,20 @@ public class TestComplex {
        		 } 
        		}
      	}
+     	pause(5000);
      	return 41;
   	}
   	
   	public static void main(String[] args) throws InterruptedException, ExecutionException{
-  		Integer answer = new TestComplex().op2(new AsyncExtension<Integer>()).get();
-  		
-  		System.out.println(answer);
+  		CompletableFuture answer;
+  				
+  		answer = new TestComplex().op2(new AsyncExtension<Integer>());
+			
+		int i = 5;
+		while(i-- > 0) {
+			System.out.println("delayed");
+		}
+		
+  		System.out.println(answer.get());
   	}
 }
