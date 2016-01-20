@@ -17,7 +17,7 @@ public class TestComplex {
 	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
     	if (1 < 2) {	
     		pause(5000);
-       		return 42;
+       		return 42; 
      	}
      	return 41;
   	}
