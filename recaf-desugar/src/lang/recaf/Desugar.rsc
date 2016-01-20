@@ -5,7 +5,6 @@ import List;
 import String;
   
   
-// TODO: pass alg argument through.
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
      case (MethodDec)`<RefType rt> <Id meth>(@Builder <Type t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
@@ -20,10 +19,6 @@ Expr method2cps(Block b, Id alg)
   = (Expr)`<Id alg>.Method(<Expr bcps>)`
   when
     bcps := block2cps(b, alg);
-
-//TypeParams? ResultType Id "(" {FormalParam ","}* ")" Throws? 
-  //|  deprMethodDecHead: (MethodMod | Anno)* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Dim+ Throws?
-
 
 /// Extensions
 
@@ -134,7 +129,9 @@ Expr stm2cps((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg)
   when 
     Expr ecps := expr2cps(e, alg),
     Expr scps := stm2cps(s, alg);
- 
+
+Expr stm2cps((Stm)`for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg)
+  = TODO;  
     
 Expr stm2cps((Stm)`throw <Expr e>;`, Id alg) 
   = (Expr)`<Id alg>.Throw(<Expr ecps>)`
