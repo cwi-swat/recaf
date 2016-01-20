@@ -16,6 +16,6 @@ public class AsyncExtensionTests extends BaseTest {
 
 	@Test
 	public void SimpleAsyncWithAwaitTest() {
-		assert(true);
+		assert(false);
 	}
 }
