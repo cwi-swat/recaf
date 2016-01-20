@@ -9,14 +9,20 @@ import recaf.tests.CompiletimeException;
 public class AsyncExtensionTests extends BaseTest {
 
 	@Test
-	public void SimpleAsyncNoAwaitTest() throws CompiletimeException, RuntimeException {
-		String output = compileAndRun("SimpleAsyncNoAwait");
+	public void TestAsyncNoAwait() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestAsyncNoAwait");
 		Assert.assertEquals("41", output);	
 	}
 
 	@Test
-	public void SimpleAsyncWithAwaitTest() throws CompiletimeException, RuntimeException {
-		String output = compileAndRun("SimpleAsyncWithAwait");
+	public void TestAsyncWithAwait() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestAsyncWithAwait");
+		Assert.assertEquals("42", output);	
+	}
+	
+	@Test
+	public void TestAsyncComplex() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestAsyncComplex");
 		Assert.assertEquals("42", output);	
 	}
 }
