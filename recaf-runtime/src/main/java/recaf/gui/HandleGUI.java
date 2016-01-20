@@ -11,12 +11,13 @@ public class HandleGUI extends GUIExtension {
 	}
 	
 	@Override
-	public SD<Void> Tag(ED<Tag> t, SD<Void> body) {
+	public SD<Void> Tag(ED<String> t, SD<Void> body) {
 		return body;
 	}
 	
 	@Override
 	public SD<Void> Button(ED<String> label, SD<Void> body) {
+		// in handle, we execute the body if the current button was clickd.
 		return (rho, sigma, err) -> {
 			String id = nextId();
 			if (buttonClicked.equals(id)) {

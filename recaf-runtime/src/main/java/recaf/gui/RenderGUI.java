@@ -10,17 +10,19 @@ public class RenderGUI extends GUIExtension {
 	
 	// this algebra will be shared, so we never return the DOM text;
 	// it needs to be requested explicitly.
+	// Ideally we want to construct a dom object of some kind...
+	// Or maybe instantiate it for JavaFX?
 	public String getHTML() {
 		return writer.toString();
 	}
 	
 	@Override
-	public SD<Void> Tag(ED<Tag> t, SD<Void> body) {
+	public SD<Void> Tag(ED<String> t, SD<Void> body) {
 		return (rho, sigma, err) -> {
 			t.accept(tag -> {
-				writer.append("<" + tag.getName() + ">");
+				writer.append("<" + tag + ">");
 				body.accept(rho, () -> {
-					writer.append("</" + tag.getName() + ">");
+					writer.append("</" + tag + ">");
 					sigma.call();
 				}, err);
 			}, err);

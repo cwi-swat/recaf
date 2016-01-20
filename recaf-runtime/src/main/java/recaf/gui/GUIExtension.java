@@ -15,8 +15,8 @@ public abstract class GUIExtension extends AbstractJavaCPS<Void> {
 		return typePreserving(body);
 	}
 	
-	public abstract SD<Void> Tag(ED<Tag> t, SD<Void> body);
-	
+	public abstract SD<Void> Tag(ED<String> t, SD<Void> body);
+
 	public abstract SD<Void> Button(ED<String> label, SD<Void> body);
 
 	public abstract SD<Void> Echo(ED<String> exp);	
