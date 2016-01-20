@@ -1,13 +1,21 @@
  
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import recaf.async.AsyncExtension;
  
 public class TestAsync {
-	
+
 	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
     	if (1 > 5) {
        		return 42;
      	}
      	return 41;
+  	}
+  	
+  	public static void main(String[] args) throws InterruptedException, ExecutionException{
+  		Integer answer = new TestAsync().op(new AsyncExtension<Integer>()).get();
+  		
+  		System.out.println(answer);
   	}
 }

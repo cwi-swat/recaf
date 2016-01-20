@@ -12,7 +12,6 @@ public class AbstractJavaCPS<R> {
 		return result.x;
 	}
 	
-	
 	public <T> ED<T> Exp(Supplier<T> e) {
 		return (k, err) -> {
 			T t = null;

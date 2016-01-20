@@ -33,5 +33,4 @@ public class AsyncExtension<R> extends AbstractJavaCPS<R> {
 			});
 		}, err);
 	}
-	
 }
