@@ -14,7 +14,7 @@ import static javax.tools.ToolProvider.getSystemJavaCompiler;
 
 public class BaseTest {
 
-    public static final String SRC_TEST_RESOURCES = "src/test-src/";
+    public static final String SRC_TEST_RESOURCES = "src/test-generated/";
     protected PrintWriter out;
     protected PrintWriter err;
 
