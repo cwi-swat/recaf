@@ -1,6 +1,5 @@
 public class TestPullStreams {
 	public static void main(String args[]) {
-	    // eclipse/rascal cannot detect the reference to PStream but we dont care for the moment
 		Integer result = PStream.sum(PStream.filter(PStream.map(PStream.range(10), i -> i ^ 2), i -> i % 2 == 0));
 		System.out.println(result);
 	}
