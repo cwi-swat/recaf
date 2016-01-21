@@ -1,5 +1,5 @@
 
-import recaf.coro.CoroutineExtension;
+import recaf.coro.Coro;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
@@ -22,7 +22,7 @@ public class TestCoro {
     };
   }
 
-  @Recaf(ext=CoroutineExtension.class, arg=Integer.class) 
+  [Coro<Integer>] 
   Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
     for (Integer t: iter) {
       if (pred.test(t)) {
@@ -31,14 +31,15 @@ public class TestCoro {
     }
   }
 
-  @Recaf(ext=CoroutineExtension.class, arg=Integer.class) 
+
+  [Coro<Integer>] 
   Iterable<Integer> subCoro() {
      for (Integer i: range(10)) {
         yield! i;
      }
   }
 
-  @Recaf(ext=CoroutineExtension.class, arg=Integer.class) 
+  [Coro<Integer>] 
   Iterable<Integer> coro() {
      while (true) {
         // key point here: cannot always pass through the same alg.

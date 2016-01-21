@@ -7,11 +7,12 @@ import String;
   
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
-     case (MethodDec)`<RefType rt> <Id meth>(@Builder <Type t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
-       => (MethodDec)`<RefType rt> <Id meth>(<Type t> <Id alg>, <{FormalParam ","}* fs>) {
+     case (MethodDec)`<RefType rt> <Id meth>(@Builder <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<RefType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
         when cps := method2cps(b, alg)
+     
      case (MethodDec)`@Recaf(ext=<Id t>.class, arg=<Id et>.class) 
                      '<RefType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<RefType rt> <Id meth>(<{FormalParam ","}* fs>) {
@@ -21,7 +22,24 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
         when
           alg := (Id)`$alg`, 
           cps := method2cps(b, alg) 
-      
+     
+      case (MethodDec)`<RefType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<RefType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
+                     '  return (<RefType rt>)<Expr cps>;
+                     '}`
+        when cps := method2cps(b, alg)
+       
+      case (MethodDec)`[<ClassOrInterfaceType t>] 
+                     '<RefType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<RefType rt> <Id meth>(<{FormalParam ","}* fs>) {
+                     '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
+                     '  return (<RefType rt>)<Expr cps>;
+                     '}`
+        when
+          alg := (Id)`$alg`, 
+          cps := method2cps(b, alg)
+
+
    }
 }
 

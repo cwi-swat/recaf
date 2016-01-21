@@ -31,6 +31,15 @@ syntax Item
   = KId Expr ":" Stm
   | KId FormalParam ":" Stm
   ;
+
+
+syntax Anno
+  = "[" Type "]"
+  ;
+
+syntax VarMod
+  = "recaf"
+  ;
    
 syntax Rest
    = "." KId  Block
