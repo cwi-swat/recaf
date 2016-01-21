@@ -6,33 +6,56 @@ import java.util.function.*;
    
 public class PStream {
 	
-	public static Iterable<Integer> range(int n) {
-	  return new Iterable<Integer>() {
-	     public Iterator<Integer> iterator() {
-	       return IntStream.range(0, n).iterator();
-	     }
-	  };  
+	public PStream(Iterable<Integer> source) {
+		super();
+		this.source = source;
 	}
 
-	[Iter<Integer>] 
-	public static Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
-		for (Integer t: iter) {
+	Iterable<Integer> source;
+
+	public static PStream range(int n) {
+		return new PStream(rangeIter(n));
+	}
+
+	private static Iterable<Integer> rangeIter(int n) {
+		return new Iterable<Integer>() {
+			public Iterator<Integer> iterator() {
+				return IntStream.range(0, n).iterator();
+			}
+		};
+	}
+	
+	public PStream filter(Predicate<Integer> pred) {
+		return new PStream(filterIter(this.source, pred));
+	}
+
+	[Iter<Integer>]
+	Iterable<Integer> filterIter(Iterable<Integer> source, Predicate<Integer> pred) {
+		for (Integer t: source) {
       		if (pred.test(t)) {
         		yield! t;
       		}
     	}
   	}
   	
+  	public PStream map(Function<Integer, Integer> f) {
+		return new PStream(mapIter(this.source, f));
+	}
+  	
   	[Iter<Integer>] 
-	public static Iterable<Integer> map(Iterable<Integer> iter, Function<Integer, Integer> f) {
-	  for (Integer t: iter) {
+	Iterable<Integer> mapIter(Iterable<Integer> source, Function<Integer, Integer> f) {
+	  for (Integer t: source) {
 	       yield! f.apply(t);
 	  }
 	}
 	
-	public static Integer sum(Iterable<Integer> iter) {
+	public Integer sum() { 
+		return sumIter(this.source);
+	}
+	
+	private Integer sumIter(Iterable<Integer> source) {
 	  Integer acc = 0;
-	  for (Integer t: iter) {
+	  for (Integer t: source) {
 	       acc+=t;
 	  }
 	  return acc;
