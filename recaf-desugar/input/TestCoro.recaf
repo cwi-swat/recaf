@@ -3,12 +3,12 @@ import recaf.coro.CoroutineExtension;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
+import java.util.function.*;
 
 
 public class TestCoro {
 
   // todo: same fringe problem.
-
   static Void println(Object o) {
     System.out.println(o);
     return null;
@@ -22,7 +22,8 @@ public class TestCoro {
     };
   }
 
-  Iterable<Integer> filter(@Builder CoroutineExtension<Integer> alg, Iterable<Integer> iter, Predicate<Integer> pred) {
+  [Coro<Integer>] 
+  Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
     for (Integer t: iter) {
       if (pred.test(t)) {
          yield! t;
@@ -30,21 +31,31 @@ public class TestCoro {
     }
   }
 
-  Iterable<Integer> subCoro(@Builder CoroutineExtension<Integer> alg) {
+  [Coro<Integer>] 
+  Iterable<Integer> map(Iterable<Integer> iter, Function<Integer, Integer> f) {
+    for (Integer t: iter) {
+         yield! f(t);
+    }
+  }
+
+
+  [Coro<Integer>] 
+  Iterable<Integer> subCoro() {
      for (Integer i: range(10)) {
         yield! i;
      }
   }
 
-  Iterable<Integer> coro(@Builder CoroutineExtension<Integer> alg) {
+  [Coro<Integer>] 
+  Iterable<Integer> coro() {
      while (true) {
         // key point here: cannot always pass through the same alg.
-        yieldFrom! filter(alg, subCoro(alg), x -> ((Integer)x) % 2 == 0);
+        yieldFrom! filter(subCoro(), x -> ((Integer)x) % 2 == 0);
      }
   }
   
   public static void main(String args[]) {
-    for (Integer i: new TestCoro().coro(new CoroutineExtension<Integer>())) {
+    for (Integer i: new TestCoro().coro()) {
       System.out.println("i = " + i);
     }
   }
