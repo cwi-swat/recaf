@@ -2,36 +2,59 @@
 import recaf.coro.CoroutineExtension;
 import java.util.stream.IntStream;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 public class TestCoro {
 
-  // todo: same fringe problem.
+	// todo: same fringe problem.
 
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
-  
-  Iterable<Integer> range(int n) {
-    return new Iterable<Integer>() {
-       public Iterator<Integer> iterator() {
-         return IntStream.range(0, n).iterator();
-       }
-    };
-  }
+	static Void println(Object o) {
+		System.out.println(o);
+		return null;
+	}
 
-Iterable<Integer> subCoro(CoroutineExtension<Integer> alg) {
-  return (Iterable<Integer>)alg.Method(alg.For(alg.Exp(() -> { return range(10); }), (Integer i) -> {return alg.Yield(alg.Exp(() -> { return i; }));}));
-}
+	Iterable<Integer> range(int n) {
+		return new Iterable<Integer>() {
+			public Iterator<Integer> iterator() {
+				return IntStream.range(0, n).iterator();
+			}
+		};
+	}
 
-  Iterable<Integer> coro(CoroutineExtension<Integer> alg) {
-  return (Iterable<Integer>)alg.Method(alg.While(alg.Exp(() -> { return true; }), alg.YieldFrom(alg.Exp(() -> { return subCoro(alg); }))));
-}
-  
-  public static void main(String args[]) {
-    for (Integer i: new TestCoro().coro(new CoroutineExtension<Integer>())) {
-      System.out.println("i = " + i);
-    }
-  }
+	Iterable<Integer> filter(CoroutineExtension<Integer> alg, Iterable<Integer> iter, Predicate<Integer> pred) {
+		return (Iterable<Integer>) alg.Method(alg.For(alg.Exp(() -> {
+			return iter;
+		}), (Integer t) -> {
+			return alg.If(alg.Exp(() -> {
+				return pred.test(t);
+			}), alg.Yield(alg.Exp(() -> {
+				return t;
+			})));
+		}));
+	}
+
+	Iterable<Integer> subCoro(CoroutineExtension<Integer> alg) {
+		return (Iterable<Integer>) alg.Method(alg.For(alg.Exp(() -> {
+			return range(10);
+		}), (Integer i) -> {
+			return alg.Yield(alg.Exp(() -> {
+				return i;
+			}));
+		}));
+	}
+
+	Iterable<Integer> coro(CoroutineExtension<Integer> alg) {
+		return (Iterable<Integer>) alg.Method(alg.While(alg.Exp(() -> {
+			return true;
+		}), alg.YieldFrom(alg.Exp(() -> {
+			return filter(alg, subCoro(alg), x -> ((Integer) x) % 2 == 0);
+		}))));
+	}
+
+	public static void main(String args[]) {
+		for (Integer i : new TestCoro().coro(new CoroutineExtension<Integer>())) {
+			System.out.println("i = " + i);
+		}
+	}
 
 }
