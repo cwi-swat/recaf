@@ -41,6 +41,12 @@ syntax VarMod
   = "recaf"
   ;
    
+syntax Modifier
+  = "default"
+  ;
+  
+keyword Keyword = "default";
+   
 syntax Rest
    = "." KId  Block
    | "." KId "(" Expr ")" Block
