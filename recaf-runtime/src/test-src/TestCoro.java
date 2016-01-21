@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 public class TestCoro {
 
+  // todo: same fringe problem.
+
   static Void println(Object o) {
     System.out.println(o);
     return null;

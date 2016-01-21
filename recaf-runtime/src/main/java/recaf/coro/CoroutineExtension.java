@@ -8,17 +8,19 @@ import recaf.core.K0;
 import recaf.core.SD;
 
 
-class Yield extends RuntimeException {
-	final Object value;
-	final K0 k;
-
-	public Yield(Object value, K0 k) {
-		this.value = value;
-		this.k = k;
-	}
-}
 
 public class CoroutineExtension<R> extends AbstractJavaCPS<R> {
+
+	@SuppressWarnings("serial")
+	private static final class Yield extends RuntimeException {
+		final Object value;
+		final K0 k;
+
+		public Yield(Object value, K0 k) {
+			this.value = value;
+			this.k = k;
+		}
+	}
 
 	public Iterable<R> Method(SD<R> body) {
 		return new Iterable<R>() {
@@ -59,6 +61,10 @@ public class CoroutineExtension<R> extends AbstractJavaCPS<R> {
 		};
 	}
 	
+	@Override
+	public SD<R> Return(ED<R> e) {
+		throw new AssertionError("Cannot return value from coroutine.");
+	}
 	
 	public <U> SD<R> Yield(ED<U> exp) {
 		return (rho, sigma, err) -> {
