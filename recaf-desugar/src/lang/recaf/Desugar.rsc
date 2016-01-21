@@ -123,7 +123,6 @@ Expr stm2cps((Stm)`break <Id x>;`, Id alg)
 Expr stm2cps((Stm)`break;`, Id alg) 
   = (Expr)`<Id alg>.Break()`;
 
-
 Expr stm2cps((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg) 
   = (Expr)`<Id alg>.For(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
   when 
@@ -142,7 +141,6 @@ Expr stm2cps((Stm)`return <Expr e>;`, Id alg)
   = (Expr)`<Id alg>.Return(<Expr ecps>)`
   when
     Expr ecps := expr2cps(e, alg);
-
 
 Expr stm2cps((Stm)`return;`, Id alg) 
   = (Expr)`<Id alg>.Return()`;
@@ -220,7 +218,6 @@ Expr stm2cps((Stm)`while (<Expr c>) <Stm s>`, Id alg)
     Expr ecps := expr2cps(c, alg),
     Expr scps := stm2cps(s, alg);
 
-    
 Expr stm2cps((Stm)`do <Stm s> while (<Expr c>);`, Id alg) 
   = (Expr)`<Id alg>.Do(<Expr scps>, <Expr ecps>)`
   when 
@@ -244,7 +241,6 @@ Expr stm2cps((Stm)`try <Block body> <CatchClause+ catches>`, Id alg)
   when 
     Expr bodycps := block2cps(body, alg),
     Expr catchescps := catches2cps(catches, alg);
-
 
 // "catch"  "(" FormalParam ")" Block
 

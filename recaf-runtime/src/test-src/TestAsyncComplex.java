@@ -4,18 +4,22 @@ import java.util.concurrent.ExecutionException;
 
 import recaf.async.AsyncExtension;
  
-public class TestComplex {
+public class TestAsyncComplex {
 	
-	public void pause(long sleeptime) {
+	public static Void pause(long sleeptime) {
 	    try {
     	    Thread.sleep(sleeptime);
-    	} catch (InterruptedException ex) {
-        	
-    	}
+    	} catch (InterruptedException ex) {	}
+    	return null;
+	}
+	
+	public static Void print(String msg) {
+		System.out.println(msg);		
+		return null;
 	}
 
 	CompletableFuture<Integer> op(AsyncExtension<Integer> alg) {
-  return (CompletableFuture<Integer>)alg.Method(alg.Seq(alg.If(alg.Exp(() -> { return 1 < 2; }), alg.Seq(alg.ExpStat(alg.Exp(() -> { return pause(5000); })), alg.Return(alg.Exp(() -> { return 42; })))), alg.Return(alg.Exp(() -> { return 41; }))));
+  return (CompletableFuture<Integer>)alg.Method(alg.Seq(alg.If(alg.Exp(() -> { return 1 < 2; }), alg.Seq(alg.ExpStat(alg.Exp(() -> { return pause(2500); })), alg.Seq(alg.ExpStat(alg.Exp(() -> { return print("delayed op"); })), alg.Return(alg.Exp(() -> { return 42; }))))), alg.Return(alg.Exp(() -> { return 41; }))));
 }
 
 	CompletableFuture<Integer> op2(AsyncExtension<Integer> alg) {
@@ -25,12 +29,9 @@ public class TestComplex {
   	public static void main(String[] args) throws InterruptedException, ExecutionException{
   		CompletableFuture answer;
   				
-  		answer = new TestComplex().op2(new AsyncExtension<Integer>());
+  		answer = new TestAsyncComplex().op2(new AsyncExtension<Integer>());
 			
-		int i = 5;
-		while(i-- > 0) {
-			System.out.println("delayed");
-		}
+		print("main");
 		
   		System.out.println(answer.get());
   	}

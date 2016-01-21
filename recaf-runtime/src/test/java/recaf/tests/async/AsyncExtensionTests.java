@@ -23,6 +23,9 @@ public class AsyncExtensionTests extends BaseTest {
 	@Test
 	public void TestAsyncComplex() throws CompiletimeException, RuntimeException {
 		String output = compileAndRun("TestAsyncComplex");
-		Assert.assertEquals("42", output);	
+		Assert.assertEquals("main\n"
+							+ "delayed op\n"
+							+ "delayed op\n"
+							+ "84", output);	
 	}
 }
