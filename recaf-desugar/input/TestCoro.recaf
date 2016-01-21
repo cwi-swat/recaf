@@ -33,7 +33,7 @@ public class TestCoro {
   [Coro<Integer>] 
   Iterable<Integer> map(Iterable<Integer> iter, Function<Integer, Integer> f) {
     for (Integer t: iter) {
-         yield! f(t);
+         yield! f.apply(t);
     }
   }
 
