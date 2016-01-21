@@ -1,0 +1,39 @@
+
+import recaf.coro.CoroutineExtension;
+import java.util.stream.IntStream;
+import java.util.Iterator;
+
+public class TestCoro {
+
+  static Void println(Object o) {
+    System.out.println(o);
+    return null;
+  }
+  
+  Iterable<Integer> range(int n) {
+    return new Iterable<Integer>() {
+       public Iterator<Integer> iterator() {
+         return IntStream.range(0, n).iterator();
+       }
+    };
+  }
+
+Iterable<Integer> subCoro(@Builder CoroutineExtension<Integer> alg) {
+     for (Integer i: range(10)) {
+        yield! i;
+     }
+  }
+
+  Iterable<Integer> coro(@Builder CoroutineExtension<Integer> alg) {
+     while (true) {
+        yieldFrom! subCoro(alg);
+     }
+  }
+  
+  public static void main(String args[]) {
+    for (Integer i: new TestCoro().coro(new CoroutineExtension<Integer>())) {
+      System.out.println("i = " + i);
+    }
+  }
+
+}
