@@ -20,7 +20,7 @@ void main() {
       if (start[CompilationUnit] cu := tree) {
         loc l = cu@\loc.top;
         l.extension = "java";
-        newLoc = |project://recaf-runtime/src/test-src/<l.file>|;
+        newLoc = |project://recaf-runtime/src/test-generated/<l.file>|;
         writeFile(newLoc, desugar(cu));
         return {};
       }

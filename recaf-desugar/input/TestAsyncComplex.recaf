@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException;
 import recaf.async.AsyncExtension;
  
 public class TestAsyncComplex {
-	
+
 	public static Void pause(long sleeptime) {
 	    try {
     	    Thread.sleep(sleeptime);
