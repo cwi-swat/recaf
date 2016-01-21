@@ -1,5 +1,5 @@
 
-import recaf.maybe.MaybeExtension;
+import recaf.maybe.Maybe;
 import java.util.Optional;
  
 public class TestMaybe {
@@ -9,7 +9,8 @@ public class TestMaybe {
     return null;
   }
   
-  Optional<Integer> maybe(@Builder MaybeExtension<Integer> alg) {
+  [Maybe<Integer>]
+  Optional<Integer> maybe() {
      int x = 3;
      println("maybe");
      if (7 > 5) {
@@ -18,13 +19,10 @@ public class TestMaybe {
      }
   }
   
+
+  [Maybe<Integer>]  
   Optional<Integer> readOptional() {
-    return readOptional(new MaybeExtension<Integer>());
-  }
-  
-  
-  Optional<Integer> readOptional(@Builder MaybeExtension<Integer> alg) {
-     maybe (Integer x: maybe(alg)) {
+     maybe (Integer x: maybe()) {
        return x + 1;
      }
   }
@@ -36,7 +34,7 @@ public class TestMaybe {
   
   public static void main(String args[]) {
      Object x;
-     x  = new TestMaybe().readOptional(new MaybeExtension<Integer>());
+     x  = new TestMaybe().readOptional();
      System.out.println(x);
   }
   

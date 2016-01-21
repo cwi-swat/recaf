@@ -8,8 +8,7 @@ import recaf.core.K0;
 import recaf.core.SD;
 
 
-
-public class CoroutineExtension<R> extends AbstractJavaCPS<R> {
+public class Coro<R> extends AbstractJavaCPS<R> {
 
 	@SuppressWarnings("serial")
 	private static final class Yield extends RuntimeException {

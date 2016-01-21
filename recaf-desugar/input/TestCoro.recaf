@@ -1,10 +1,9 @@
 
-import recaf.coro.CoroutineExtension;
+import recaf.coro.Coro;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.function.*;
-
 
 public class TestCoro {
 
@@ -37,7 +36,6 @@ public class TestCoro {
          yield! f(t);
     }
   }
-
 
   [Coro<Integer>] 
   Iterable<Integer> subCoro() {

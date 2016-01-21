@@ -7,11 +7,7 @@ public class TestYield {
 		YieldExtension<Integer> $alg = alg;
 		return $alg.Method($alg.Seq($alg.If($alg.Exp(() -> {
 			return 1 > 5;
-		}), $alg.Return($alg.Exp(() -> {
-			return 42;
-		}))), $alg.Return($alg.Exp(() -> {
-			return 41;
-		}))));
+		})))); 
 	}
 
 	public static void main(String[] args)  {

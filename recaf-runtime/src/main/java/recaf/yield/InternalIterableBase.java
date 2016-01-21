@@ -24,5 +24,4 @@ public class InternalIterableBase<R> implements Iterable<R> {
 	private Iterator<R> beta_inv(Supplier<R> resumption2) {
 		throw new UnsupportedOperationException();
 	}
-
 }
