@@ -140,6 +140,14 @@ Expr item2cps((Item)`<KId kw> <FormalParam f>: <Stm stm>`, Id alg)
     Id method := [Id]capitalize("<kw>"),
     Expr stmcps := stm2cps(stm, alg);
 
+// new style
+
+Expr stm2cps((Stm)`<KId kw> (<FormalParam f>) <Stm stm>`, Id alg)
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmcps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Expr stmcps := stm2cps(stm, alg);
+  
 
 //////
 

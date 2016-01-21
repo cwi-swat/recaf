@@ -25,6 +25,9 @@ syntax Stm
    | KId "(" FormalParam ":" Expr ")" "{" Item+ "}"
    | KId "(" Expr ")" "{" Item+ "}"
    | KId "{" Item+ "}"
+   
+   // new style
+   | KId "(" FormalParam ")" Stm
    ;
    
 syntax Item
