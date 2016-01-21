@@ -1,0 +1,36 @@
+
+import recaf.propagate.Propagate;
+ 
+public class TestPropagate {
+
+  static Void println(Object o) {
+    System.out.println(o);
+    return null;
+  }
+  
+  [Propagate<String, Void>]
+  Void update(String s) {
+     local (s) {
+        method();
+     }
+     return null;
+  }
+  
+  
+  Void method() {
+     return read();
+  }
+  
+  [Propagate<String, Void>]
+  Void read() {
+     ask (String s) {
+        println("s = " + s);
+     }
+     return null;
+  }
+  
+  public static void main(String args[]) {
+     new TestPropagate().update("Hello world!");
+  }
+  
+}
