@@ -33,6 +33,7 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 			public Iterator<R> iterator() {
 				return new Iterator<R>() {
 
+					@SuppressWarnings("unchecked")
 					@Override
 					public boolean hasNext() {
 						if (exhausted) {
