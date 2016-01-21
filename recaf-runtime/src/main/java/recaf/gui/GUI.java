@@ -4,7 +4,7 @@ import recaf.core.AbstractJavaCPS;
 import recaf.core.ED;
 import recaf.core.SD;
 
-public abstract class GUIExtension extends AbstractJavaCPS<Void> {
+public abstract class GUI extends AbstractJavaCPS<Void> {
 	private int idCount = 0;
 	
 	protected String nextId() {

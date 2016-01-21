@@ -8,13 +8,10 @@ import recaf.core.ED;
 import recaf.core.SD;
 
 public class ParFor<R> extends AbstractJavaCPS<R> {
-
-	/*
-	 * servers.parallelStream().forEach((server) -> {
-        serverData.put(server.getIdentifier(), server.fetchData());
-    });
-
-	 */
+	
+	public R Method(SD<R> body) {
+		return typePreserving(body);
+	}
 
 	public <U> SD<R> Parfor(ED<Collection<U>> coll, Function<U, SD<R>> body) {
 		return (rho, sigma, err) -> {
