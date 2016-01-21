@@ -39,6 +39,15 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
           alg := (Id)`$alg`, 
           cps := method2cps(b, alg)
 
+	  case (MethodDec)`[<ClassOrInterfaceType t>] 
+                     'public static <RefType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`public static <RefType rt> <Id meth>(<{FormalParam ","}* fs>) {
+                     '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
+                     '  return (<RefType rt>)<Expr cps>;
+                     '}`
+        when
+          alg := (Id)`$alg`, 
+          cps := method2cps(b, alg)
 
    }
 }

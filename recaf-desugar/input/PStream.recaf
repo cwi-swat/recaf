@@ -1,0 +1,40 @@
+import recaf.iter.Iter;
+import java.util.stream.IntStream;
+import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.function.*;
+   
+public class PStream {
+	
+	public static Iterable<Integer> range(int n) {
+	  return new Iterable<Integer>() {
+	     public Iterator<Integer> iterator() {
+	       return IntStream.range(0, n).iterator();
+	     }
+	  };  
+	}
+
+	[Iter<Integer>] 
+	public static Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
+		for (Integer t: iter) {
+      		if (pred.test(t)) {
+        		yield! t;
+      		}
+    	}
+  	}
+  	
+  	[Iter<Integer>] 
+	public static Iterable<Integer> map(Iterable<Integer> iter, Function<Integer, Integer> f) {
+	  for (Integer t: iter) {
+	       yield! f.apply(t);
+	  }
+	}
+	
+	public static Integer sum(Iterable<Integer> iter) {
+	  Integer acc = 0;
+	  for (Integer t: iter) {
+	       acc+=t;
+	  }
+	  return acc;
+	}
+}
