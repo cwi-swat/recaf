@@ -12,7 +12,7 @@ public class TestGUI {
     return null;
   }
   
-  Void h2(@Builder GUIExtension alg, String title) {
+  Void h2(recaf GUIExtension alg, String title) {
     tag ("h2") {
       echo! title;
     }
@@ -26,7 +26,7 @@ public class TestGUI {
     };
   }
 
-  Void theGUI(@Builder GUIExtension alg, int n) {
+  Void theGUI(recaf GUIExtension alg, int n) {
     h2(alg, "Demo");
     
     tag ("div") {
