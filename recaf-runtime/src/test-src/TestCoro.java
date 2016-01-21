@@ -21,38 +21,41 @@ public class TestCoro {
 		};
 	}
 
-	Iterable<Integer> filter(CoroutineExtension<Integer> alg, Iterable<Integer> iter, Predicate<Integer> pred) {
-		return (Iterable<Integer>) alg.Method(alg.For(alg.Exp(() -> {
+	Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
+		CoroutineExtension<Integer> $alg = new CoroutineExtension<Integer>();
+		return (Iterable<Integer>) $alg.Method($alg.For($alg.Exp(() -> {
 			return iter;
 		}), (Integer t) -> {
-			return alg.If(alg.Exp(() -> {
+			return $alg.If($alg.Exp(() -> {
 				return pred.test(t);
-			}), alg.Yield(alg.Exp(() -> {
+			}), $alg.Yield($alg.Exp(() -> {
 				return t;
 			})));
 		}));
 	}
 
-	Iterable<Integer> subCoro(CoroutineExtension<Integer> alg) {
-		return (Iterable<Integer>) alg.Method(alg.For(alg.Exp(() -> {
+	Iterable<Integer> subCoro() {
+		CoroutineExtension<Integer> $alg = new CoroutineExtension<Integer>();
+		return (Iterable<Integer>) $alg.Method($alg.For($alg.Exp(() -> {
 			return range(10);
 		}), (Integer i) -> {
-			return alg.Yield(alg.Exp(() -> {
+			return $alg.Yield($alg.Exp(() -> {
 				return i;
 			}));
 		}));
 	}
 
-	Iterable<Integer> coro(CoroutineExtension<Integer> alg) {
-		return (Iterable<Integer>) alg.Method(alg.While(alg.Exp(() -> {
+	Iterable<Integer> coro() {
+		CoroutineExtension<Integer> $alg = new CoroutineExtension<Integer>();
+		return (Iterable<Integer>) $alg.Method($alg.While($alg.Exp(() -> {
 			return true;
-		}), alg.YieldFrom(alg.Exp(() -> {
-			return filter(alg, subCoro(alg), x -> ((Integer) x) % 2 == 0);
+		}), $alg.YieldFrom($alg.Exp(() -> {
+			return filter(subCoro(), x -> ((Integer) x) % 2 == 0);
 		}))));
 	}
 
 	public static void main(String args[]) {
-		for (Integer i : new TestCoro().coro(new CoroutineExtension<Integer>())) {
+		for (Integer i : new TestCoro().coro()) {
 			System.out.println("i = " + i);
 		}
 	}

@@ -11,7 +11,17 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
        => (MethodDec)`<RefType rt> <Id meth>(<Type t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
-        when cps := method2cps(b, alg) 
+        when cps := method2cps(b, alg)
+     case (MethodDec)`@Recaf(ext=<Id t>.class, arg=<Id et>.class) 
+                     '<RefType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<RefType rt> <Id meth>(<{FormalParam ","}* fs>) {
+                     '  <Id t>\<<Id et>\> <Id alg> = new <Id t>\<<Id et>\>();
+                     '  return (<RefType rt>)<Expr cps>;
+                     '}`
+        when
+          alg := (Id)`$alg`, 
+          cps := method2cps(b, alg) 
+      
    }
 }
 
