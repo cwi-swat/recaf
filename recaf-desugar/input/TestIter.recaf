@@ -30,13 +30,6 @@ public class TestIter {
   }
 
   [Iter<Integer>] 
-  Iterable<Integer> map(Iterable<Integer> iter, Function<Integer, Integer> f) {
-    for (Integer t: iter) {
-         yield! f.apply(t);
-    }
-  }
-
-  [Iter<Integer>] 
   Iterable<Integer> subIter() {
      for (Integer i: range(10)) {
         yield! i;
