@@ -1,13 +1,20 @@
-package recaf.iter;
+package recaf.asynciter;
 
 import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
 
 import recaf.core.AbstractJavaCPS;
 import recaf.core.ED;
 import recaf.core.K0;
 import recaf.core.SD;
 
-public class Iter<R> extends AbstractJavaCPS<R> {
+/***
+ * AsyncIter is a composed extension that represents _pulling_ elements
+ * asynchronously.
+ */
+public class AsyncIterExtension<R> extends AbstractJavaCPS<R> {
+	
+	public interface AsyncEnumerable<T> extends Iterable<CompletableFuture<T>> {}
 
 	@SuppressWarnings("serial")
 	private static final class Yield extends RuntimeException {
@@ -20,11 +27,13 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 		}
 	}
 
-	public Iterable<R> Method(SD<R> body) {
-		return new Iterable<R>() {
+	public Iterable<CompletableFuture<R>> Method(SD<R> body) {
+		return new Iterable<CompletableFuture<R>>() {
 
 			boolean exhausted = false;
-			R current = null;
+			
+			CompletableFuture<R> current = null;
+			
 			K0 k = () -> {
 				body.accept(r -> {
 					exhausted = true;
@@ -36,8 +45,8 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 			};
 
 			@Override
-			public Iterator<R> iterator() {
-				return new Iterator<R>() {
+			public Iterator<CompletableFuture<R>> iterator() {
+				return new Iterator<CompletableFuture<R>>() {
 
 					@SuppressWarnings("unchecked")
 					@Override
@@ -49,14 +58,14 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 							k.call();
 							return false;
 						} catch (Yield y) {
-							current = (R) y.value;
+							current = (CompletableFuture<R>) y.value;
 							k = y.k;
 							return true;
 						}
 					}
 
 					@Override
-					public R next() {
+					public CompletableFuture<R> next() {
 						return current;
 					}
 
