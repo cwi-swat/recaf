@@ -197,9 +197,26 @@ Expr stm2cps((Stm)`<Block b>`, Id alg) = block2cps(b, alg);
 // TODO: ClassDec as blockstm
 Expr block2cps((Block)`{}`, Id alg) = (Expr)`<Id alg>.Empty()`;
 
-Expr block2cps((Block)`{<Stm s>}`, Id alg) = stm2cps(s, alg);
+// singletons
+Expr block2cps((Block)`{<Type t> <{VarDec ","}+ vs>;}`, Id alg) 
+  = varDecs2cps(t, vs, (Expr)`<Id alg>.Empty()`, alg);
 
-Expr block2cps((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg) 
+Expr block2cps((Block)`{<KId kw> <FormalParam f>;}`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> <Id alg>.Empty())`
+  when
+    Id method := [Id]capitalize("<kw>");
+
+Expr block2cps((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg) 
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Expr ecps := expr2cps(e, alg);
+
+default Expr block2cps((Block)`{<Stm s>}`, Id alg) = stm2cps(s, alg);
+
+// end singletons
+
+default Expr block2cps((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg) 
   = (Expr)`<Id alg>.Seq(<Expr scps>, <Expr sscps>)`
   when
     Expr scps := stm2cps(s, alg),
