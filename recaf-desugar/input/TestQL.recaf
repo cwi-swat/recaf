@@ -1,0 +1,17 @@
+
+import recaf.ql.QL;
+
+
+public class TestQL {
+
+  Void questionnaire(recaf QL ql) {
+     question Boolean hasSoldHouse;
+     question Boolean hasBoughtHouse;
+     question Boolean hasMaintLoan;
+     if (hasSoldHouse) {
+       question Double sellingPrice;
+       question Double privateDebt;
+       question Double valueResidue = sellingPrice - privateDebt;
+     }
+  }
+}
