@@ -140,8 +140,8 @@ Expr item2cps((Item)`<KId kw> <FormalParam f>: <Stm stm>`, Id alg)
     Id method := [Id]capitalize("<kw>"),
     Expr stmcps := stm2cps(stm, alg);
 
-// new style
 
+// new style
 Expr stm2cps((Stm)`<KId kw> (<FormalParam f>) <Stm stm>`, Id alg)
   = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmcps>; })`
   when
@@ -211,6 +211,24 @@ Expr block2cps((Block)`{<Type t> <{VarDec ","}+ vs>; <BlockStm+ ss>}`, Id alg)
   when
     Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`, alg);
 
+// decl like
+//   | KId FormalParam ";"
+//   | KId FormalParam "=" Expr ";"
+   
+Expr block2cps((Block)`{<KId kw> <FormalParam f>; <BlockStm+ ss>}`, Id alg)
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr sscps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`, alg);
+
+Expr block2cps((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg)
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Expr ecps := expr2cps(e, alg),
+    Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`, alg);
+
+
 Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k, Id alg) {
    for (VarDec vd <- reverse([ v | v <- vs])) {
      k = varDec2cps(t, vd, k, alg);
@@ -218,6 +236,7 @@ Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k, Id alg) {
    return k;
 }   
 
+// TODO: remove null?
 Expr varDec2cps(Type t, (VarDec)`<Id x>`, Expr k, Id alg) 
   = (Expr)`<Id alg>.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
   when

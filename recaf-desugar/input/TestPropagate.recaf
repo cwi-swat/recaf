@@ -13,6 +13,9 @@ public class TestPropagate {
      local (s) {
         method();
      }
+     ask (String x) {
+       println(x);
+     }
      return null;
   }
   

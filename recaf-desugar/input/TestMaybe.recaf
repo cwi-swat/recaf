@@ -22,9 +22,8 @@ public class TestMaybe {
 
   [Maybe<Integer>]  
   Optional<Integer> readOptional() {
-     maybe (Integer x: maybe()) {
-       return x + 1;
-     }
+     maybe Integer x = maybe();
+     return x + 1;
   }
   
   void doSomething() {

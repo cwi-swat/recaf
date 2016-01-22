@@ -26,6 +26,10 @@ syntax Stm
    | KId "(" Expr ")" "{" Item+ "}"
    | KId "{" Item+ "}"
    
+   // decl like
+   | KId FormalParam ";"
+   | KId FormalParam "=" Expr ";"
+   
    // new style
    | KId "(" FormalParam ")" Stm
    ;
