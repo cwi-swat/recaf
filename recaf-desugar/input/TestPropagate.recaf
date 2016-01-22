@@ -13,9 +13,8 @@ public class TestPropagate {
      local (s) {
         method();
      }
-     ask (String x) {
-       println(x);
-     }
+     ask String x;
+     println(x);
      return null;
   }
   
@@ -26,9 +25,8 @@ public class TestPropagate {
   
   [Propagate<String, Void>]
   Void read() {
-     ask (String s) {
-        println("s = " + s);
-     }
+     ask String s;
+     println("s = " + s);
      return null;
   }
   
