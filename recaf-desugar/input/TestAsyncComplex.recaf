@@ -28,14 +28,9 @@ public class TestAsyncComplex {
 
 	CompletableFuture<Integer> op2(@Builder AsyncExtension<Integer> alg) {
     	if (1 < 2) {
-    		//x = await op(alg)
-    		//y = await op(alg)
-    		//return x + y;
-       		await(Integer x : op(alg)) {
-       		 await(Integer y: op(alg)) { 
-       		   return x + y; 
-       		 } 
-       		}
+       		await Integer x = op(alg);
+    		await Integer y = op(alg);
+    		return x + y;
      	}
      	pause(5000);
      	return 41;

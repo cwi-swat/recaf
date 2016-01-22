@@ -7,7 +7,7 @@ public class TestAsyncWithAwait {
 
 	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
     	if (1 < 2) {
-       		await(Integer x : secondOp(alg)) { return x; }
+       		await Integer x = secondOp(alg);
      	}
      	return 41;
   	} 
