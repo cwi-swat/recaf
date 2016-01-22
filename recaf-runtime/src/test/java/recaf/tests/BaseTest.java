@@ -2,6 +2,7 @@ package recaf.tests;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import javax.tools.*;
 import java.io.*;
@@ -18,6 +19,11 @@ public class BaseTest {
     protected PrintWriter out;
     protected PrintWriter err;
 
+    @BeforeClass
+    public static void init() {
+    	//TODO: invoke rascal programmatically for all files in |project://recaf-desugar/input/<l.file>| 
+    }
+    
     @Before
     public void setUp() throws Exception {
         out = new PrintWriter(System.out, false);
