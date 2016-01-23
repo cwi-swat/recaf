@@ -1,0 +1,26 @@
+
+
+public class TestParsing {
+
+   Parser<Element> element(String tag) {
+       lit! "<" + tag + ">";
+       star { nt! content(); }
+       lit! "</" + tag + ">";
+   }
+   
+   [Parsing<String>]
+   Parser<String> id() {
+     lex! "[a-zA-Z][a-zA-Z0-9]*";
+   }
+   
+   [Parsing<Exp>]
+   Parser<Exp> exp() {
+      alt (Exp lhs, Exp rhs) 
+        left { nt! exp(); lit! "+"; nt! exp(); return new Add(lhs, rhs); }
+      alt (String id) 
+        { id(); return new Var(id); }
+   
+   
+   }
+
+}

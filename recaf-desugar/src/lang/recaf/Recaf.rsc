@@ -31,7 +31,7 @@ syntax Stm
    | KId FormalParam "=" Expr ";"
    
    // new style
-   | KId "(" FormalParam ")" Stm
+   | KId "(" {FormalParam ","}+ ")" Stm
    ;
    
 syntax Item
