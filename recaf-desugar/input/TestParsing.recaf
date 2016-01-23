@@ -15,10 +15,16 @@ public class TestParsing {
    
    [Parsing<Exp>]
    Parser<Exp> exp() {
-      alt (Exp lhs, Exp rhs) 
-        left { nt! exp(); lit! "+"; nt! exp(); return new Add(lhs, rhs); }
-      alt (String id) 
-        { id(); return new Var(id); }
+      parse {
+        alt "add":  
+          let Exp lhs = exp(); 
+          lit! "+"; 
+          let Exp rhs = exp(); 
+          return new Add(lhs, rhs);
+        alt "var": 
+          let String x = id();
+          return new Var(x);
+      } 
    
    
    }

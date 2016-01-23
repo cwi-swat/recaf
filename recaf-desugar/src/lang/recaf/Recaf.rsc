@@ -35,8 +35,8 @@ syntax Stm
    ;
    
 syntax Item
-  = KId Expr ":" Stm
-  | KId FormalParam ":" Stm
+  = KId Expr ":" BlockStm+
+  | KId FormalParam ":" BlockStm+
   ;
 
 

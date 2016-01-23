@@ -127,18 +127,18 @@ Expr items2cps(list[Item] items:[Item x, *xs], Id alg)
     Expr xcps := item2cps(x, alg),
     (Expr)`java.util.Arrays.asList(<{Expr ","}* es>)` := items2cps(xs, alg);
 
-Expr item2cps((Item)`<KId kw> <Expr e>: <Stm stm>`, Id alg)
-  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr stmcps>)`
+Expr item2cps((Item)`<KId kw> <Expr e>: <BlockStm+ stms>`, Id alg)
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr stmscps>)`
   when 
     Id method := [Id]capitalize("<kw>"),
     Expr ecps := expr2cps(e, alg),
-    Expr stmcps := stm2cps(stm, alg);
+    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg);
   
-Expr item2cps((Item)`<KId kw> <FormalParam f>: <Stm stm>`, Id alg)
-  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmcps>; })`
+Expr item2cps((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg)
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmscps>; })`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr stmcps := stm2cps(stm, alg);
+    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg);
 
 
 // new style
