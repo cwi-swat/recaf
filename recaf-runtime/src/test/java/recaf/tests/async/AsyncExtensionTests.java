@@ -28,4 +28,10 @@ public class AsyncExtensionTests extends BaseTest {
 							+ "delayed op\n"
 							+ "84", output);	
 	}
+	
+	@Test
+	public void TestFibRecAsync() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestFibRecAsync");
+		Assert.assertEquals("55", output);	
+	}
 }

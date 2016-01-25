@@ -17,7 +17,8 @@ public class TestAsyncComplex {
 		return null;
 	}
 
-	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
+    [AsyncExtension<Integer>]   
+	CompletableFuture<Integer> op() {
     	if (1 < 2) {	
     		pause(2500);
     		print("delayed op");
@@ -26,10 +27,11 @@ public class TestAsyncComplex {
      	return 41;
   	}
 
-	CompletableFuture<Integer> op2(@Builder AsyncExtension<Integer> alg) {
+    [AsyncExtension<Integer>]   
+	CompletableFuture<Integer> op2() {
     	if (1 < 2) {
-       		await Integer x = op(alg);
-    		await Integer y = op(alg);
+       		await Integer x = op();
+    		await Integer y = op();
     		return x + y;
      	}
      	pause(5000);
@@ -39,7 +41,7 @@ public class TestAsyncComplex {
   	public static void main(String[] args) throws InterruptedException, ExecutionException{
   		CompletableFuture answer;
   				
-  		answer = new TestAsyncComplex().op2(new AsyncExtension<Integer>());
+  		answer = new TestAsyncComplex().op2();
 			
 		print("main");
 		

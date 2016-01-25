@@ -5,14 +5,17 @@ import recaf.async.AsyncExtension;
  
 public class TestAsyncWithAwait {
 
-	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
+    [AsyncExtension<Integer>]   
+	CompletableFuture<Integer> op() {
     	if (1 < 2) {
-       		await Integer x = secondOp(alg);
+       		await Integer x = secondOp();
+       		return x;
      	}
      	return 41;
   	} 
   	
-  	CompletableFuture<Integer> secondOp(@Builder AsyncExtension<Integer> alg) {
+  	[AsyncExtension<Integer>]   
+  	CompletableFuture<Integer> secondOp() {
     	if (1 < 2) { 	
        		return 42;
      	}
@@ -20,7 +23,7 @@ public class TestAsyncWithAwait {
   	}
   	
   	public static void main(String[] args) throws InterruptedException, ExecutionException{
-  		Integer answer = new TestAsyncWithAwait().op(new AsyncExtension<Integer>()).get();
+  		Integer answer = new TestAsyncWithAwait().op().get();
   		
   		System.out.println(answer);
   	}

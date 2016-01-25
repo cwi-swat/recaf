@@ -5,7 +5,8 @@ import recaf.async.AsyncExtension;
  
 public class TestAsyncNoAwait {
 
-	CompletableFuture<Integer> op(@Builder AsyncExtension<Integer> alg) {
+    [AsyncExtension<Integer>]   
+	CompletableFuture<Integer> op() {
     	if (1 > 5) {
        		return 42;
      	}
@@ -13,7 +14,7 @@ public class TestAsyncNoAwait {
   	}
   	
   	public static void main(String[] args) throws InterruptedException, ExecutionException{
-  		Integer answer = new TestAsyncNoAwait().op(new AsyncExtension<Integer>()).get();
+  		Integer answer = new TestAsyncNoAwait().op().get();
   		
   		System.out.println(answer);
   	}

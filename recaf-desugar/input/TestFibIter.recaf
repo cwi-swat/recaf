@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.function.*;
  
-public class TestIterFib {
+public class TestFibIter {
 
   static Void println(Object o) {
     System.out.println(o);
     return null;
-  }
+  } 
   
   class Cell {
   	public Integer v;
@@ -28,9 +28,12 @@ public class TestIterFib {
   } 
   
   public static void main(String args[]) {
-    for (Integer n: new TestIterFib().fib()) {
-      if(n > 100) break;
-      println(n);
+    int count = 10;
+    for (Integer n: new TestFibIter().fib()) {
+      if(count-- == 0) {
+        println(n);
+        break;
+      }
     }
   }
 }

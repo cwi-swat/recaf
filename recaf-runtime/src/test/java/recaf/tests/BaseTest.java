@@ -21,7 +21,7 @@ public class BaseTest {
 
     @BeforeClass
     public static void init() {
-    	//TODO: invoke rascal programmatically for all files in |project://recaf-desugar/input/<l.file>| 
+	    	//TODO: invoke rascal programmatically for all files in |project://recaf-desugar/input/<l.file>| 
     }
     
     @Before

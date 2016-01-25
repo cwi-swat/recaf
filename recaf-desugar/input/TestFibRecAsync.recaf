@@ -1,0 +1,35 @@
+import recaf.iter.Iter;
+import java.util.stream.IntStream;
+import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.function.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import recaf.async.AsyncExtension;
+
+public class TestFibRecAsync {
+
+  static Void println(Object o) {
+    System.out.println(o);
+    return null;
+  }
+  
+  [AsyncExtension<Integer>]   
+  CompletableFuture<Integer> fib(Integer x) {
+  	if(x < 2) {
+  		return x;
+  	} else {
+   		await Integer x1 = fib(x-1);
+  		await Integer x2 = fib(x-2);
+  		return x1 + x2;
+  	}
+  } 
+  
+  public static void main(String[] args) throws InterruptedException, ExecutionException{
+	CompletableFuture answer;
+			
+	answer = new TestFibRecAsync().fib(10);
+	
+	System.out.println(answer.get());
+  }
+}
