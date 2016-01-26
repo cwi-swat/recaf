@@ -1,7 +1,5 @@
 package recaf.asynciter;
 
-import java.util.function.BiConsumer;
-
-public interface ED<T> extends BiConsumer<K<T>, K<Throwable>> {
+public interface ED<T, U> extends TriConsumer<StreamSubscription<U>, K<T>, K<Throwable>> {
 	
 }

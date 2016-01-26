@@ -1,5 +1,5 @@
 package recaf.asynciter;
 
-public interface SD<R> extends TriConsumer<K<R>, K0, K<Throwable>> {
+public interface SD<R, U> extends QuadriConsumer<StreamSubscription<U>, K<R>, K0, K<Throwable>> {
 	
 }
