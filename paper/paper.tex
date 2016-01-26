@@ -1,6 +1,6 @@
 \documentclass{sigplanconf}
 \usepackage[1stsubmission]{oopsla2016}
-\usepackage{todo}
+\usepackage{todonotes}
 \usepackage[hidelinks]{hyperref}
 \usepackage{languages}
 
@@ -122,15 +122,27 @@ async.Bind(fetchAsync(url), fun html ->
 
 \section{Related Work}
 
-We follow a similar approach with scala-virtualized~\cite{moors_scalavirtualized_2012} although we perform our translation via a separate rewriting tool.
+We follow a similar approach with scala-virtualized
+\cite{moors_scalavirtualized_2012} although we perform our translation via a
+separate rewriting tool.
 
-Implementing First-Class Polymorphic Delimited Continuations by a Type-Directed Selective CPS-Transform~\cite{rompf_shift_2009}
+Implementing First-Class Polymorphic Delimited Continuations by a Type
+Directed Selective CPS-Transform~\cite{rompf_shift_2009}
 
 Vazou et al, in From Monads to Effects and 
 Back~\cite{vazou_koka_2016} rely on the theory of Representing 
 Monads~\cite{filinski_representing_1994} and represent everything
 as the continuation monad. We follow a similar approach based on the 
-translation of Dart as described in ~\cite{meijer_dar_2015}. Lightweight Monadic Programming~\cite{swamy_lightweight_2011} follows a type driven approach. Tagless Interpreters~\cite{carette_finally_2007}
+translation of Dart as described in ~\cite{meijer_dar_2015}. Lightweight
+Monadic Programming~\cite{swamy_lightweight_2011} follows a type driven
+approach. Tagless Interpreters~\cite{carette_finally_2007}
+
+In~\cite{rompf_shift_2009}, Tiark et al, provide a selective, type-driven 
+translation to add delimited continuations adopting the reset/shift static 
+variant. Our work provides certain variants of embedded DSLs (including 
+transfer of control) but not in a generic way as provided with a framework
+like that. For control operations like yield we rely on a naive implementation 
+via exceptions for exposition.
 
 \section{Future Work}
 
@@ -143,7 +155,6 @@ handlers~\cite{cartwright_extensible_1994}. One interesting research
 question is to study the differences between these three and identify
 early on, if we can borrow one technique and apply it to our
 design. 
-
 
 \bibliographystyle{abbrv}
 \bibliography{paper}
