@@ -1,5 +1,5 @@
 package recaf.core;
 
 public final class Ref<X> {
-	public X x ;
+	public X value ;
 }

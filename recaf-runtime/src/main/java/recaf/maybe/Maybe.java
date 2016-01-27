@@ -13,10 +13,10 @@ public class Maybe<R> extends AbstractJavaCPS<R> {
 
 	public Optional<R> Method(SD<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();
-		body.accept(r -> { ref.x = Optional.of(r); }, 
-				() -> {  ref.x = Optional.empty(); }, 
+		body.accept(r -> { ref.value = Optional.of(r); }, 
+				() -> {  ref.value = Optional.empty(); }, 
 				exc -> { throw new RuntimeException(exc); });
-		return ref.x;
+		return ref.value;
 	}
 	
 	public <U> SD<R> Maybe(ED<Optional<U>> opt, Function<U, SD<R>> body) {

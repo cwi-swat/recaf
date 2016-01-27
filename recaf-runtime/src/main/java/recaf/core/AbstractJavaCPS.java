@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 public class AbstractJavaCPS<R> {
 	protected R typePreserving(SD<R> body) {
 		Ref<R> result = new Ref<>();
-		body.accept(r -> { result.x = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
-		return result.x;
+		body.accept(r -> { result.value = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
+		return result.value;
 	}
 	
 	public <T> ED<T> Exp(Supplier<T> e) {

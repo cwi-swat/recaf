@@ -52,4 +52,12 @@ public class StreamController<T> {
 		throw new UnsupportedOperationException();
 	}
 
+	public void add(T t) {
+		throw new UnsupportedOperationException();		
+	}
+
+	public Future<T> addStream(Stream<T> r) {
+		throw new UnsupportedOperationException();
+	}
+
 }
