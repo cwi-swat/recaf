@@ -17,6 +17,8 @@ import java.util.function.BiConsumer;
 //  exc.accept(err);
 //}
 //}
+
+// (T -> Unit) -> (ex -> Unit) -> Unit 
 public interface ED<T> extends BiConsumer<K<T>, K<Throwable>> {
 	
 }

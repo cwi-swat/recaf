@@ -1,5 +1,6 @@
 package recaf.asynciter;
 
+import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,16 +32,16 @@ public class AsyncIterExtension<R> {
 		}
 	}
 
-	@SuppressWarnings("serial")
-	private static final class Yield extends RuntimeException {
-		final K0 k;
-		final Object value;
-
-		public Yield(Object value, K0 k) {
-			this.value = value;
-			this.k = k;
-		}
-	}
+//	@SuppressWarnings("serial")
+//	private static final class Yield extends RuntimeException {
+//		final K0 k;
+//		final Object value;
+//
+//		public Yield(Object value, K0 k) {
+//			this.value = value;
+//			this.k = k;
+//		}
+//	}
 
 	public Cont<R, ?> Break() {
 		return null;
@@ -62,18 +63,18 @@ public class AsyncIterExtension<R> {
 	 * int x = 3; s ==> Let(Exp(3), x -> [[s]])
 	 * S Let(E exp, Function<E, S> body);
 	 * */
-//	public <U> Cont<R> Decl(Cont<U> exp, Function<U, Cont<R>> body) {
-//		return Cont.fromSD((rho, sigma, err) -> exp.expressionDenotation
-//				.accept(r -> body.apply(r).statementDenotation.accept(rho, sigma, err), err));
-//	}
-//
+	public <U, Enc> Cont<R, Enc> Decl(Cont<U, Enc> exp, Function<U, Cont<R, Enc>> body) {
+		return Cont.fromSD((xi, rho, sigma, err) -> exp.expressionDenotation
+				.accept(xi, r -> body.apply(r).statementDenotation.accept(xi, rho, sigma, err), err));
+	}
+
 //	public Cont<R> DoWhile(Cont<R> s, Cont<Boolean> e) {
 //		return Seq2(s, While(e, s));
 //	}
 //
-//	public Cont<R> Empty() {
-//		return Cont.fromSD((rho, sigma, err) -> sigma.call());
-//	}
+	public <Enc> Cont<R, Enc> Empty() {
+		return Cont.fromSD((xi, rho, sigma, err) -> sigma.call());
+	}
 
 	public <T> Cont<T, ?> Exp(Supplier<T> e) {
 		return Cont.fromED((xi, k, err) -> {
@@ -92,32 +93,32 @@ public class AsyncIterExtension<R> {
 		return Cont.fromSD((xi, rho, sigma, err) -> e.expressionDenotation.accept(xi, ignored -> sigma.call(), err));
 	}
 
-//	public <U> Cont<R> For(Cont<Iterable<U>> coll, Function<U, Cont<R>> body) {
-//		return Cont.fromSD((rho, sigma, err) -> coll.expressionDenotation.accept(iterable -> {
+//	public <U, Enc> Cont<R, Enc> For(Cont<Iterable<U>, Enc> coll, Function<U, Cont<R, Enc>> body) {
+//		return Cont.fromSD((xi, rho, sigma, err) -> coll.expressionDenotation.accept(xi, iterable -> {
 //			Iterator<U> iter = iterable.iterator();
-//			While(Cont.fromED((s, err2) -> s.accept(iter.hasNext())),
-//					Decl(Cont.fromED((s, err2) -> s.accept(iter.next())), body)).statementDenotation.accept(rho, sigma,
-//							err);
+//			While(Cont.fromED((xi, s, err2) -> s.accept(iter.hasNext())),
+//					Decl(Cont.fromED((xi, s, err2) -> s.accept(iter.next())), body)).statementDenotation.accept(xi, rho,
+//							sigma, err);
 //		} , err));
 //	}
-//
-//	public Cont<R> If(Cont<Boolean> e, Cont<R> s) {
-//		return If(e, s, Empty());
-//	}
-//
-//	public Cont<R> If(Cont<Boolean> e, Cont<R> s1, Cont<R> s2) {
-//		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(x -> {
-//			if (x) {
-//				s1.statementDenotation.accept(rho, sigma, err);
-//			} else {
-//				s2.statementDenotation.accept(rho, sigma, err);
-//			}
-//		} , err));
-//	}
-//
-//	public Cont<R> Labeled(String label, Cont<R> s) {
-//		return null;
-//	}
+
+	public <Enc> Cont<R, Enc> If(Cont<Boolean, Enc> e, Cont<R, Enc> s) {
+		return If(e, s, Empty());
+	}
+
+	public <Enc> Cont<R, Enc> If(Cont<Boolean, Enc> e, Cont<R, Enc> s1, Cont<R, Enc> s2) {
+		return Cont.fromSD((xi, rho, sigma, err) -> e.expressionDenotation.accept(xi, x -> {
+			if (x) {
+				s1.statementDenotation.accept(xi, rho, sigma, err);
+			} else {
+				s2.statementDenotation.accept(xi, rho, sigma, err);
+			}
+		} , err));
+	}
+
+	public <Enc> Cont<R, Enc> Labeled(String label, Cont<R, Enc> s) {
+		return null;
+	}
 	
 	public Stream<R> Method(Cont<R, ?> body) {
 		
@@ -206,17 +207,17 @@ public class AsyncIterExtension<R> {
 //		throw new AssertionError("Cannot return value from coroutine.");
 //	}
 //
-//	@SafeVarargs
-//	public final Cont<R> Seq(Cont<R>... ss) {
-//		assert ss.length > 0;
-//		return Stream.of(ss).reduce(this::Seq2).get();
-//	}
-//
-//	protected Cont<R> Seq2(Cont<R> s1, Cont<R> s2) {
-//		return Cont.fromSD((rho, sigma, err) -> s1.statementDenotation.accept(rho,
-//				() -> s2.statementDenotation.accept(rho, sigma, err), err));
-//	}
-//
+	@SafeVarargs
+	public final <Enc> Cont<R,Enc> Seq(Cont<R,Enc>... ss) {
+		assert ss.length > 0;
+		return java.util.stream.Stream.of(ss).reduce(this::Seq2).get();
+	}
+
+	protected <Enc> Cont<R, Enc> Seq2(Cont<R, Enc> s1, Cont<R, Enc> s2) {
+		return Cont.fromSD((xi, rho, sigma, err) -> s1.statementDenotation.accept(xi, rho,
+				() -> s2.statementDenotation.accept(xi, rho, sigma, err), err));
+	}
+
 //	public <T extends Throwable> Cont<R> Throw(Cont<T> e) {
 //		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(r -> err.accept(r), err));
 //	}
@@ -244,17 +245,17 @@ public class AsyncIterExtension<R> {
 //			});
 //		});
 //	}
-//
-//	public Cont<R> While(Cont<Boolean> e, Cont<R> s) {
-//		return Cont.fromSD((rho, sigma, err) -> {
-//			new K0() {
-//				@Override
-//				public void call() {
-//					If(e, Seq2(s, Cont.<R> fromSD((a, b, c) -> call()))).statementDenotation.accept(rho, sigma, err);
-//				}
-//			}.call();
-//		});
-//	}
+
+	public <Enc> Cont<R, Enc> While(Cont<Boolean, Enc> e, Cont<R, Enc> s) {
+		return Cont.fromSD((xi, rho, sigma, err) -> {
+			new K0() {
+				@Override
+				public void call() {
+					If(e, Seq2(s, Cont.<R, Enc>fromSD((a, b, c, d) -> call()))).statementDenotation.accept(xi, rho, sigma, err);
+				}
+			}.call();
+		});
+	}
 //
 //	public <U> Cont<R> Yield(Cont<U> exp) {
 //		return Cont.fromSD((rho, sigma, err) -> {

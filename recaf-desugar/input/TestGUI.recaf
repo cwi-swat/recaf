@@ -10,7 +10,7 @@ public class TestGUI {
   static Void println(Object o) {
     System.out.println(o);
     return null;
-  }
+  } 
   
   Void h2(recaf GUI alg, String title) {
     tag ("h2") {
