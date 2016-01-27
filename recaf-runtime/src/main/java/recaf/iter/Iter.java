@@ -70,7 +70,7 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 		throw new AssertionError("Cannot return value from coroutine.");
 	}
 
-	public <U> SD<R> Yield(ED<U> exp) {
+	public SD<R> Yield(ED<R> exp) {
 		return (rho, sigma, err) -> {
 			exp.accept(v -> {
 				throw new Yield(v, sigma);
@@ -78,7 +78,7 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 		};
 	}
 
-	public <U> SD<R> YieldFrom(ED<Iterable<U>> exp) {
+	public SD<R> YieldFrom(ED<Iterable<R>> exp) {
 		return For(exp, e -> Yield(Exp(() -> e)));
 	}
 }
