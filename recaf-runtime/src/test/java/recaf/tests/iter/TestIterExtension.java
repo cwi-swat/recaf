@@ -6,7 +6,7 @@ import org.junit.Test;
 import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
-public class IterExtensionTests extends BaseTest {
+public class TestIterExtension extends BaseTest {
 
 	@Test
 	public void TestIterStreamLibrary() throws CompiletimeException, RuntimeException {

@@ -6,7 +6,7 @@ import org.junit.Test;
 import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
-public class AsyncExtensionTests extends BaseTest {
+public class TestAsyncExtension extends BaseTest {
 
 	@Test
 	public void TestAsyncNoAwait() throws CompiletimeException, RuntimeException {
