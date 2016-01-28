@@ -119,10 +119,13 @@ public class BaseTest {
                 p.destroy();
         }
     }
+    
+    public void compile(String test) throws CompiletimeException {
+    	runCompiler(test + ".java");
+    }
 
     public String compileAndRun(String test) throws CompiletimeException, RuntimeException{
-    	runCompiler(test + ".java");
-    	
+    	compile(test);
     	try {
     		return runJVM(test);
 		} catch (IOException | InterruptedException e) {

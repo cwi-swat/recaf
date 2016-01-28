@@ -10,6 +10,8 @@ public class TestIterExtension extends BaseTest {
 
 	@Test
 	public void TestIterStreamLibrary() throws CompiletimeException, RuntimeException {
+		compile("PStream");
+
 		String output = compileAndRun("TestPullStreams");
 		Assert.assertEquals("22", output);	
 	}
