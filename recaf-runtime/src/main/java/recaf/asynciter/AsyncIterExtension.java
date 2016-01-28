@@ -32,22 +32,6 @@ public class AsyncIterExtension<R> {
 		}
 	}
 
-	public Cont<R, ?> Break() {
-		return null;
-	}
-
-	public Cont<R, ?> Break(String label) {
-		return null;
-	}
-
-	public Cont<R, ?> Continue() {
-		return null;
-	}
-
-	public Cont<R, ?> Continue(String label) {
-		return null;
-	}
-
 	/* HOAS for let expressions
 	 * int x = 3; s ==> Let(Exp(3), x -> [[s]])
 	 * S Let(E exp, Function<E, S> body);
@@ -103,10 +87,6 @@ public class AsyncIterExtension<R> {
 				s2.statementDenotation.accept(xi, rho, sigma, err);
 			}
 		} , err));
-	}
-
-	public <Enc> Cont<R, Enc> Labeled(String label, Cont<R, Enc> s) {
-		return null;
 	}
 
 	// This should be appeared spliced-in per method declaration, right?
@@ -204,7 +184,7 @@ public class AsyncIterExtension<R> {
 						xi.resume();
 						result.value.add(r);
 						sigma.call();
-					});
+					}); 
 				}
 				else {
 					result.value.add(r);
@@ -255,14 +235,38 @@ public class AsyncIterExtension<R> {
 		} , err));
 	}
 	
-	public <T, Enc> Cont<R, Enc> AwaitFrom(Cont<Stream<T>, Enc> e, Function<T, Cont<R, Enc>> body) {
-//		return Cont.fromSD((xi, rho, sigma, err) -> e.expressionDenotation.accept(xi, f -> { 
-//			xi.pause();
-//			Ref<StreamSubscription> inner_xi = new Ref(); 
-//					
-//			f.listen(v -> Cont.fromSD(()));
-//		}, err));
-		throw new UnsupportedOperationException();		
+	public <T, Enc> Cont<R, Enc> AwaitFor(Cont<Stream<T>, Enc> e, Cont<R, Enc> s) {
+		return Cont.fromSD((xi, rho, sigma, err) -> e.expressionDenotation.accept(xi, r -> { 
+			xi.pause();
+			
+			Ref<StreamSubscription> inner_xi = new Ref<StreamSubscription>(); 
+					
+			inner_xi.value = r.listen(v -> s.statementDenotation.accept(inner_xi.value, 
+					(ignored) -> {
+						inner_xi.value.close();
+						xi.resume();
+						rho.accept(null);
+					}, sigma, err), (exc) -> {}, () -> {});
+		} , err));
+	}
+	
+	public Cont<R, ?> Break() {
+		return null;
 	}
 
+	public Cont<R, ?> Break(String label) {
+		return null;
+	}
+
+	public Cont<R, ?> Continue() {
+		return null;
+	}
+
+	public Cont<R, ?> Continue(String label) {
+		return null;
+	}
+	
+	public <Enc> Cont<R, Enc> Labeled(String label, Cont<R, Enc> s) {
+		return null;
+	}
 }
