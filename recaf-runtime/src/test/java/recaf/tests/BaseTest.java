@@ -74,7 +74,7 @@ public class BaseTest {
 
             listArgs.add(jdk);
             listArgs.add("-cp");
-            listArgs.add(":target/classes/");
+            listArgs.add(SRC_TEST_RESOURCES + ":target/classes/");
             listArgs.add(test);
 
             String[] res = new String[listArgs.size()];
