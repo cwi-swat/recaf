@@ -36,7 +36,7 @@ public class BaseTest {
     }
 
     protected void runCompiler(String pathname) throws CompiletimeException {
-        String[] compileOptions = new String[]{  };
+        String[] compileOptions = new String[]{ "-cp", "src/main/java/:"+SRC_TEST_RESOURCES  };
 
         pathname = SRC_TEST_RESOURCES + pathname;
 
@@ -78,9 +78,7 @@ public class BaseTest {
             listArgs.add(test);
 
             String[] res = new String[listArgs.size()];
-            
-            System.out.println("Running with command: " + listArgs);
-            
+                        
             // Execute java runtime.
             p = r.exec(listArgs.toArray(res));
             
