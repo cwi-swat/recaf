@@ -74,14 +74,16 @@ public class BaseTest {
 
             listArgs.add(jdk);
             listArgs.add("-cp");
-            listArgs.add(SRC_TEST_RESOURCES + ":target/classes/");
+            listArgs.add(":target/classes/");
             listArgs.add(test);
 
             String[] res = new String[listArgs.size()];
-
+            
+            System.out.println("Running with command: " + listArgs);
+            
             // Execute java runtime.
             p = r.exec(listArgs.toArray(res));
-
+            
             // Hold the output in a string.
             StringWriter sw = new StringWriter();
             PrintWriter accumulator = new PrintWriter(sw);
