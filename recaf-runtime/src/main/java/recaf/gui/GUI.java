@@ -11,13 +11,13 @@ public abstract class GUI extends AbstractJavaCPS<Void> {
 		return "id" + idCount++;
 	}
 	
-	public Void Method(SD<Void> body) {
+	public Void Method(Cont<Void> body) {
 		return typePreserving(body);
 	}
 	
-	public abstract SD<Void> Tag(ED<String> t, SD<Void> body);
+	public abstract Cont<Void> Tag(Cont<String> t, Cont<Void> body);
 
-	public abstract SD<Void> Button(ED<String> label, SD<Void> body);
+	public abstract Cont<Void> Button(Cont<String> label, Cont<Void> body);
 
-	public abstract SD<Void> Echo(ED<String> exp);	
+	public abstract Cont<Void> Echo(Cont<String> exp);	
 }

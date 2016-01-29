@@ -33,39 +33,39 @@ public class RenderGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Tag(ED<String> t, SD<Void> body) {
-		return (rho, sigma, err) -> {
-			t.accept(tag -> {
+	public Cont<Void> Tag(Cont<String> t, Cont<Void> body) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			t.expressionDenotation.accept(tag -> {
 				output("<" + tag + ">\n");
 				indent();
-				body.accept(rho, () -> {
+				body.statementDenotation.accept(rho, () -> {
 					dedent();
 					output("</" + tag + ">\n");
 					sigma.call();
 				}, err);
 			}, err);
-		};
+		});
 	}
 	
 	@Override
-	public SD<Void> Button(ED<String> label, SD<Void> body) {
+	public Cont<Void> Button(Cont<String> label, Cont<Void> body) {
 		// in render, we don't execute the body.
-		return (rho, sigma, err) -> {
-			label.accept(l -> {
+		return Cont.fromSD((rho, sigma, err) -> {
+			label.expressionDenotation.accept(l -> {
 				output("<button id=\"" + nextId() + "\">" + escapeHTML(l) + "</button>\n");
 				sigma.call();
 			}, err);
-		};
+		});
 	}
 	
 	@Override
-	public SD<Void> Echo(ED<String> exp) {
-		return (rho, sigma, err) -> {
-			exp.accept(txt -> {
+	public Cont<Void> Echo(Cont<String> exp) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			exp.expressionDenotation.accept(txt -> {
 				output(escapeHTML(txt));
 				sigma.call();
 			}, err);
-		};
+		});
 	}
 	
 	private static String escapeHTML(String s) {

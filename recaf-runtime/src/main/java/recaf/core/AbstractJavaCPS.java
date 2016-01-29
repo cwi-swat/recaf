@@ -5,148 +5,166 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class AbstractJavaCPS<R> {
-	protected R typePreserving(SD<R> body) {
+public class AbstractJavaCPS<R> implements AbstractJava<R> {
+	
+	public static class Cont<T> {
+
+		public static <R> Cont<R> fromED(ED<R> expressionDenotation) {
+			return new Cont<R>(expressionDenotation, null);
+		}
+		public static <R> Cont<R> fromSD(SD<R> statementDenotation) {
+			return new Cont<R>(null, statementDenotation);
+		}
+
+		public ED<T> expressionDenotation;
+
+		public SD<T> statementDenotation;
+
+		public Cont(ED<T> expressionDenotation, SD<T> statementDenotation) {
+			super();
+			this.expressionDenotation = expressionDenotation;
+			this.statementDenotation = statementDenotation;
+		}
+	}
+
+	protected R typePreserving(Cont<R> body) {
 		Ref<R> result = new Ref<>();
-		body.accept(r -> { result.value = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
+		body.statementDenotation.accept(r -> { result.value = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });
 		return result.value;
 	}
 	
-	public <T> ED<T> Exp(Supplier<T> e) {
-		return (k, err) -> {
+	public <T> Cont<T> Exp(Supplier<T> e) {
+		return Cont.fromED((k, err) -> {
 			T t = null;
 			try {
 				t = e.get();
-			}
-			catch (Throwable ex) {
+			} catch (Throwable ex) {
 				err.accept(ex);
 				return;
 			}
 			k.accept(t);
-		};
+		});
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
-		return (rho, sigma, err) -> {
-			body.accept(rho, sigma, (Throwable exc) -> {
-				if (type.isInstance(exc)) {
-					handle.apply((T) exc).accept(rho, sigma, err);
-				}
-				else {
-					err.accept(exc);
-				}
-			});
-		};
+	public Cont<R> Empty() {
+		return Cont.fromSD((rho, sigma, err) -> sigma.call());
 	}
 	
-	public SD<R> TryFinally(SD<R> body, SD<R> fin) {
-		return (rho, sigma, err) -> {
-			body.accept(r -> {
-				fin.accept(rho, () -> rho.accept(r), err);
-			}, () -> {
-				fin.accept(rho, sigma, err);
-			}, (Throwable exc) -> {
-				fin.accept(rho /* todo: exception here too */, () -> err.accept(exc), err);
-			});
-		};
-	}
-	
-	public SD<R> Empty() {
-		return (rho, sigma, err) -> sigma.call();
-	}
-	
-	public SD<R> If(ED<Boolean> e, SD<R> s) {
+	public Cont<R> If(Cont<Boolean> e, Cont<R> s) {
 		return If(e, s, Empty());
 	}
-	
-	public SD<R> If(ED<Boolean> e, SD<R> s1, SD<R> s2) {
-		return (rho, sigma, err) -> e.accept(x -> {
+
+	public Cont<R> If(Cont<Boolean> e, Cont<R> s1, Cont<R> s2) {
+		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(x -> {
 			if (x) {
-				s1.accept(rho, sigma, err);
+				s1.statementDenotation.accept(rho, sigma, err);
+			} else {
+				s2.statementDenotation.accept(rho, sigma, err);
 			}
-			else {
-				s2.accept(rho, sigma, err);
-			}
-		}, err); 
+		} , err));
+	}
+
+	public Cont<R> Labeled(String label, Cont<R> s) {
+		return null;
 	}
 		
-	public SD<R> While(ED<Boolean> e, SD<R> s) {
-		// break: call sigma,
-		// continue go back to call.
-		return (rho, sigma, err) -> {
+	public Cont<R> While(Cont<Boolean> e, Cont<R> s) {
+		return Cont.fromSD((rho, sigma, err) -> {
 			new K0() {
+				@Override
 				public void call() {
-					If(e, Seq2(s, (a, b, c) -> call())).accept(rho, sigma, err);;
+					If(e, Seq2(s, Cont.<R> fromSD((a, b, c) -> call()))).statementDenotation.accept(rho, sigma, err);
 				}
 			}.call();
-		};
+		});
 	}
-
-	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
+	
+	public Cont<R> DoWhile(Cont<R> s, Cont<Boolean> e) {
 		return Seq2(s, While(e, s));
 	}
-	
-	public SD<R> Labeled(String label, SD<R> s) {
-		return null;
-	}
-	
-	public SD<R> Break(String label) {
+
+	public Cont<R> Break() {
 		return null;
 	}
 
-	public SD<R> Continue(String label) {
+	public Cont<R> Break(String label) {
 		return null;
 	}
 
-	public SD<R> Break() {
+	public Cont<R> Continue() {
 		return null;
 	}
 
-	public SD<R> Continue() {
+	public Cont<R> Continue(String label) {
 		return null;
 	}
 
-	protected SD<R> Seq2(SD<R> s1, SD<R> s2) {
-		return (rho, sigma, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, err), err);
+	public Cont<R> Return(Cont<R> e) {
+		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(rho, err));
 	}
 	
+	public Cont<R> Return() {
+		return Cont.fromSD((rho, sigma, err) -> rho.accept(null));
+	}
+
 	@SafeVarargs
-	public final SD<R> Seq(SD<R>... ss) {
+	public final Cont<R> Seq(Cont<R>... ss) {
 		assert ss.length > 0;
 		return Stream.of(ss).reduce(this::Seq2).get();
 	}
-	
-	public SD<R> Return(ED<R> e) {
-		return (rho, sigma, err) -> e.accept(rho, err);
-	}
-	
-	public SD<R> Return() {
-		return (rho, sigma, err) -> rho.accept(null);
+
+	protected Cont<R> Seq2(Cont<R> s1, Cont<R> s2) {
+		return Cont.fromSD((rho, sigma, err) -> s1.statementDenotation.accept(rho,
+				() -> s2.statementDenotation.accept(rho, sigma, err), err));
 	}
 
-	public <T extends Throwable> SD<R> Throw(ED<T> e) {
-		return (rho, sigma, err) -> e.accept(r -> err.accept(r), err);
+	public <T extends Throwable> Cont<R> Throw(Cont<T> e) {
+		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(r -> err.accept(r), err));
 	}
 
-	public <U> SD<R> ExpStat(ED<U> e) {
-		return (rho, sigma, err) -> e.accept(ignored -> sigma.call(), err);
+	public <T extends Throwable> Cont<R> TryCatch(Cont<R> body, Class<T> type, Function<T, Cont<R>> handle) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			body.statementDenotation.accept(rho, sigma, (Throwable exc) -> {
+				if (type.isInstance(exc)) {
+					handle.apply((T) exc).statementDenotation.accept(rho, sigma, err);
+				} else {
+					err.accept(exc);
+				}
+			});
+		});
+	}
+
+	public Cont<R> TryFinally(Cont<R> body, SD<R> fin) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			body.statementDenotation.accept(r -> {
+				fin.accept(rho, () -> rho.accept(r), err);
+			} , () -> {
+				fin.accept(rho, sigma, err);
+			} , (Throwable exc) -> {
+				fin.accept(rho /* todo: exception here too */, () -> err.accept(exc), err);
+			});
+		});
+	}
+
+	public <U> Cont<R> ExpStat(Cont<U> e) {
+		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(ignored -> sigma.call(), err));
 	}
 	
-	// HOAS
-	// int x = 3; s ==> Let(Exp(3), x -> [[s]])
-	// S Let(E exp, Function<E, S> body);
-	public <U> SD<R> Decl(ED<U> exp, Function<U, SD<R>> body) {
-		return (rho, sigma, err) -> exp.accept(r -> body.apply(r).accept(rho, sigma, err), err);
+	/* HOAS for let expressions
+	 * int x = 3; s ==> Let(Exp(3), x -> [[s]])
+	 * S Let(E exp, Function<E, S> body);
+	 * */
+	public <U> Cont<R> Decl(Cont<U> exp, Function<U, Cont<R>> body) {
+		return Cont.fromSD((rho, sigma, err) -> exp.expressionDenotation
+				.accept(r -> body.apply(r).statementDenotation.accept(rho, sigma, err), err));
 	}
-	
-	public <U> SD<R> For(ED<Iterable<U>> coll, Function<U, SD<R>> body) {
-		return (rho, sigma, err) -> coll.accept(iterable -> {
+
+	public <U> Cont<R> For(Cont<Iterable<U>> coll, Function<U, Cont<R>> body) {
+		return Cont.fromSD((rho, sigma, err) -> coll.expressionDenotation.accept(iterable -> {
 			Iterator<U> iter = iterable.iterator();
-			While((s, err2) -> s.accept(iter.hasNext()), 
-					Decl((s, err2) -> s.accept(iter.next()), body))
-			.accept(rho, sigma, err);
-		}, err);
+			While(Cont.fromED((s, err2) -> s.accept(iter.hasNext())),
+					Decl(Cont.fromED((s, err2) -> s.accept(iter.next())), body)).statementDenotation.accept(rho, sigma,
+							err);
+		} , err));
 	}
-	
 }

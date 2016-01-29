@@ -4,7 +4,7 @@ import recaf.core.ED;
 import recaf.core.SD;
 
 public class Unless<R> extends CFlow<R> {
-	public SD<R> Unless(ED<Boolean> cond, SD<R> body) {
-		return If((k, err) -> cond.accept(b -> k.accept(!b), err), body);
+	public Cont<R> Unless(Cont<Boolean> cond, Cont<R> body) {
+		return If(Cont.fromED((k, err) -> cond.expressionDenotation.accept(b -> k.accept(!b), err)), body);
 	}
 }

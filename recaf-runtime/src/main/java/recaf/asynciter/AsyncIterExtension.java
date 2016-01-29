@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import recaf.core.Ref;
 
 public class AsyncIterExtension<R> {
-
 	
 	static class Cont<T, EnclosingT> {
 

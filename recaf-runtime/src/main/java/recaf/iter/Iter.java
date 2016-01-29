@@ -20,13 +20,13 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 		}
 	}
 
-	public Iterable<R> Method(SD<R> body) {
+	public Iterable<R> Method(Cont<R> body) {
 		return new Iterable<R>() {
 
 			boolean exhausted = false;
 			R current = null;
 			K0 k = () -> {
-				body.accept(r -> {
+				body.statementDenotation.accept(r -> {
 					exhausted = true;
 				} , () -> {
 					exhausted = true;
@@ -65,20 +65,19 @@ public class Iter<R> extends AbstractJavaCPS<R> {
 		};
 	}
 
-	@Override
-	public SD<R> Return(ED<R> e) {
+	public Cont<R> Return(Cont<R> e) {
 		throw new AssertionError("Cannot return value from coroutine.");
 	}
 
-	public SD<R> Yield(ED<R> exp) {
-		return (rho, sigma, err) -> {
-			exp.accept(v -> {
+	public <U> Cont<R> Yield(Cont<U> exp) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			exp.expressionDenotation.accept(v -> {
 				throw new Yield(v, sigma);
 			} , err);
-		};
+		});
 	}
 
-	public SD<R> YieldFrom(ED<Iterable<R>> exp) {
+	public <U> Cont<R> YieldFrom(Cont<Iterable<U>> exp) {
 		return For(exp, e -> Yield(Exp(() -> e)));
 	}
 }

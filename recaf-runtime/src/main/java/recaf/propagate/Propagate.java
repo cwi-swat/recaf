@@ -13,26 +13,26 @@ public class Propagate<T, R> extends AbstractJavaCPS<R> {
 	// but works across ordinary methods...
 	private static final ArrayDeque<Object> stack = new ArrayDeque<>();
 	
-	public R Method(SD<R> body) {
+	public R Method(Cont<R> body) {
 		return typePreserving(body);
 	}
 
-	public SD<R> Local(ED<T> exp, SD<R> body) {
-		return (rho, sigma, err) -> {
-			exp.accept(t -> {
+	public Cont<R> Local(Cont<T> exp, Cont<R> body) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			exp.expressionDenotation.accept(t -> {
 				stack.push(t);
-				body.accept(r -> { stack.pop(); rho.accept(r);}, 
+				body.statementDenotation.accept(r -> { stack.pop(); rho.accept(r);}, 
 						() -> { stack.pop(); sigma.call(); }, 
 						e -> { stack.pop(); err.accept(e); });
 			}, err);
-		};
+		});
 	}
 
 	@SuppressWarnings("unchecked")
-	public SD<R> Ask(Function<T, SD<R>> body) {
-		return (rho, sigma, err) -> {
-			body.apply((T) stack.peek()).accept(rho, sigma, err);
-		};
+	public Cont<R> Ask(Function<T, Cont<R>> body) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			body.apply((T) stack.peek()).statementDenotation.accept(rho, sigma, err);
+		});
 	}
 	
 }

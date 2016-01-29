@@ -9,15 +9,15 @@ import recaf.core.SD;
 
 public class VisitExtension<R> extends AbstractJavaCPS<R> {
 
-	public R Method(SD<R> body) {
+	public R Method(Cont<R> body) {
 		return null;
 	}
 	
-	public <T> SD<R> Visit(ED<T> exp, List<SD<R>> cases) {
+	public <T> Cont<R> Visit(Cont<T> exp, List<Cont<R>> cases) {
 		return null;
 	}
 	
-	public <T> SD<R> When(Function<T, SD<R>> body) {
+	public <T> Cont<R> When(Function<T, Cont<R>> body) {
 		return null;
 	}
 	

@@ -11,23 +11,23 @@ import recaf.core.SD;
 
 public class Maybe<R> extends AbstractJavaCPS<R> {
 
-	public Optional<R> Method(SD<R> body) {
+	public Optional<R> Method(Cont<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();
-		body.accept(r -> { ref.value = Optional.of(r); }, 
+		body.statementDenotation.accept(r -> { ref.value = Optional.of(r); }, 
 				() -> {  ref.value = Optional.empty(); }, 
 				exc -> { throw new RuntimeException(exc); });
 		return ref.value;
 	}
 	
-	public <U> SD<R> Maybe(ED<Optional<U>> opt, Function<U, SD<R>> body) {
-		return (rho, sigma, err) -> opt.accept(v -> {
+	public <U> Cont<R> Maybe(Cont<Optional<U>> opt, Function<U, Cont<R>> body) {
+		return Cont.fromSD((rho, sigma, err) -> opt.expressionDenotation.accept(v -> {
 			if (v.isPresent()) {
-				body.apply(v.get()).accept(rho, sigma, err);
+				body.apply(v.get()).statementDenotation.accept(rho, sigma, err);
 			}
 			else {
 				sigma.call();
 			}
-		}, err);
+		}, err));
 	}
 	
 }

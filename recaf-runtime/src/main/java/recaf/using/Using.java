@@ -9,14 +9,14 @@ import recaf.core.SD;
 
 public class Using<R> extends AbstractJavaCPS<R> {
 	
-	public R Method(SD<R> body) {
+	public R Method(Cont<R> body) {
 		return typePreserving(body);
 	}
 	
-	public <U extends AutoCloseable> SD<R> Using(ED<U> resource, Function<U, SD<R>> body) {
-		return (rho, sigma, err) -> {
-			resource.accept(t -> {
-				body.apply(t).accept(r -> {
+	public <U extends AutoCloseable> Cont<R> Using(Cont<U> resource, Function<U, Cont<R>> body) {
+		return Cont.fromSD((rho, sigma, err) -> {
+			resource.expressionDenotation.accept(t -> {
+				body.apply(t).statementDenotation.accept(r -> {
 					try {
 						t.close();
 					} catch (Exception e) {
@@ -39,6 +39,6 @@ public class Using<R> extends AbstractJavaCPS<R> {
 					err.accept(exc);
 				});
 			}, err);
-		};
+		});
 	}
 }

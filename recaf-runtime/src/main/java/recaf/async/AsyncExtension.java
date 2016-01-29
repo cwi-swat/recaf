@@ -10,27 +10,27 @@ import recaf.core.SD;
 
 public class AsyncExtension<R> extends AbstractJavaCPS<R> {
 
-	public Future<R> Method(SD<R> body) {
+	public Future<R> Method(Cont<R> body) {
 		CompletableFuture<R> promise = new CompletableFuture<R>();
 		
 		CompletableFuture.supplyAsync(() -> {
-			body.accept(r -> promise.complete(r), () -> promise.complete(null), ex -> promise.completeExceptionally(ex));
+			body.statementDenotation.accept(r -> promise.complete(r), () -> promise.complete(null), ex -> promise.completeExceptionally(ex));
 			return null;
 		});	
 		
 		return promise;
 	}
 	
-	public <T> SD<R> Await(ED<CompletableFuture<T>> e, Function<T, SD<R>> body) {
-		return (rho, sigma, err) -> e.accept(f -> {
+	public <T> Cont<R> Await(Cont<CompletableFuture<T>> e, Function<T, Cont<R>> body) {
+		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {
 					err.accept(ex);
 				}
 				else {
-					body.apply(a).accept(rho,  sigma,  err);
+					body.apply(a).statementDenotation.accept(rho,  sigma,  err);
 				}
 			});
-		}, err);
+		}, err));
 	}
 }

@@ -11,26 +11,26 @@ public class HandleGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Tag(ED<String> t, SD<Void> body) {
+	public Cont<Void> Tag(Cont<String> t, Cont<Void> body) {
 		return body;
 	}
 	
 	@Override
-	public SD<Void> Button(ED<String> label, SD<Void> body) {
+	public Cont<Void> Button(Cont<String> label, Cont<Void> body) {
 		// in handle, we execute the body if the current button was clickd.
-		return (rho, sigma, err) -> {
+		return Cont.fromSD((rho, sigma, err) -> {
 			String id = nextId();
 			if (buttonClicked.equals(id)) {
-				body.accept(rho, sigma, err);
+				body.statementDenotation.accept(rho, sigma, err);
 			}
 			else {
 				sigma.call();
 			}
-		};
+		});
 	}
 	
 	@Override
-	public SD<Void> Echo(ED<String> exp) {
+	public Cont<Void> Echo(Cont<String> exp) {
 		return Empty();
 	}
 	

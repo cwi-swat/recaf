@@ -9,7 +9,7 @@ import recaf.core.SD;
 
 public class ParFor<R> extends AbstractJavaCPS<R> {
 	
-	public R Method(SD<R> body) {
+	public R Method(Cont<R> body) {
 		return typePreserving(body);
 	}
 
