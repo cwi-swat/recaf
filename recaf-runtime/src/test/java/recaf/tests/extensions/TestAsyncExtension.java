@@ -1,4 +1,4 @@
-package recaf.tests.async;
+package recaf.tests.extensions;
 
 import org.junit.Assert;
 import org.junit.Test;

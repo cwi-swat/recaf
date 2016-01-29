@@ -1,4 +1,4 @@
-package recaf.asynciter;
+package recaf.stream;
 
 import java.util.function.Consumer;
 

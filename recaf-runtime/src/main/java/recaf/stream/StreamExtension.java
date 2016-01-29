@@ -1,4 +1,4 @@
-package recaf.asynciter;
+package recaf.stream;
 
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 
 import recaf.core.Ref;
 
-public class AsyncIterExtension<R> {
+public class StreamExtension<R> {
 	
-	static class Cont<T, EnclosingT> {
+	public static class Cont<T, EnclosingT> {
 
 		public static <R, EnclosingT> Cont<R, EnclosingT> fromED(ED<R, EnclosingT> expressionDenotation) {
 			return new Cont<R, EnclosingT>(expressionDenotation, null);
@@ -48,7 +48,7 @@ public class AsyncIterExtension<R> {
 		return Cont.fromSD((xi, rho, sigma, err) -> sigma.call());
 	}
 
-	public <T> Cont<T, ?> Exp(Supplier<T> e) {
+	public <Enc, T> Cont<T, Enc> Exp(Supplier<T> e) {
 		return Cont.fromED((xi, k, err) -> {
 			T t = null;
 			try {
@@ -124,7 +124,7 @@ public class AsyncIterExtension<R> {
 	}
 
 	@SafeVarargs
-	public final <Enc> Cont<R,Enc> Seq(Cont<R,Enc>... ss) {
+	public final <Enc> Cont<R,Enc> Seq(Cont<R, Enc>... ss) {
 		assert ss.length > 0;
 		return java.util.stream.Stream.of(ss).reduce(this::Seq2).get();
 	}
