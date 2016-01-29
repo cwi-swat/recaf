@@ -6,9 +6,14 @@ import org.junit.BeforeClass;
 
 import javax.tools.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.rascalmpl.shell.ModuleRunner;
+import org.rascalmpl.uri.URIUtil;
+import org.rascalmpl.values.ValueFactoryFactory;
 
 import static java.util.Arrays.asList;
 import static javax.tools.ToolProvider.getSystemJavaCompiler;
@@ -21,7 +26,22 @@ public class BaseTest {
 
     @BeforeClass
     public static void init() {
-	    	//TODO: invoke rascal programmatically for all files in |project://recaf-desugar/input/<l.file>| 
+	    //TODO: invoke rascal programmatically for all files in |project://recaf-desugar/input/<l.file>| 
+    	RascalModuleRunner runner = 
+    			new RascalModuleRunner(new PrintWriter(System.out, false), new PrintWriter(System.err, false));
+    	try {
+			runner.addRascalSearchPathContributor(ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", "/../recaf-desugar/src/"));
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+		}
+    	try {
+			runner.run("lang::recaf::DesugarMain",
+					   new String[]{
+									"cwd:///../recaf-desugar/input",
+									"cwd:///"+SRC_TEST_RESOURCES});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     @Before
