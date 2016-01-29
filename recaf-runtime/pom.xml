@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<groupId>com.github.cwi-swat</groupId>
 	<artifactId>recaf</artifactId>
@@ -14,15 +14,15 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.rascalmpl</groupId>
 			<artifactId>rascal-shell</artifactId>
-			<version>0.8.0.qualifier</version>
+			<version>0.8.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/rascal-shell-stable.jar</systemPath>
+			<systemPath>${project.basedir}/libs/rascal-shell-stable.jar</systemPath>
 		</dependency>
 	</dependencies>
 
@@ -36,7 +36,7 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 </project>
