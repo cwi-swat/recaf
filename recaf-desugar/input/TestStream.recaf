@@ -1,0 +1,27 @@
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import recaf.stream.Stream;
+import recaf.stream.StreamExtension;
+
+public class TestStream {
+
+  static Void println(Object o) {
+    System.out.println(o);
+    return null;
+  }
+  
+  [StreamExtension<Integer>] 
+  Stream<Integer> asyncRange() {
+    yield! 1;
+    yield! 2;
+    yield! 3;
+    yield! 4;
+    yield! 5;
+  } 
+  
+  public static void main(String args[]) throws InterruptedException, ExecutionException {
+	Stream i = new TestStream().asyncRange();
+  }
+
+}
