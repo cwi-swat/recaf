@@ -3,11 +3,11 @@ package recaf.using;
 import java.io.IOException;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaCPS;
+import recaf.core.AbstractJavaImpl;
 import recaf.core.ED;
 import recaf.core.SD;
 
-public class Using<R> extends AbstractJavaCPS<R> {
+public class Using<R> extends AbstractJavaImpl<R> {
 	
 	public R Method(Cont<R> body) {
 		return typePreserving(body);

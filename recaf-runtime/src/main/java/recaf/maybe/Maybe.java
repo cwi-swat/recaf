@@ -3,13 +3,13 @@ package recaf.maybe;
 import java.util.Optional;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaCPS;
+import recaf.core.AbstractJavaImpl;
 import recaf.core.ED;
 import recaf.core.Ref;
 import recaf.core.SD;
 
 
-public class Maybe<R> extends AbstractJavaCPS<R> {
+public class Maybe<R> extends AbstractJavaImpl<R> {
 
 	public Optional<R> Method(Cont<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();

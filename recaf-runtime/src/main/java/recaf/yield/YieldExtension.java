@@ -1,10 +1,10 @@
 package recaf.yield;
 
-import recaf.core.AbstractJavaCPS;
+import recaf.core.AbstractJavaImpl;
 import recaf.core.ED;
 import recaf.core.SD;
 
-public class YieldExtension<R> extends AbstractJavaCPS<R> {
+public class YieldExtension<R> extends AbstractJavaImpl<R> {
 
 	public Iterable<R> Method(SD<R> body) {
 		

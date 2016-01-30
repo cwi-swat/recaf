@@ -2,12 +2,12 @@ package recaf.iter;
 
 import java.util.Iterator;
 
-import recaf.core.AbstractJavaCPS;
+import recaf.core.AbstractJavaImpl;
 import recaf.core.ED;
 import recaf.core.K0;
 import recaf.core.SD;
 
-public class Iter<R> extends AbstractJavaCPS<R> {
+public class Iter<R> extends AbstractJavaImpl<R> {
 
 	@SuppressWarnings("serial")
 	private static final class Yield extends RuntimeException {

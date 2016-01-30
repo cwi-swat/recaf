@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaCPS;
+import recaf.core.AbstractJavaImpl;
 import recaf.core.SD;
 
-public class Staging<R> extends AbstractJavaCPS<R> {
+public class Staging<R> extends AbstractJavaImpl<R> {
 	public Cont<R> If(Boolean b, Cont<R> s1) {
 		return If(b, s1, Empty());
 	}

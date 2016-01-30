@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class AbstractJavaCPS<R> implements AbstractJava<R> {
+public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	
 	public static class Cont<T> {
 

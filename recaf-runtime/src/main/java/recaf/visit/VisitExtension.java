@@ -3,11 +3,11 @@ package recaf.visit;
 import java.util.List;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaCPS;
+import recaf.core.AbstractJavaImpl;
 import recaf.core.ED;
 import recaf.core.SD;
 
-public class VisitExtension<R> extends AbstractJavaCPS<R> {
+public class VisitExtension<R> extends AbstractJavaImpl<R> {
 
 	public R Method(Cont<R> body) {
 		return null;
