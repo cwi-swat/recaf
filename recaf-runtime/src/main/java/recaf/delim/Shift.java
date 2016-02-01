@@ -35,6 +35,10 @@ public class Shift<A, B, C> {
 		return new Shift<A1, B, C>((Function<A1, B> k) -> s.apply((A x) -> k.apply(f.apply(x))));
 	}
 	
+	public static <A, B, C> Shift<A, B, C> shift (K<A,B,C> k) {
+		return new Shift<A,B,C>(k);
+	}
+	
 	public static <A, C> void reset(Shift<A, A, C> c) {
 		c.s.apply(x -> x);
 	}

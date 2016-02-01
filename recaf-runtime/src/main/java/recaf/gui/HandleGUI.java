@@ -1,8 +1,5 @@
 package recaf.gui;
 
-import recaf.core.ED;
-import recaf.core.SD;
-
 public class HandleGUI extends GUI {
 	private final String buttonClicked;
 

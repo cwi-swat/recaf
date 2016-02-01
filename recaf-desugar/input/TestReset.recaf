@@ -1,0 +1,37 @@
+import recaf.delim.Shift;
+import java.util.function.Function;
+
+public class TestReset {
+
+	static Void println(Object o) {
+	  System.out.println(o);
+	  return null;
+	} 
+	  
+	class Cell {
+	  public Integer v;
+ 	  public Cell(Integer v) { this.v = v; }
+	}
+	  
+    [ResetExtension<Integer>]
+	Integer ex() {  	
+		//Integer v1 = shift(k -> k.apply(k.apply(k.apply((7)))));
+		Integer v2 = v1 + 1;
+		println(value);
+		return value;
+	} 
+
+	public static void main(String[] args) {
+		/*	
+		Shift<Integer, Integer, Integer> ctx = new Shift<Integer, Integer, Integer>(
+				k -> k.apply(k.apply(k.apply((7))))).map(value -> {
+					Integer val = value + 1;
+					println(value);
+					return val;
+				});
+
+		Shift.reset(ctx); // 10
+		*/
+	}
+
+}
