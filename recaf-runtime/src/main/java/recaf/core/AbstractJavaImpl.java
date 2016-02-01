@@ -107,7 +107,6 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		return Cont.fromSD((rho, sigma, err) -> rho.accept(null));
 	}
 
-	@SafeVarargs
 	public final Cont<R> Seq(Cont<R>... ss) {
 		assert ss.length > 0;
 		return Stream.of(ss).reduce(this::Seq2).get();
