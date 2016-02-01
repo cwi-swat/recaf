@@ -1,3 +1,4 @@
+import recaf.delim.ResetExtension;
 import recaf.delim.Shift;
 import java.util.function.Function;
 
@@ -14,11 +15,12 @@ public class TestReset {
 	}
 	  
     [ResetExtension<Integer>]
-	Integer ex() {  	
+	Shift<Integer,Integer,Integer> ex() {  	
 		//Integer v1 = shift(k -> k.apply(k.apply(k.apply((7)))));
+		Integer v1;
 		Integer v2 = v1 + 1;
-		println(value);
-		return value;
+		println(v2);
+		return v2;
 	} 
 
 	public static void main(String[] args) {

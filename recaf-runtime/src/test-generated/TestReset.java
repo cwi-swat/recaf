@@ -17,16 +17,18 @@ public class TestReset {
 		}
 	}
 
-	Integer ex() {
+	Shift<Integer, Integer, Integer> ex() {
 		ResetExtension<Integer> $alg = new ResetExtension<Integer>();
-		return (Integer) $alg.Method($alg.<Integer> Decl($alg.Exp(() -> {
-			return v1 + 1;
-		}), v2 -> {
-			return $alg.Seq($alg.ExpStat($alg.Exp(() -> {
-				return println(value);
-			})), $alg.Return($alg.Exp(() -> {
-				return value;
-			})));
+		return (Shift<Integer, Integer, Integer>) $alg.Method($alg.<Integer> Decl(null, v1 -> {
+			return $alg.<Integer> Decl($alg.Exp(() -> {
+				return v1 + 1;
+			}), v2 -> {
+				return $alg.Seq($alg.ExpStat($alg.Exp(() -> {
+					return println(v2);
+				})), $alg.Return($alg.Exp(() -> {
+					return v2;
+				})));
+			});
 		}));
 	}
 
