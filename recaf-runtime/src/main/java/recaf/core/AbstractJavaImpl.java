@@ -7,26 +7,6 @@ import java.util.stream.Stream;
 
 public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	
-	public static class Cont<T> {
-
-		public static <R> Cont<R> fromED(ED<R> expressionDenotation) {
-			return new Cont<R>(expressionDenotation, null);
-		}
-		public static <R> Cont<R> fromSD(SD<R> statementDenotation) {
-			return new Cont<R>(null, statementDenotation);
-		}
-
-		public ED<T> expressionDenotation;
-
-		public SD<T> statementDenotation;
-
-		public Cont(ED<T> expressionDenotation, SD<T> statementDenotation) {
-			super();
-			this.expressionDenotation = expressionDenotation;
-			this.statementDenotation = statementDenotation;
-		}
-	}
-
 	protected R typePreserving(Cont<R> body) {
 		Ref<R> result = new Ref<>();
 		body.statementDenotation.accept(r -> { result.value = r; }, () -> {}, exc -> { throw new RuntimeException(exc); });

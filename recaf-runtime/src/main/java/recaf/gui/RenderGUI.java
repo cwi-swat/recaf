@@ -2,6 +2,8 @@ package recaf.gui;
 
 import java.io.StringWriter;
 
+import recaf.core.Cont;
+
 public class RenderGUI extends GUI {
 	private StringWriter writer = new StringWriter();
 	private int indent = 0;

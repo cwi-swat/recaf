@@ -3,6 +3,7 @@ package recaf.iter;
 import java.util.Iterator;
 
 import recaf.core.AbstractJavaImpl;
+import recaf.core.Cont;
 import recaf.core.ED;
 import recaf.core.K0;
 import recaf.core.SD;

@@ -3,8 +3,6 @@ package recaf.core;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import recaf.core.AbstractJavaImpl.Cont;
-
 public interface AbstractJava<R> {
 
 	/*

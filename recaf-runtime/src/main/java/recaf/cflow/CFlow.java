@@ -1,6 +1,7 @@
 package recaf.cflow;
 
 import recaf.core.AbstractJavaImpl;
+import recaf.core.Cont;
 import recaf.core.SD;
 
 public abstract class CFlow<R> extends AbstractJavaImpl<R> {
