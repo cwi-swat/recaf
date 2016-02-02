@@ -10,7 +10,6 @@ public class Cont<T> {
 	}
 
 	public ED<T> expressionDenotation;
-
 	public SD<T> statementDenotation;
 
 	public Cont(ED<T> expressionDenotation, SD<T> statementDenotation) {

@@ -62,6 +62,17 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	public Cont<R> DoWhile(Cont<R> s, Cont<Boolean> e) {
 		return Seq2(s, While(e, s));
 	}
+//		
+//	public Cont<R> Switch(Cont<Boolean> s, ){
+//		return Cont.fromSD((rho, sigma, err) -> s.expressionDenotation.accept(x -> {
+//			if (x) {
+//				s1.statementDenotation.accept(rho, sigma, err);
+//			} else if (){
+//				s2.statementDenotation.accept(rho, sigma, err);
+//			}
+//		} , err));
+//		
+//	}
 
 	public Cont<R> Break() {
 		return null;

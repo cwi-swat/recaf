@@ -14,6 +14,14 @@ public class TestReset {
  	  public Cell(Integer v) { this.v = v; }
 	}
 	  
+	  /*
+	reset {
+		int v1 = shift (k -> k (k(k(7))))
+		int v2 = v1 + 1;
+		println(v2);
+	}
+	*/
+	
     [ResetExtension<Integer>]
 	Shift<Integer,Integer,Integer> ex() {  	
 		//Integer v1 = shift(k -> k.apply(k.apply(k.apply((7)))));

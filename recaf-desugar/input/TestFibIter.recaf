@@ -1,9 +1,10 @@
+import recaf.core.Ref;
 import recaf.iter.Iter;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.function.*;
- 
+
 public class TestFibIter {
 
   static Void println(Object o) {
@@ -11,19 +12,20 @@ public class TestFibIter {
     return null;
   } 
   
-  class Cell {
-  	public Integer v;
-  	public Cell(Integer v) { this.v = v; }
-  }
-  
   [Iter<Integer>]
   Iterable<Integer> fib() {
-  	Cell a = new Cell(0); 
-  	Cell b = new Cell(1);
+  	//Integer a = 0; ->
+  	Ref a = new Ref(); 
+  	a.value = 0;
+  	
+ 	//Integer b = 0; ->	
+  	Ref b = new Ref();
+  	b.value = 1;
+  	
   	while(true) {
-  		yield! a.v;
-  		b.v = a.v + b.v; 
-  		a.v = b.v - a.v;
+  		yield! a.value;
+  		b.value = (Integer)a.value + (Integer)b.value; 
+  		a.value = (Integer)b.value - (Integer)a.value;
   	}
   } 
   
