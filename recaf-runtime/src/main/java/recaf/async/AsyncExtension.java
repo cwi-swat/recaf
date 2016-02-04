@@ -18,6 +18,8 @@ public class AsyncExtension<R> extends AbstractJavaImpl<R> {
 			body.statementDenotation.accept(
 					r -> promise.complete(r), 
 					() -> promise.complete(null),
+					() -> promise.complete(null),
+					() -> promise.complete(null),
 					ex -> promise.completeExceptionally(ex));
 			return null;
 		});
@@ -26,12 +28,12 @@ public class AsyncExtension<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <T> Cont<R> Await(Cont<CompletableFuture<T>> e, Function<T, Cont<R>> body) {
-		return Cont.fromSD((rho, sigma, err) -> e.expressionDenotation.accept(f -> {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {
 					err.accept(ex);
 				} else {
-					body.apply(a).statementDenotation.accept(rho, sigma, err);
+					body.apply(a).statementDenotation.accept(rho, sigma, brk, contin, err);
 				}
 			});
 		} , err));

@@ -8,10 +8,10 @@ public class TestSwitch {
      	int number = 1;
      	
      	String selection = "";	
-		
+		 
 		switch (number) {
-			case 1: ;
-			case 2: ;
+			case 1:  ;
+			case 2:  ;
 			default: ;
 		}
 		

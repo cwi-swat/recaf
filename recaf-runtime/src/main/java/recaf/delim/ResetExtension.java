@@ -7,7 +7,7 @@ public class ResetExtension<R> extends AbstractJavaImpl<R> {
 
 	public Shift<R, R, R> Method(Cont<R> body) {
 		
-		body.statementDenotation.accept(v -> {}, ()-> {}, ex -> {});
+		body.statementDenotation.accept(v -> {}, ()-> {}, ()-> {},()-> {}, ex -> {});
 		return null;
 	}
 

@@ -15,10 +15,10 @@ public class ParFor<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <U> SD<R> Parfor(ED<Collection<U>> coll, Function<U, SD<R>> body) {
-		return (rho, sigma, err) -> {
+		return (rho, sigma, brk, contin, err) -> {
 			coll.accept(v -> {
 				v.parallelStream().forEach(u -> {
-					body.apply(u).accept(rho, sigma, err);
+					body.apply(u).accept(rho, sigma, brk, contin, err);
 				});
 			}, err);
 		};

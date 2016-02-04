@@ -11,6 +11,8 @@ public class DummyExtension<R> extends AbstractJavaImpl<R> {
 		body.statementDenotation.accept(r -> {
 			ret.value = r;
 		} , () -> {
+		} , () -> {
+		} , () -> {
 		} , exc -> {
 			throw new RuntimeException(exc);
 		});

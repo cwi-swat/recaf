@@ -29,6 +29,10 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 					exhausted = true;
 				} , () -> {
 					exhausted = true;
+				},  () -> {
+					exhausted = true;
+				},  () -> {
+					exhausted = true;
 				} , exc -> {
 					throw new RuntimeException(exc);
 				});
@@ -70,7 +74,7 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <U> Cont<R> Yield(Cont<U> exp) {
-		return Cont.fromSD((rho, sigma, err) -> {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
 			exp.expressionDenotation.accept(v -> {
 				throw new Yield(v, sigma);
 			} , err);

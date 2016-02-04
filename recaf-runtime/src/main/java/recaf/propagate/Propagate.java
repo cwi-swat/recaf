@@ -19,11 +19,11 @@ public class Propagate<T, R> extends AbstractJavaImpl<R> {
 	}
 
 	public Cont<R> Local(Cont<T> exp, Cont<R> body) {
-		return Cont.fromSD((rho, sigma, err) -> {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
 			exp.expressionDenotation.accept(t -> {
 				stack.push(t);
 				body.statementDenotation.accept(r -> { stack.pop(); rho.accept(r);}, 
-						() -> { stack.pop(); sigma.call(); }, 
+						() -> { stack.pop(); sigma.call(); }, () -> { }, () -> { },
 						e -> { stack.pop(); err.accept(e); });
 			}, err);
 		});
@@ -31,8 +31,8 @@ public class Propagate<T, R> extends AbstractJavaImpl<R> {
 
 	@SuppressWarnings("unchecked")
 	public Cont<R> Ask(Function<T, Cont<R>> body) {
-		return Cont.fromSD((rho, sigma, err) -> {
-			body.apply((T) stack.peek()).statementDenotation.accept(rho, sigma, err);
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+			body.apply((T) stack.peek()).statementDenotation.accept(rho, sigma, brk, contin, err);
 		});
 	}
 	

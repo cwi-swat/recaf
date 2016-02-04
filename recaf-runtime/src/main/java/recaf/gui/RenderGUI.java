@@ -33,7 +33,7 @@ public class RenderGUI extends GUI {
 	
 	@Override
 	public Cont<Void> Tag(Cont<String> t, Cont<Void> body) {
-		return Cont.fromSD((rho, sigma, err) -> {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
 			t.expressionDenotation.accept(tag -> {
 				output("<" + tag + ">\n");
 				indent();
@@ -41,7 +41,7 @@ public class RenderGUI extends GUI {
 					dedent();
 					output("</" + tag + ">\n");
 					sigma.call();
-				}, err);
+				},  brk, contin, err);
 			}, err);
 		});
 	}
@@ -49,7 +49,7 @@ public class RenderGUI extends GUI {
 	@Override
 	public Cont<Void> Button(Cont<String> label, Cont<Void> body) {
 		// in render, we don't execute the body.
-		return Cont.fromSD((rho, sigma, err) -> {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
 			label.expressionDenotation.accept(l -> {
 				output("<button id=\"" + nextId() + "\">" + escapeHTML(l) + "</button>\n");
 				sigma.call();
@@ -59,7 +59,7 @@ public class RenderGUI extends GUI {
 	
 	@Override
 	public Cont<Void> Echo(Cont<String> exp) {
-		return Cont.fromSD((rho, sigma, err) -> {
+		return Cont.fromSD((rho, sigma,  brk, contin, err) -> {
 			exp.expressionDenotation.accept(txt -> {
 				output(escapeHTML(txt));
 				sigma.call();

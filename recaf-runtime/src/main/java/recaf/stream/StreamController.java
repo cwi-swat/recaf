@@ -45,7 +45,6 @@ public class StreamController<T> {
 
 	public boolean isPaused() {
 		throw new UnsupportedOperationException();
-	
 	}
 
 	public Future<T> close() {
