@@ -30,13 +30,13 @@ public class TestIter {
   return (Iterable<Integer>)$alg.Method($alg.For($alg.Exp(() -> { return range(10); }), (Integer i) -> {return $alg.Yield($alg.Exp(() -> { return i; }));}));
 }
 
-  Iterable<Integer> coro() {
+  Iterable<Integer> myIter() {
   Iter<Integer> $alg = new Iter<Integer>();
   return (Iterable<Integer>)$alg.Method($alg.While($alg.Exp(() -> { return true; }), $alg.YieldFrom($alg.Exp(() -> { return filter(subIter(), x -> ((Integer)x) % 2 == 0); }))));
 }
   
   public static void main(String args[]) {
-    for (Integer i: new TestIter().coro()) {
+    for (Integer i: new TestIter().myIter()) {
       System.out.println("i = " + i);
     }
   }

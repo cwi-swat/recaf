@@ -10,11 +10,11 @@ public class TestFibIter {
   static Void println(Object o) {
     System.out.println(o);
     return null;
-  } 
+  }
   
   Iterable<Integer> fib() {
   Iter<Integer> $alg = new Iter<Integer>();
-  return (Iterable<Integer>)$alg.Method($alg.<Ref >Decl($alg.Exp(() -> { return new Ref(); }), a -> {return $alg.Seq($alg.ExpStat($alg.Exp(() -> { return a.value = 0; })), $alg.<Ref >Decl($alg.Exp(() -> { return new Ref(); }), b -> {return $alg.Seq($alg.ExpStat($alg.Exp(() -> { return b.value = 1; })), $alg.While($alg.Exp(() -> { return true; }), $alg.Seq($alg.Yield($alg.Exp(() -> { return a.value; })), $alg.Seq($alg.ExpStat($alg.Exp(() -> { return b.value = (Integer)a.value + (Integer)b.value; })), $alg.ExpStat($alg.Exp(() -> { return a.value = (Integer)b.value - (Integer)a.value; }))))));}));}));
+  return (Iterable<Integer>)$alg.Method($alg.<Integer>Decl($alg.Exp(() -> { return 0; }), a -> {return $alg.<Integer>Decl($alg.Exp(() -> { return 1; }), b -> {return $alg.While($alg.Exp(() -> { return true; }), $alg.Seq($alg.Yield($alg.Exp(() -> { return a; })), $alg.Seq($alg.ExpStat($alg.Exp(() -> { return b = a + b; })), $alg.ExpStat($alg.Exp(() -> { return a = b - a; })))));});}));
 } 
   
   public static void main(String args[]) {
