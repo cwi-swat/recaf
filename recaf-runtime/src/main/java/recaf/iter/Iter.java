@@ -64,6 +64,7 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 		};
 	}
 
+	@Override
 	public Cont<R> Return(Cont<R> e) {
 		throw new AssertionError("Cannot return value from coroutine.");
 	}
