@@ -4,9 +4,7 @@ import java.util.Iterator;
 
 import recaf.core.AbstractJavaImpl;
 import recaf.core.Cont;
-import recaf.core.functional.ED;
 import recaf.core.functional.K0;
-import recaf.core.functional.SD;
 
 public class Iter<R> extends AbstractJavaImpl<R> {
 
