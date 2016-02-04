@@ -135,7 +135,6 @@ Expr stm2cps((Stm)`<KId ext> {<Item+ items>}`, Id alg, set[Id] localIds)
     Expr itemscps := items2cps([ i | i <- items ], alg, localIds),
     Id method := [Id]capitalize("<ext>");
 
-
 Expr items2cps(list[Item] items:[], Id alg, set[Id] localIds)
   = (Expr)`java.util.Arrays.asList()`;
 
@@ -350,11 +349,11 @@ Expr catch2cps((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg)
 Expr expr2cps(Expr e, Id alg, set[Id] localIds)
   = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })` ;
 
-Expr stm2cps((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg)
+Expr stm2cps((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg, set[Id] localIds)
   = (Expr)`<Id alg>.Switch(<Expr ecps>, <{Expr ","}* es>)`
   when
     ecps := expr2cps(e, alg),
-    exprs := ( [] | it + group2cps(g, alg) | g <- groups ) + labels2cps(labels, alg),
+    exprs := ( [] | it + group2cps(g, alg, localIds) | g <- groups ) + labels2cps(labels, alg),
     es := lst2sepExps(exprs);
     
 {Expr ","}* lst2sepExps(list[Expr] es) {
@@ -371,23 +370,23 @@ Expr stm2cps((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* label
 list[Expr] labels2cps(SwitchLabel* labels, Id alg)
   = ( [] | it + group2cps((SwitchGroup)`<SwitchLabel l> ;`, alg) | l <- labels );
 
-list[Expr] group2cps((SwitchGroup)`<SwitchLabel label> <BlockStm+ stms>`, Id alg)
-  = [case2cps(label, stms, alg)];
+list[Expr] group2cps((SwitchGroup)`<SwitchLabel label> <BlockStm+ stms>`, Id alg, set[Id] localIds)
+  = [case2cps(label, stms, alg, localIds)];
 
 list[Expr] group2cps((SwitchGroup)`<SwitchLabel label> <SwitchLabel+ labels> <BlockStm+ stms>`, Id alg)
   = group2cps((SwitchGroup)`<SwitchLabel label> ;`, alg)
   + group2cps((SwitchGroup)`<SwitchLabel+ labels> <BlockStm+ stms>`, alg);
   
-Expr case2cps((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg)
+Expr case2cps((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg, set[Id] localIds)
   = (Expr)`<Id alg>.Case(<Expr ecps>, <Expr stmscps>)`
   when
     Expr ecps := expr2cps(e, alg),
-    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg);
+    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg,localIds);
 
-Expr case2cps((SwitchLabel)`default:`, BlockStm+ stms, Id alg)
+Expr case2cps((SwitchLabel)`default:`, BlockStm+ stms, Id alg, set[Id] localIds)
   = (Expr)`<Id alg>.Default(<Expr stmscps>)`
   when
-    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg);
+    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg, localIds);
 
 
 Expr expr2cps(Expr e, Id alg)

@@ -6,16 +6,16 @@ public class TestSwitch {
   	[DummyExtension<String>]
 	String testSwitch() {
      	int number = 1;
-		Ref selection = new Ref();
+     	
+     	String selection = "";	
 		
 		switch (number) {
-		  default: bla();
-		  case 1: println(number);
-		  case 3:
-		  case 2: println(number);
+			case 1: ;
+			case 2: ;
+			default: ;
 		}
 		
-		return (String) selection.value;
+		return selection;
 	} 
 	
 	public static void main(String args[]) {
