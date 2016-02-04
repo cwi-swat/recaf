@@ -9,7 +9,6 @@ syntax KId
 syntax Stm
    // return -like
    = KId "!" Expr ";" // ! is needed, otherwise amb with local var dec.
-   | KId "!*" Expr ";"
    
    // for, while and try like
    | KId "(" FormalParam ":" Expr ")" Stm
@@ -55,9 +54,10 @@ syntax Modifier
 keyword Keyword = "default";
    
 syntax Rest
-   = "." KId  Block
-   | "." KId "(" Expr ")" Block
-   | "." KId "(" FormalParam ":" Expr ")" Block
+   = KId ":"  Block
+   | KId ":" "(" Expr ")" Block
+   | KId ":" "(" FormalParam ")" Block
+   | KId ":" "(" FormalParam ":" Expr ")" Block
    ;
 
 syntax Expr

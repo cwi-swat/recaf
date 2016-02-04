@@ -89,13 +89,6 @@ Expr stm2cps((Stm)`<KId ext>! <Expr e>;`, Id alg, set[Id] localIds)
     Expr ecps := expr2cps(e, alg, localIds),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2cps((Stm)`<KId ext>!* <Expr e>;`, Id alg, set[Id] localIds) 
-  = (Expr)`<Id alg>.<Id method>(<Expr ecps>)`
-  when
-    Expr ecps := expr2cps(e, alg, localIds),
-    Id method := [Id]capitalize("<ext>Star");
-
-
 // for like
 Expr stm2cps((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, set[Id] localIds) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
@@ -353,7 +346,52 @@ Expr catch2cps((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg)
     Expr bcps := block2cps(b, alg, TODO);
     
 Expr expr2cps(Expr e, Id alg, set[Id] localIds)
-  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })` ;
+  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })` 
+  when
+    Expr bcps := block2cps(b, alg);
+
+Expr stm2cps((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg)
+  = (Expr)`<Id alg>.Switch(<Expr ecps>, <{Expr ","}* es>)`
+  when
+    ecps := expr2cps(e, alg),
+    exprs := ( [] | it + group2cps(g, alg) | g <- groups ) + labels2cps(labels, alg),
+    es := lst2sepExps(exprs);
+    
+{Expr ","}* lst2sepExps(list[Expr] es) {
+  call = (Expr)`f()`; // ugly hack
+  for (e <- es, (Expr)`f(<{Expr ","}* args>)` := call) {
+    call = (Expr)`f(<Expr e>, <{Expr ","}* args>)`; 
+  }
+  if ((Expr)`f(<{Expr ","}* args>)` := call) {
+    return args;
+  }
+  // cannot come here.
+}
+
+list[Expr] labels2cps(SwitchLabel* labels, Id alg)
+  = ( [] | it + group2cps((SwitchGroup)`<SwitchLabel l> ;`, alg) | l <- labels );
+
+list[Expr] group2cps((SwitchGroup)`<SwitchLabel label> <BlockStm+ stms>`, Id alg)
+  = [case2cps(label, stms, alg)];
+
+list[Expr] group2cps((SwitchGroup)`<SwitchLabel label> <SwitchLabel+ labels> <BlockStm+ stms>`, Id alg)
+  = group2cps((SwitchGroup)`<SwitchLabel label> ;`, alg)
+  + group2cps((SwitchGroup)`<SwitchLabel+ labels> <BlockStm+ stms>`, alg);
+  
+Expr case2cps((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg)
+  = (Expr)`<Id alg>.Case(<Expr ecps>, <Expr stmscps>)`
+  when
+    Expr ecps := expr2cps(e, alg),
+    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg);
+
+Expr case2cps((SwitchLabel)`default:`, BlockStm+ stms, Id alg)
+  = (Expr)`<Id alg>.Default(<Expr stmscps>)`
+  when
+    Expr stmscps := block2cps((Block)`{<BlockStm+ stms>}`, alg);
+
+
+Expr expr2cps(Expr e, Id alg)
+  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })`;
 
 Type boxed((Type)`int`) = (Type) `Integer`;
 Type boxed((Type)`long`) = (Type)`Long`;
