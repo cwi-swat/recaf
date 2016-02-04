@@ -151,7 +151,6 @@ Expr stm2cps((Stm)`<KId kw> (<{FormalParam ","}+ fs>) <Stm stm>`, Id alg)
 
 //////
 
-
 Expr stm2cps((Stm)`continue <Id x>;`, Id alg) 
   = (Expr)`<Id alg>.Continue(<Expr label>)`
   when 

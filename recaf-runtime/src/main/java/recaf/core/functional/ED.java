@@ -1,4 +1,4 @@
-package recaf.core;
+package recaf.core.functional;
 
 import java.util.function.BiConsumer;
 

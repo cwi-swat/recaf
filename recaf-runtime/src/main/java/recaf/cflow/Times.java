@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.stream.IntStream;
 
 import recaf.core.Cont;
-import recaf.core.ED;
-import recaf.core.SD;
+import recaf.core.functional.ED;
+import recaf.core.functional.SD;
 
 public class Times<R> extends CFlow<R> {
 	public Cont<R> Times(Cont<Integer> n, Cont<R> body) {

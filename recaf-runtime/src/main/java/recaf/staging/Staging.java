@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import recaf.core.AbstractJavaImpl;
 import recaf.core.Cont;
-import recaf.core.SD;
+import recaf.core.functional.SD;
 
 public class Staging<R> extends AbstractJavaImpl<R> {
 	public Cont<R> If(Boolean b, Cont<R> s1) {

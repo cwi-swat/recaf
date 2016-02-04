@@ -5,6 +5,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import recaf.core.functional.K0;
+import recaf.core.functional.SD;
+
+import java.util.*;
+
 public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	
 	protected R typePreserving(Cont<R> body) {
@@ -62,20 +67,18 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	public Cont<R> DoWhile(Cont<R> s, Cont<Boolean> e) {
 		return Seq2(s, While(e, s));
 	}
-//		
-//	public Cont<R> Switch(Cont<Boolean> s, ){
-//		return Cont.fromSD((rho, sigma, err) -> s.expressionDenotation.accept(x -> {
-//			if (x) {
-//				s1.statementDenotation.accept(rho, sigma, err);
-//			} else if (){
-//				s2.statementDenotation.accept(rho, sigma, err);
-//			}
-//		} , err));
-//		
-//	}
+		
+	public Cont<R> Switch(Cont<Integer> s, Map<Integer, ArrayList<Cont<R>>> map){
+		return Cont.fromSwitchD((rho, sigma, brk, err) -> s.expressionDenotation.accept(x -> { 
+			if(map.containsKey(x)) {
+				List<Cont<R>> statementBlock = map.get(x);
+				Seq(statementBlock.toArray(new Cont[statementBlock.size()])).enhancedStatementDenotation.accept(rho, sigma, brk, err);
+			}
+		}, err));
+	}
 
 	public Cont<R> Break() {
-		return null;
+		return Cont.fromSwitchD((rho, sigma, brk, err) -> brk.call());
 	}
 
 	public Cont<R> Break(String label) {

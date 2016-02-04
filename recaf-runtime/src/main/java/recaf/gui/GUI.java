@@ -2,8 +2,8 @@ package recaf.gui;
 
 import recaf.core.AbstractJavaImpl;
 import recaf.core.Cont;
-import recaf.core.ED;
-import recaf.core.SD;
+import recaf.core.functional.ED;
+import recaf.core.functional.SD;
 
 public abstract class GUI extends AbstractJavaImpl<Void> {
 	private int idCount = 0;
