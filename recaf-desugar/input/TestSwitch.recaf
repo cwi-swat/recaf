@@ -9,9 +9,11 @@ public class TestSwitch {
 		Ref selection = new Ref();
 		
 		switch (number) {
-		    case 1:  selection.value = "first";
-		             break;
-		}	
+		  default: bla();
+		  case 1: println(number);
+		  case 3:
+		  case 2: println(number);
+		}
 		
 		return (String) selection.value;
 	} 
