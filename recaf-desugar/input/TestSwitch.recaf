@@ -2,19 +2,22 @@ import recaf.dummy.*;
 import recaf.core.Ref;
 
 public class TestSwitch {
-
+ 
   	[DummyExtension<String>]
 	String testSwitch() {
      	int number = 1;
      	
-     	String selection = "";	
+     	String selection = "none";	
 		 
 		switch (number) {
-			case 1:  ;
-			case 2:  ;
-			default: ;
+			case 1: 
+				selection = "one" ;
+			case 2: 
+				selection = "two" ;
+			default: 
+				selection = "default" ;
 		}
-		
+		 
 		return selection;
 	} 
 	

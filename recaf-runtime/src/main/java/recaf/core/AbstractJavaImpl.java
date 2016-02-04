@@ -76,18 +76,26 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		return Seq2(s, While(e, s));
 	}
 
-	public Cont<R> Switch(Cont<Integer> s, Map<Integer, ArrayList<Cont<R>>> map) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> s.expressionDenotation.accept(x -> {
-			if (map.containsKey(x)) {
-				List<Cont<R>> statementBlock = map.get(x);
-				Seq(statementBlock.toArray(new Cont[statementBlock.size()])).statementDenotation.accept(rho, sigma, brk,
-						contin, err);
-			}
+	public <S> Cont<R> Switch(Cont<Integer> expr, Cont<S>... cases) {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> expr.expressionDenotation.accept(x -> {
+			Stream.of(cases).forEach(singleCase -> singleCase.statementDenotation.accept((r -> {
+				if(r.equals(x)) {
+					System.out.println("Matched: " + r);
+				}
+			}), sigma, brk, contin, err));
 		} , err));
 	}
 
-	public Cont<R> Case(R selection) {
-		throw new UnsupportedOperationException();
+	public <S> Cont<R> Case(Cont<Integer> constant, Cont<S> expr) {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> expr.expressionDenotation.accept(x -> {
+			//TODO
+		} , err));
+	}
+	
+	public <S> Cont<R> Default(Cont<S> expStat) {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> expStat.expressionDenotation.accept(x -> {
+			//TODO
+		} , err));
 	}
 
 	public Cont<R> Break() {
@@ -99,7 +107,7 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	}
 
 	public Cont<R> Continue() {
-		return null;
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> contin.call());
 	}
 
 	public Cont<R> Continue(String label) {
