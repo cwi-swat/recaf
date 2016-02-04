@@ -5,7 +5,7 @@ package recaf.core.functional;
  * 
  * rho:    continuation for return
  * sigma:  continuation for success (fall through)
- * brk:     continuation for break
+ * brk:    continuation for break
  * contin: continuation for continue 
  * ex:     continuation for exceptions
  *

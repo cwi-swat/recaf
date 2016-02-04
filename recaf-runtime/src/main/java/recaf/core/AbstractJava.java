@@ -6,11 +6,6 @@ import java.util.function.Supplier;
 import recaf.core.functional.SD;
 
 public interface AbstractJava<R> {
-
-	/*
-	 * 
-	 * */
-	
 	<T> Cont<T> Exp(Supplier<T> e);
 	
 	<U> Cont<R> ExpStat(Cont<U> e);

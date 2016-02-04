@@ -19,7 +19,7 @@ public class Cont<T> {
 	public ED<T> expressionDenotation;
 	public SD<T> statementDenotation;
 
-	public Cont(ED<T> expressionDenotation, SD<T> statementDenotation) {
+	private Cont(ED<T> expressionDenotation, SD<T> statementDenotation) {
 		super();
 		this.expressionDenotation = expressionDenotation;
 		this.statementDenotation = statementDenotation;

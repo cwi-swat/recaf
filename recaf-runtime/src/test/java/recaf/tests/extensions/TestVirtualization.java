@@ -9,6 +9,6 @@ public class TestVirtualization extends BaseTest {
 	
 	@Test
 	public void TestSimpleSwitch() throws CompiletimeException {
-		compileAndRun("TestSwitch");
+		compile("TestSwitch");
 	}
 }
