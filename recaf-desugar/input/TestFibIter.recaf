@@ -10,22 +10,20 @@ public class TestFibIter {
   static Void println(Object o) {
     System.out.println(o);
     return null;
-  } 
+  }
   
   [Iter<Integer>]
   Iterable<Integer> fib() {
-  	//Integer a = 0; ->
-  	Ref a = new Ref(); 
-  	a.value = 0;
+  	//Integer a = 0;->
+  	int a = 0;
   	
  	//Integer b = 0; ->	
-  	Ref b = new Ref();
-  	b.value = 1;
+  	int b = 1; 
   	
   	while(true) {
-  		yield! a.value;
-  		b.value = (Integer)a.value + (Integer)b.value; 
-  		a.value = (Integer)b.value - (Integer)a.value;
+  		yield! a;
+  		b = a + b; 
+  		a = b - a;
   	}
   } 
   
