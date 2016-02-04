@@ -4,9 +4,7 @@ import java.util.Iterator;
 
 import recaf.core.AbstractJavaImpl;
 import recaf.core.Cont;
-import recaf.core.functional.ED;
 import recaf.core.functional.K0;
-import recaf.core.functional.SD;
 
 public class Iter<R> extends AbstractJavaImpl<R> {
 
@@ -66,8 +64,9 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 		};
 	}
 
+	@Override
 	public Cont<R> Return(Cont<R> e) {
-		throw new AssertionError("Cannot return value from coroutine.");
+		throw new AssertionError("Cannot return value from iterator.");
 	}
 
 	public <U> Cont<R> Yield(Cont<U> exp) {

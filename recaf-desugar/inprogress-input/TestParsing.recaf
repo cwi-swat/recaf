@@ -1,15 +1,29 @@
+import recaf.parsing.Parser;
+import recaf.parsing.Parsing;
 
 
 public class TestParsing {
-   Parser<Element> element(String tag) {
+   abstract class Exp {
+   }
+   
+   class Add extends Exp {
+     Add(Exp lhs, Exp rhs) { }
+   }
+   
+   class Var extends Exp {
+     Var(String x) { }
+   }
+   
+   
+   /*Parser<Element> element(String tag) {
        lit! "<" + tag + ">";
        star { nt! content(); }
        lit! "</" + tag + ">";
-   }
+   }*/
    
    [Parsing<String>]
    Parser<String> id() {
-     lex! "[a-zA-Z][a-zA-Z0-9]*";
+     regexp! "[a-zA-Z][a-zA-Z0-9]*";
    }
    
    [Parsing<Exp>]
