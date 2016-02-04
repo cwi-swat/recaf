@@ -15,43 +15,52 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
 import org.rascalmpl.values.ValueFactoryFactory;
 
 public class BaseTest {
 	protected PrintWriter out;
 	protected PrintWriter err;
 
-	private static boolean generate_sources = false;
+	private static boolean generated_sources = false;
 
 	private static final String RECAF_DESUGAR_SRC = "/../recaf-desugar/src/";
 	private static final String SRC_TEST_RESOURCES = "src/test-generated/";
 
+	@Rule
+	public TestWatcher watchman = new Log4jTestWatcher();
+
 	@BeforeClass
 	public static void init() {
-		if (!generate_sources) {
+		if (!generated_sources) {
+			LogManager.getLogger().info("Generating source files with rascal...");
+
 			RascalModuleRunner runner = new RascalModuleRunner(new PrintWriter(System.out, false),
 					new PrintWriter(System.err, false));
+
 			try {
 				runner.addRascalSearchPathContributor(
 						ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", RECAF_DESUGAR_SRC));
-			} catch (URISyntaxException e1) {
-				e1.printStackTrace();
-			}
-			try {
 				runner.run("lang::recaf::DesugarMain",
 						new String[] { "cwd:///../recaf-desugar/input", "cwd:///" + SRC_TEST_RESOURCES });
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				LogManager.getLogger().error("Generation failed", e);
+				LogManager.getLogger().info("Exiting...");
+				System.exit(-1);
 			}
-			generate_sources = true;
+			generated_sources = true;
 		}
 	}
 

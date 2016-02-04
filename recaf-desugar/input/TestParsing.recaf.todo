@@ -1,7 +1,6 @@
 
 
 public class TestParsing {
-
    Parser<Element> element(String tag) {
        lit! "<" + tag + ">";
        star { nt! content(); }
@@ -24,9 +23,6 @@ public class TestParsing {
         alt "var": 
           let String x = id();
           return new Var(x);
-      } 
-   
-   
+      }   
    }
-
 }

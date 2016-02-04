@@ -117,7 +117,6 @@ Expr stm2cps((Stm)`<KId ext> {<Item+ items>}`, Id alg)
     Expr itemscps := items2cps([ i | i <- items ], alg),
     Id method := [Id]capitalize("<ext>");
 
-
 Expr items2cps(list[Item] items:[], Id alg)
   = (Expr)`java.util.Arrays.asList()`;
 

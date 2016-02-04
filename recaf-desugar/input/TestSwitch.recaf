@@ -6,12 +6,7 @@ public class TestSwitch {
   	[DummyExtension<String>]
 	String testSwitch() {
      	int number = 3;
-		Ref selection = new Ref();
-		
-		switch (number) {
-		    case 1:  selection = "first";
-		             break;
-		}	
+		Ref selection = new Ref();	
 		
 		return (String) selection.value;
 	} 
