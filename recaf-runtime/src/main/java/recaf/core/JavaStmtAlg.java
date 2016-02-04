@@ -3,7 +3,7 @@ package recaf.core;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public interface JavaStmtAlg<S> {
+public interface JavaStmtAlg<S, R> {
 	S Exp(Supplier<?> e);
 	
 	<T> S Decl(Supplier<T> exp, Function<T, S> body);
@@ -28,7 +28,7 @@ public interface JavaStmtAlg<S> {
 	
 	S Continue();
 	
-	S Return(Supplier<?> e);
+	S Return(Supplier<R> e);
 	
 	S Return();
 
