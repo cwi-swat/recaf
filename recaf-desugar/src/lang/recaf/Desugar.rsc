@@ -74,6 +74,8 @@ set[Id] collectVars(Block b){
 Block addRefs(Block b, set[Id] localIds) = visit(b){
     	case (LHS) `<Id x>` => x in localIds ? (LHS) `<Id x>.value` : (LHS) `<Id x>`
     	case (Expr) `<Id x>` => x in localIds ? (Expr) `<Id x>.value` : (Expr) `<Id x>`	
+    	case (LocalVarDec) `<Type t> <Id x>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x>`
+    		when newt := boxed(t)
     	case (LocalVarDec) `<Type t> <Id x> = <Expr e>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x> = new Ref\<<Type newt>\>(<Expr e>)`
     		when newt := boxed(t)
 };
