@@ -5,8 +5,13 @@ public class TestSwitch {
 
   	[DummyExtension<String>]
 	String testSwitch() {
-     	int number = 3;
-		Ref selection = new Ref();	
+     	int number = 1;
+		Ref selection = new Ref();
+		
+		switch (number) {
+		    case 1:  selection.value = "first";
+		             break;
+		}	
 		
 		return (String) selection.value;
 	} 
