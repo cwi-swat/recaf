@@ -346,9 +346,7 @@ Expr catch2cps((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg)
     Expr bcps := block2cps(b, alg, TODO);
     
 Expr expr2cps(Expr e, Id alg, set[Id] localIds)
-  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })` 
-  when
-    Expr bcps := block2cps(b, alg);
+  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })` ;
 
 Expr stm2cps((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg)
   = (Expr)`<Id alg>.Switch(<Expr ecps>, <{Expr ","}* es>)`

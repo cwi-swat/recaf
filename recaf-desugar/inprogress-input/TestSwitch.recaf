@@ -16,14 +16,6 @@ public class TestSwitch {
 		}
 		
 		return (String) selection.value;
-		
-		
-		switch (x) {
-		  default: bla();
-		  case 1: println(x);
-		  case 3:
-		  case 2: printn(y);
-		}
 	} 
 	
 	public static void main(String args[]) {
