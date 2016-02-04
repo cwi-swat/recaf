@@ -3,6 +3,8 @@ package recaf.core;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.functional.SD;
+
 public interface AbstractJava<R> {
 
 	/*

@@ -3,7 +3,7 @@ package recaf.stream;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-import recaf.core.K0;
+import recaf.core.functional.K0;
 
 public class StreamController<T> {
 	K0 onListen, onPause, onResume;

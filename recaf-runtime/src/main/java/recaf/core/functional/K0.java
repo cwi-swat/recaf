@@ -1,4 +1,4 @@
-package recaf.core;
+package recaf.core.functional;
 
 public interface K0 {
 	void call();

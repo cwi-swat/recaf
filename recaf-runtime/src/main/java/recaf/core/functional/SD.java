@@ -1,4 +1,4 @@
-package recaf.core;
+package recaf.core.functional;
 
 //statement denotations:
 //(R -> Unit) -> (() -> Unit) -> Unit

@@ -1,0 +1,19 @@
+import recaf.dummy.*;
+import recaf.core.Ref;
+
+public class TestSwitch {
+
+  	[DummyExtension<String>]
+	String testSwitch() {
+     	int number = 3;
+		Ref selection = new Ref();	
+		
+		return (String) selection.value;
+	} 
+	
+	public static void main(String args[]) {
+		String x;
+     	x  = new TestSwitch().testSwitch();
+     	System.out.println(x);
+  	}
+}

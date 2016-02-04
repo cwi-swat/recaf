@@ -6,9 +6,9 @@ import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
 public class TestParsingExtension extends BaseTest {
-
-	@Test
-	public void TestParsing() throws CompiletimeException {
-		compile("TestParsing");
-	}
+//
+//	@Test
+//	public void TestParsing() throws CompiletimeException {
+//		compile("TestParsing");
+//	}
 }
