@@ -9,3 +9,7 @@ addons:
   apt:
       packages:
             - oracle-java8-installer
+            
+notifications:
+  slack: cwi-swat:mE7iJhJBjCpYUb86OmDz53Qf
+  email: false
