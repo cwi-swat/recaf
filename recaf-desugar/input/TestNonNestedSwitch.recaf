@@ -1,7 +1,7 @@
 import recaf.dummy.*;
 import recaf.core.Ref;
 
-public class TestSwitch {
+public class TestNonNestedSwitch {
  
  	public static Void print(String msg) {
 		System.out.println(msg);
@@ -60,7 +60,7 @@ public class TestSwitch {
 				print("default");
 		} 
 		return selection;
-	} 
+	}  
 	
 	[DummyExtension<String>]
 	String testSwitch_break_second_withdefault() { 
@@ -80,12 +80,12 @@ public class TestSwitch {
 	}
 	
 	public static void main(String args[]) {
-		new TestSwitch().testSwitch_nobreak();
+		new TestNonNestedSwitch().testSwitch_nobreak();
 		System.out.println();
-		new TestSwitch().testSwitch_break_first();
+		new TestNonNestedSwitch().testSwitch_break_first();
 		System.out.println();
-		new TestSwitch().testSwitch_break_second();
+		new TestNonNestedSwitch().testSwitch_break_second();
 		System.out.println();
-		new TestSwitch().testSwitch_break_second_withdefault();
+		new TestNonNestedSwitch().testSwitch_break_second_withdefault();
   	}
 }

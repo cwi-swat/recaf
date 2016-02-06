@@ -76,13 +76,14 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		return Seq2(s, While(e, s));
 	}
 
-	int caseNumber;
-	boolean caseFound, defaultFound, breakFound;
+	//TODO: in case of nested switches, this should be curried and restored accordingly
+	SwitchContext data = new SwitchContext();
+	
 	public Cont<String> Switch(Cont<Integer> expr, Cont<String>... cases) {
 		return Cont.fromSD((rho, sigma, brk, contin, err) -> expr.expressionDenotation.accept(x -> {
-			caseNumber = x;
+			data.caseNumber = x;
 			Stream.of(cases).forEach(_case -> { 
-				 if(!breakFound) 
+				 if(!data.breakFound) 
 					 _case.statementDenotation.accept(rho, sigma, brk, contin, err);
 			 });
 		} , err));
@@ -91,10 +92,10 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	public Cont<R> Case(Cont<Integer> constant, Cont<R> expStat) {
 		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
 					constant.expressionDenotation.accept(r -> {
-							if(r.equals(caseNumber)) {
-								caseFound = true;
+							if(r.equals(data.caseNumber)) {
+								data.caseFound = true;
 							} 
-							if (caseFound || defaultFound) {
+							if (data.caseFound || data.defaultFound) {
 								expStat.statementDenotation.accept(rho, sigma, brk, contin, err);
 							}
 						}, err);
@@ -104,14 +105,14 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	public Cont<R> Default(Cont<R> expStat) {
 		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
 			expStat.statementDenotation.accept(rho, sigma, brk, contin, err);
-			defaultFound = true;
+			data.defaultFound = true;
 
 		});
 	}
 
 	public Cont<R> Break() {
 		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-				breakFound = true;
+				data.breakFound = true;
 				brk.call();
 			}
 		);
