@@ -193,6 +193,9 @@ Expr stm2cps((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, set[Id] loc
 
 Expr stm2cps((Stm)`for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, set[Id] localIds)
   = TODO;  
+
+Expr stm2cps((Stm)`for (<LocalVarDec vd>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, set[Id] localIds)
+  = stm2cps((Stm)`{<LocalVarDec vd>; for(; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, localIds);  
     
 Expr stm2cps((Stm)`throw <Expr e>;`, Id alg, set[Id] localIds) 
   = (Expr)`<Id alg>.Throw(<Expr ecps>)`
@@ -389,6 +392,7 @@ Expr case2cps((SwitchLabel)`default:`, BlockStm+ stms, Id alg, set[Id] localIds)
 
 
 Expr expr2cps(Expr e, Id alg)
+  // todo: substitute local vars in e here + apply renaming.
   = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })`;
 
 Type boxed((Type)`int`) = (Type) `Integer`;
