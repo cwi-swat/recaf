@@ -262,7 +262,6 @@ Expr block2cps((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, I
     Expr ecps := expr2cps(e, alg, localIds),
     Expr sscps := block2cps((Block)`{<BlockStm+ ss>}`, alg, localIds);
 
-
 Expr varDecs2cps(Type t, {VarDec ","}+ vs, Expr k, Id alg, set[Id] localIds) {
    for (VarDec vd <- reverse([ v | v <- vs])) {
      k = varDec2cps(t, vd, k, alg, localIds);
@@ -358,7 +357,7 @@ Expr stm2cps((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* label
     
 {Expr ","}* lst2sepExps(list[Expr] es) {
   call = (Expr)`f()`; // ugly hack
-  for (e <- es, (Expr)`f(<{Expr ","}* args>)` := call) {
+  for (e <- reverse(es), (Expr)`f(<{Expr ","}* args>)` := call) {
     call = (Expr)`f(<Expr e>, <{Expr ","}* args>)`; 
   }
   if ((Expr)`f(<{Expr ","}* args>)` := call) {

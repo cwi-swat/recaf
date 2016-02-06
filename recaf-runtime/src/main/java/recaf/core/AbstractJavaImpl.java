@@ -76,30 +76,45 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		return Seq2(s, While(e, s));
 	}
 
-	public <S> Cont<R> Switch(Cont<Integer> expr, Cont<S>... cases) {
+	int caseNumber;
+	boolean caseFound, defaultFound, breakFound;
+	public Cont<String> Switch(Cont<Integer> expr, Cont<String>... cases) {
 		return Cont.fromSD((rho, sigma, brk, contin, err) -> expr.expressionDenotation.accept(x -> {
-			Stream.of(cases).forEach(singleCase -> singleCase.statementDenotation.accept((r -> {
-				if(r.equals(x)) {
-					System.out.println("Matched: " + r);
-				}
-			}), sigma, brk, contin, err));
+			caseNumber = x;
+			Stream.of(cases).forEach(_case -> { 
+				 if(!breakFound) 
+					 _case.statementDenotation.accept(rho, sigma, brk, contin, err);
+			 });
 		} , err));
 	}
 
-	public <S> Cont<R> Case(Cont<Integer> constant, Cont<S> expr) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> expr.expressionDenotation.accept(x -> {
-			//TODO
-		} , err));
+	public Cont<R> Case(Cont<Integer> constant, Cont<R> expStat) {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+					constant.expressionDenotation.accept(r -> {
+							if(r.equals(caseNumber)) {
+								caseFound = true;
+							} 
+							if (caseFound || defaultFound) {
+								expStat.statementDenotation.accept(rho, sigma, brk, contin, err);
+							}
+						}, err);
+				});
 	}
-	
-	public <S> Cont<R> Default(Cont<S> expStat) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> expStat.expressionDenotation.accept(x -> {
-			//TODO
-		} , err));
+
+	public Cont<R> Default(Cont<R> expStat) {
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+			expStat.statementDenotation.accept(rho, sigma, brk, contin, err);
+			defaultFound = true;
+
+		});
 	}
 
 	public Cont<R> Break() {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> brk.call());
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+				breakFound = true;
+				brk.call();
+			}
+		);
 	}
 
 	public Cont<R> Break(String label) {
@@ -133,8 +148,7 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 	}
 
 	public <T extends Throwable> Cont<R> Throw(Cont<T> e) {
-		return Cont.fromSD(
-				(rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(r -> err.accept(r), err));
+		return Cont.fromSD((rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(r -> err.accept(r), err));
 	}
 
 	public <T extends Throwable> Cont<R> TryCatch(Cont<R> body, Class<T> type, Function<T, Cont<R>> handle) {
