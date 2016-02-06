@@ -3,6 +3,8 @@ import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.function.*;
+import java.util.NoSuchElementException;
+
    
 public class PStream {
 	
@@ -22,6 +24,35 @@ public class PStream {
 			public Iterator<Integer> iterator() {
 				return IntStream.range(0, n).iterator();
 			}
+		};
+	}
+	
+	public static PStream of(Integer[] array) {
+		return new PStream(ofIter(array));
+	}
+
+	private static Iterable<Integer> ofIter(Integer[] array) {
+		return new Iterable<Integer>() {
+			public Iterator<Integer> iterator() {
+				return new Iterator<Integer>() {
+
+		            final int size = array.length;
+		            int cursor = 0;
+		
+		            @Override
+		            public boolean hasNext() {
+		                return cursor != size;
+		            }
+		
+		            @Override
+		            public Integer next() {
+		                if (cursor >= size)
+		                    throw new NoSuchElementException();
+		
+		                return array[cursor++];
+		            }
+		         };
+			};
 		};
 	}
 	
