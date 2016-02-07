@@ -31,7 +31,7 @@ public class Using<R> extends AbstractJavaImpl<R> {
 						err.accept(e);
 					}
 					sigma.call();
-				} , () -> {
+				} , (s) -> {
 					try {
 						t.close();
 					} catch (Exception e) {

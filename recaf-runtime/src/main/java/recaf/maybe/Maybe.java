@@ -15,7 +15,7 @@ public class Maybe<R> extends AbstractJavaImpl<R> {
 	public Optional<R> Method(Cont<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();
 		body.statementDenotation.accept(r -> { ref.value = Optional.of(r); }, 
-				() -> {  ref.value = Optional.empty(); }, () -> {  },  () -> {  }, 
+				() -> {  ref.value = Optional.empty(); }, (s) -> {  },  () -> {  }, 
 				exc -> { throw new RuntimeException(exc); });
 		return ref.value;
 	}

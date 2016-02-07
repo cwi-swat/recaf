@@ -23,7 +23,7 @@ public class Propagate<T, R> extends AbstractJavaImpl<R> {
 			exp.expressionDenotation.accept(t -> {
 				stack.push(t);
 				body.statementDenotation.accept(r -> { stack.pop(); rho.accept(r);}, 
-						() -> { stack.pop(); sigma.call(); }, () -> { }, () -> { },
+						() -> { stack.pop(); sigma.call(); }, (s) -> { }, () -> { },
 						e -> { stack.pop(); err.accept(e); });
 			}, err);
 		});

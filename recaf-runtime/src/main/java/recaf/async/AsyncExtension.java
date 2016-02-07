@@ -18,7 +18,7 @@ public class AsyncExtension<R> extends AbstractJavaImpl<R> {
 			body.statementDenotation.accept(
 					r -> promise.complete(r), 
 					() -> promise.complete(null),
-					() -> promise.complete(null),
+					(s) -> promise.complete(null),
 					() -> promise.complete(null),
 					ex -> promise.completeExceptionally(ex));
 			return null;

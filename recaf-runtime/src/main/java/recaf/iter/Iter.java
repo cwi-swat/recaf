@@ -29,7 +29,7 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 					exhausted = true;
 				} , () -> {
 					exhausted = true;
-				},  () -> {
+				},  (s) -> {
 					exhausted = true;
 				},  () -> {
 					exhausted = true;
