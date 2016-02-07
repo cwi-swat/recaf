@@ -98,14 +98,14 @@ public class TestNonNestedSwitch {
 	}
 	
 	public static void main(String args[]) {
-		/*new TestNonNestedSwitch().testSwitch_nobreak();
+		new TestNonNestedSwitch().testSwitch_nobreak();
 		System.out.println();
 		new TestNonNestedSwitch().testSwitch_break_first();
 		System.out.println();
 		new TestNonNestedSwitch().testSwitch_break_second();
 		System.out.println();
-		new TestNonNestedSwitch().testSwitch_break_second_withdefault();*/
+		new TestNonNestedSwitch().testSwitch_break_second_withdefault();
 		
-		new TestNonNestedSwitch().testSwitch_break_default_beginning();
+		//new TestNonNestedSwitch().testSwitch_break_default_beginning();
   	}
 }
