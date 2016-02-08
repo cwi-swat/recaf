@@ -64,7 +64,7 @@ syntax InterfaceDec
   ;
 
 syntax AnnoDecHead 
-  = annoDecHead: (InterfaceMod | Anno)* "@" "interface"  Id 
+  = annoDecHead: BeforeInterface* "@" "interface"  Id 
   ;
   
 syntax AnnoElemDec
@@ -72,15 +72,25 @@ syntax AnnoElemDec
   | ClassDec 
   | ConstantDec 
   | InterfaceDec 
-  | annoMethodDec: (Anno | AbstractMethodMod)* Type Id "(" ")" DefaultVal? ";" 
+  | annoMethodDec: BeforeAbstractMethod* Type Id "(" ")" DefaultVal? ";" 
   ;
   
+syntax BeforeInterface
+  = Anno
+  | InterfaceMod
+  ;  
+  
 syntax InterfaceDecHead =
-   interfaceDecHead: (InterfaceMod | Anno)* "interface"  Id TypeParams? ExtendsInterfaces? 
+   interfaceDecHead: BeforeInterface* "interface"  Id TypeParams? ExtendsInterfaces? 
+  ;
+
+syntax BeforeVar
+  = Anno
+  | VarMod 
   ;
 
 syntax LocalVarDec =
-  @prefer localVarDec: (Anno | VarMod)* Type {VarDec ","}+ 
+  @prefer localVarDec: BeforeVar* Type {VarDec ","}+ 
   ;
 
 syntax TypeParams =
@@ -103,7 +113,7 @@ syntax ClassDec =
   ;
 
 syntax ClassDecHead =
-   classDecHead: (ClassMod | Anno)* "class"  Id TypeParams? Super? Interfaces? 
+   classDecHead: BeforeClass* "class"  Id TypeParams? Super? Interfaces? 
   ;
 
 lexical SignedInteger =
@@ -166,8 +176,13 @@ lexical LEX_CharLiteral =
    char: "\'" CharContent "\'" 
   ;
 
+syntax BeforeConstant
+  = Anno
+  | ConstantMod
+  ;
+
 syntax ConstantDec =
-   constantDec: (ConstantMod | Anno)* Type {VarDec ","}+ ";" 
+   constantDec: BeforeConstant* Type {VarDec ","}+ ";" 
   ;
 
 syntax ConstantMod =
@@ -193,8 +208,13 @@ lexical EscChar =
   "\\" 
   ;
 
+syntax BeforeClass
+  = Anno
+  | ClassMod
+  ;
+
 syntax EnumDecHead =
-   enumDecHead: (Anno | ClassMod)* "enum"  Id Interfaces? 
+   enumDecHead: BeforeClass* "enum"  Id Interfaces? 
   ;
 
 syntax PackageOrTypeName =
@@ -239,8 +259,8 @@ lexical EscEscChar =
   ;
 
 syntax FormalParam =
-   param: (Anno | VarMod)* Type VarDecId 
-  |  varArityParam: (Anno | VarMod)* Type "..." VarDecId 
+   param: BeforeVar* Type VarDecId 
+  |  varArityParam: BeforeVar* Type "..." VarDecId 
   ;
 
 syntax StaticInit =
@@ -282,10 +302,15 @@ syntax NumType =
   FloatType 
   | IntType 
   ;
+  
+syntax BeforeMethod
+  = Anno
+  | MethodMod
+  ;
 
 syntax MethodDecHead =
-   methodDecHead: (Anno | MethodMod)* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Throws? 
-  |  deprMethodDecHead: (MethodMod | Anno)* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Dim+ Throws? 
+   methodDecHead: BeforeMethod* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Throws? 
+  |  deprMethodDecHead: BeforeMethod* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Dim+ Throws? 
   ;
 
 syntax Anno =
@@ -774,9 +799,14 @@ syntax StringLiteral =
   LEX_StringLiteral 
   ;
 
+syntax BeforeAbstractMethod
+  = Anno
+  | AbstractMethodMod
+  ;
+
 syntax AbstractMethodDec =
-   abstractMethodDec: (Anno | AbstractMethodMod)* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Throws? ";" 
-  |  deprAbstractMethodDec: (Anno | AbstractMethodMod)* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Dim+ Throws? ";" 
+   abstractMethodDec: BeforeAbstractMethod* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Throws? ";" 
+  |  deprAbstractMethodDec: BeforeAbstractMethod* TypeParams? ResultType Id "(" {FormalParam ","}* ")" Dim+ Throws? ";" 
   ;
 
 syntax AbstractMethodMod =
