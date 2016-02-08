@@ -78,7 +78,6 @@ tramp
 # cask packages
 .cask/
 
-
 ### Java ###
 *.class
 
