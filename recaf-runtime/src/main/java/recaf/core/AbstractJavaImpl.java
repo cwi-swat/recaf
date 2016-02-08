@@ -192,11 +192,12 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 				.fromSD((rho, sigma, brk, contin, err) -> {
 					try {
 					  thunk.call(); 
-					  sigma.call();
 					}
 					catch (Throwable t) {
 						err.accept(t);
+						return;
 					}
+					sigma.call();
 				});
 	}
 

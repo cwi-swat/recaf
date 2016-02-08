@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.*;
 
 public class TestFibIter {
+
   [Iter<Integer>]
   private static Iterable<Integer> fib() {
   	//Integer a = 0;->
