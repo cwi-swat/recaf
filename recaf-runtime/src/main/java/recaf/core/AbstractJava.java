@@ -3,12 +3,13 @@ package recaf.core;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
 public interface AbstractJava<R> {
 	<T> Cont<T> Exp(Supplier<T> e);
 	
-	<U> Cont<R> ExpStat(Cont<U> e);
+	<U> Cont<R> ExpStat(K0 e);
 
 	<U> Cont<R> Decl(Cont<U> exp, Function<U, Cont<R>> body);
 	

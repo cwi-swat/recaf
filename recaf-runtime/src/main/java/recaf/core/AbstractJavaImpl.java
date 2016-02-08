@@ -180,9 +180,17 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		});
 	}
 
-	public <U> Cont<R> ExpStat(Cont<U> e) {
+	public <U> Cont<R> ExpStat(K0 thunk) {
 		return Cont
-				.fromSD((rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(ignored -> sigma.call(), err));
+				.fromSD((rho, sigma, brk, contin, err) -> {
+					try {
+					  thunk.call(); 
+					  sigma.call();
+					}
+					catch (Throwable t) {
+						err.accept(t);
+					}
+				});
 	}
 
 	/*
