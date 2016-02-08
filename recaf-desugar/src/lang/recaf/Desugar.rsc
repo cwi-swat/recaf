@@ -14,7 +14,6 @@ import IO;
  * - introduces new (Ref) local variables for non-final formal params
  * - pass down a renaming to rename local vars if needed because a formal 
  *   param has been renamed
- * - do something about calls to void methods.  
  */
   
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
