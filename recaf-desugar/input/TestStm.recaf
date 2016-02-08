@@ -1,0 +1,34 @@
+
+
+public class TestStm {
+
+
+   enum Doors {
+     OPENED, CLOSED;
+   }
+   
+   enum Events {
+     OPEN, CLOSE;
+   }
+   
+   static Void doors(recaf Statemachine alg) {
+     state (CLOSED) {
+        System.out.println("closed");
+        on (OPEN) {
+          System.out.println("opening");
+          go! OPENED;
+        } 
+     }
+     
+     state (OPENED) {
+        System.out.println("opened");
+        on (CLOSE) {
+          System.out.println("closing");
+          go! CLOSED;
+        }
+     }
+     
+     
+   }
+
+}

@@ -1,10 +1,14 @@
 
 import recaf.ql.QL;
+import recaf.ql.RenderQL;
+import recaf.ql.RQ;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class TestQL {
 
-  Void questionnaire(recaf QL ql) {
+  public static <T> T questionnaire(recaf QL<T> ql) {
      question Boolean hasSoldHouse;
      question Boolean hasBoughtHouse;
      question Boolean hasMaintLoan;
@@ -14,4 +18,18 @@ public class TestQL {
        question Double valueResidue = sellingPrice - privateDebt;
      }
   }
+  
+  public static void main(String args[]) {
+     Map<String, Object> env = new HashMap<String, Object>();
+     env.put("hasSoldHouse", true);
+     env.put("hasSoldBoughtHouse", false);
+     env.put("hasMaintLoan", false);
+     env.put("sellingPrice", 1000000.0);
+     env.put("privateDebt", 900000.0);
+     System.out.println(env);
+     RenderQL render = new RenderQL(env);
+     RQ rq = questionnaire(render);
+     rq.render();
+  }
+  
 }

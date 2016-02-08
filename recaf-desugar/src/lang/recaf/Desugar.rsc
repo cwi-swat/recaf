@@ -307,10 +307,10 @@ Expr stm2alg((Stm)`do <Stm s> while (<Expr c>);`, Id alg, set[Id] localIds)
     Expr scps := stm2alg(s, alg, localIds),
     Expr ecps := expr2alg(c, alg, localIds);
 
+
 Expr stm2alg((Stm)`<Expr e>;`, Id alg, set[Id] localIds) 
-  = (Expr)`<Id alg>.ExpStat(<Expr ecps>)`
-  when
-    Expr ecps := expr2alg(e, alg, localIds);
+  = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e>; })`
+  ;
 
 Expr stm2alg((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`, Id alg, set[Id] localIds)
   = (Expr)`<Id alg>.TryCatchFinally(<Expr bodycps>, <Expr catchescps>, <Expr fincps>)`
