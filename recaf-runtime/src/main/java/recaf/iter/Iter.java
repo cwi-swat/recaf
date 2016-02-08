@@ -11,19 +11,16 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 
 	@SuppressWarnings("serial")
 	private static final class Yield extends RuntimeException {
-		final Object value;
-		final K0 k;
+		Object value;
+		K0 k;
 
-		public Yield(Object value, K0 k) {
-			this.value = value;
-			this.k = k;
-		}
-		
 		@Override
 		public synchronized Throwable fillInStackTrace() {
 			return this;
 		}
 	}
+	
+	private static final Yield YIELD = new Yield();
 
 	public Iterable<R> Method(SD<R> body) {
 		return new Iterable<R>() {
@@ -82,7 +79,10 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	public <U> SD<R> Yield(ED<U> exp) {
 		return (rho, sigma, brk, contin, err) -> {
 			exp.accept(v -> {
-				throw new Yield(v, sigma);
+				YIELD.value = v;
+				YIELD.k = sigma;
+				throw YIELD;
+				//throw new Yield(v, sigma);
 			} , err);
 		};
 	}
