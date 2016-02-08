@@ -6,12 +6,6 @@ import java.util.function.Predicate;
 import java.util.function.*;
 
 public class TestFibIter {
-
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
-  
   [Iter<Integer>]
   private static Iterable<Integer> fib() {
   	//Integer a = 0;->
@@ -31,7 +25,7 @@ public class TestFibIter {
     int count = 10;
     for (Integer n: fib()) {
       if(count-- == 0) {
-        println(n);
+        System.out.println(n);
         break;
       }
     }
