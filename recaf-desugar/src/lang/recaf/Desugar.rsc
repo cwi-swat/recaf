@@ -5,6 +5,17 @@ import List;
 import Set;
 import String;
 import IO;  
+
+/*
+ * TODO
+ * - fix Ref wrapping, it doesn't respect block scoping of declarations
+ * - the unwrapping of Ref vars should also happen within nested closures
+ *   if they're not shadowed by the formal parameters. 
+ * - introduces new (Ref) local variables for non-final formal params
+ * - pass down a renaming to rename local vars if needed because a formal 
+ *   param has been renamed
+ * - do something about calls to void methods.  
+ */
   
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
