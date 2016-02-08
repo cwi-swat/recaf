@@ -4,8 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.*;
 
-import generated.PStream;
-
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

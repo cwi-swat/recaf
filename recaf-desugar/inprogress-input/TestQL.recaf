@@ -1,3 +1,4 @@
+package generated;
 
 import recaf.ql.QL;
 import recaf.ql.RenderQL;
