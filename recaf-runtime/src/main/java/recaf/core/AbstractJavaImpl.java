@@ -9,8 +9,6 @@ import recaf.core.functional.ED;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
-import java.util.*;
-
 public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
 	protected R typePreserving(SD<R> body) {
