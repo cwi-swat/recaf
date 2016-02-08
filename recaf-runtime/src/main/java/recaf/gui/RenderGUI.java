@@ -1,8 +1,8 @@
 package recaf.gui;
 
 import java.io.StringWriter;
-
-import recaf.core.Cont;
+import recaf.core.functional.ED;
+import recaf.core.functional.SD;
 
 public class RenderGUI extends GUI {
 	private StringWriter writer = new StringWriter();
@@ -32,39 +32,39 @@ public class RenderGUI extends GUI {
 	}
 	
 	@Override
-	public Cont<Void> Tag(Cont<String> t, Cont<Void> body) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			t.expressionDenotation.accept(tag -> {
+	public SD<Void> Tag(ED<String> t, SD<Void> body) {
+		return (rho, sigma, brk, contin, err) -> {
+			t.accept(tag -> {
 				output("<" + tag + ">\n");
 				indent();
-				body.statementDenotation.accept(rho, () -> {
+				body.accept(rho, () -> {
 					dedent();
 					output("</" + tag + ">\n");
 					sigma.call();
 				},  brk, contin, err);
 			}, err);
-		});
+		};
 	}
 	
 	@Override
-	public Cont<Void> Button(Cont<String> label, Cont<Void> body) {
+	public SD<Void> Button(ED<String> label, SD<Void> body) {
 		// in render, we don't execute the body.
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			label.expressionDenotation.accept(l -> {
+		return (rho, sigma, brk, contin, err) -> {
+			label.accept(l -> {
 				output("<button id=\"" + nextId() + "\">" + escapeHTML(l) + "</button>\n");
 				sigma.call();
 			}, err);
-		});
+		};
 	}
 	
 	@Override
-	public Cont<Void> Echo(Cont<String> exp) {
-		return Cont.fromSD((rho, sigma,  brk, contin, err) -> {
-			exp.expressionDenotation.accept(txt -> {
+	public SD<Void> Echo(ED<String> exp) {
+		return (rho, sigma,  brk, contin, err) -> {
+			exp.accept(txt -> {
 				output(escapeHTML(txt));
 				sigma.call();
 			}, err);
-		});
+		};
 	}
 	
 	private static String escapeHTML(String s) {

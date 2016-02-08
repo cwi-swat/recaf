@@ -1,6 +1,6 @@
 package recaf.gui;
-
-import recaf.core.Cont;
+import recaf.core.functional.ED;
+import recaf.core.functional.SD;
 
 public class HandleGUI extends GUI {
 	private final String buttonClicked;
@@ -10,26 +10,26 @@ public class HandleGUI extends GUI {
 	}
 	
 	@Override
-	public Cont<Void> Tag(Cont<String> t, Cont<Void> body) {
+	public SD<Void> Tag(ED<String> t, SD<Void> body) {
 		return body;
 	}
 	
 	@Override
-	public Cont<Void> Button(Cont<String> label, Cont<Void> body) {
+	public SD<Void> Button(ED<String> label, SD<Void> body) {
 		// in handle, we execute the body if the current button was clickd.
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+		return (rho, sigma, brk, contin, err) -> {
 			String id = nextId();
 			if (buttonClicked.equals(id)) {
-				body.statementDenotation.accept(rho, sigma, brk, contin, err);
+				body.accept(rho, sigma, brk, contin, err);
 			}
 			else {
 				sigma.call();
 			}
-		});
+		};
 	}
 	
 	@Override
-	public Cont<Void> Echo(Cont<String> exp) {
+	public SD<Void> Echo(ED<String> exp) {
 		return Empty();
 	}
 	

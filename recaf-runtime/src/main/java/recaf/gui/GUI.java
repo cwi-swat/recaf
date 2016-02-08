@@ -1,7 +1,6 @@
 package recaf.gui;
 
 import recaf.core.AbstractJavaImpl;
-import recaf.core.Cont;
 import recaf.core.functional.ED;
 import recaf.core.functional.SD;
 
@@ -12,13 +11,13 @@ public abstract class GUI extends AbstractJavaImpl<Void> {
 		return "id" + idCount++;
 	}
 	
-	public Void Method(Cont<Void> body) {
+	public Void Method(SD<Void> body) {
 		return typePreserving(body);
 	}
 	
-	public abstract Cont<Void> Tag(Cont<String> t, Cont<Void> body);
+	public abstract SD<Void> Tag(ED<String> t, SD<Void> body);
 
-	public abstract Cont<Void> Button(Cont<String> label, Cont<Void> body);
+	public abstract SD<Void> Button(ED<String> label, SD<Void> body);
 
-	public abstract Cont<Void> Echo(Cont<String> exp);	
+	public abstract SD<Void> Echo(ED<String> exp);	
 }

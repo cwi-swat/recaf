@@ -1,13 +1,12 @@
 package recaf.delim;
 
 import recaf.core.AbstractJavaImpl;
-import recaf.core.Cont;
+import recaf.core.functional.SD;
 
 public class ResetExtension<R> extends AbstractJavaImpl<R> {
 
-	public Shift<R, R, R> Method(Cont<R> body) {
-		
-		body.statementDenotation.accept(v -> {}, ()-> {}, (s)-> {},()-> {}, ex -> {});
+	public Shift<R, R, R> Method(SD<R> body) {
+		body.accept(v -> {}, ()-> {}, (s)-> {},()-> {}, ex -> {});
 		return null;
 	}
 

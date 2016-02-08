@@ -3,8 +3,9 @@ package recaf.iter;
 import java.util.Iterator;
 
 import recaf.core.AbstractJavaImpl;
-import recaf.core.Cont;
+import recaf.core.functional.ED;
 import recaf.core.functional.K0;
+import recaf.core.functional.SD;
 
 public class Iter<R> extends AbstractJavaImpl<R> {
 
@@ -19,13 +20,13 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 		}
 	}
 
-	public Iterable<R> Method(Cont<R> body) {
+	public Iterable<R> Method(SD<R> body) {
 		return new Iterable<R>() {
 
 			boolean exhausted = false;
 			R current = null;
 			K0 k = () -> {
-				body.statementDenotation.accept(r -> {
+				body.accept(r -> {
 					exhausted = true;
 				} , () -> {
 					exhausted = true;
@@ -69,19 +70,19 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	}
 
 	@Override
-	public Cont<R> Return(Cont<R> e) {
+	public SD<R> Return(ED<R> e) {
 		throw new AssertionError("Cannot return value from iterator.");
 	}
 
-	public <U> Cont<R> Yield(Cont<U> exp) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			exp.expressionDenotation.accept(v -> {
+	public <U> SD<R> Yield(ED<U> exp) {
+		return (rho, sigma, brk, contin, err) -> {
+			exp.accept(v -> {
 				throw new Yield(v, sigma);
 			} , err);
-		});
+		};
 	}
 
-	public <U> Cont<R> YieldFrom(Cont<Iterable<U>> exp) {
+	public <U> SD<R> YieldFrom(ED<Iterable<U>> exp) {
 		return For(exp, e -> Yield(Exp(() -> e)));
 	}
 }

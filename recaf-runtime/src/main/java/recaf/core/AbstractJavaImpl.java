@@ -5,16 +5,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import recaf.core.functional.ED;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
 import java.util.*;
 
-public class AbstractJavaImpl<R> implements AbstractJava<R> {
+public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
-	protected R typePreserving(Cont<R> body) {
+	protected R typePreserving(SD<R> body) {
 		Ref<R> result = new Ref<>();
-		body.statementDenotation.accept(r -> {
+		body.accept(r -> {
 			result.value = r;
 		} , () -> {
 		} , (s) -> {
@@ -25,8 +26,8 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		return result.value;
 	}
 
-	public <T> Cont<T> Exp(Supplier<T> e) {
-		return Cont.fromED((k, err) -> {
+	public <T> ED<T> Exp(Supplier<T> e) {
+		return (k, err) -> {
 			T t = null;
 			try {
 				t = e.get();
@@ -35,147 +36,147 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 				return;
 			}
 			k.accept(t);
-		});
+		};
 	}
 
-	public Cont<R> Empty() {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> sigma.call());
+	public SD<R> Empty() {
+		return (rho, sigma, brk, contin, err) -> sigma.call();
 	}
 
-	public Cont<R> If(Cont<Boolean> e, Cont<R> s) {
+	public SD<R> If(ED<Boolean> e, SD<R> s) {
 		return If(e, s, Empty());
 	}
 
-	public Cont<R> If(Cont<Boolean> e, Cont<R> s1, Cont<R> s2) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(x -> {
+	public SD<R> If(ED<Boolean> e, SD<R> s1, SD<R> s2) {
+		return (rho, sigma, brk, contin, err) -> e.accept(x -> {
 			if (x) {
-				s1.statementDenotation.accept(rho, sigma, brk, contin, err);
+				s1.accept(rho, sigma, brk, contin, err);
 			} else {
-				s2.statementDenotation.accept(rho, sigma, brk, contin, err);
+				s2.accept(rho, sigma, brk, contin, err);
 			}
-		} , err));
+		} , err);
 	}
 
-	public Cont<R> Labeled(String label, Cont<R> s) {
+	public SD<R> Labeled(String label, SD<R> s) {
 		return null;
 	}
 
-	public Cont<R> While(Cont<Boolean> e, Cont<R> s) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+	public SD<R> While(ED<Boolean> e, SD<R> s) {
+		return (rho, sigma, brk, contin, err) -> {
 			new K0() {
 				@Override
 				public void call() {
-					If(e, Seq2(s, Cont.<R> fromSD((a, b, c, d, e) -> call()))).statementDenotation.accept(rho, sigma,
-							brk, contin, err);
+					If(e, Seq2(s, (a, b, c, d, e) -> call())).accept(rho, sigma, brk, contin, err);
 				}
 			}.call();
-		});
+		};
 	}
 
-	public Cont<R> DoWhile(Cont<R> s, Cont<Boolean> e) {
+	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
 		return Seq2(s, While(e, s));
 	}
 
-	/* TODO: Switch
-	- the fields are bad, and should not be needed (e.g. defaultFound, data etc.)
-	- break now only works within cases, but it should also work for while/for 
-	  (use the brk continuation to deal with break)
-	- you cannot use foreach over the cases, chain them. Start with the first, 
-	  pass the tail as the normal continuation (e.g., when there’s no break).
-	- it should also work for Strings, so use Object, not Integer
-	- data.caseNumber should be avoided by having a ​*different*​ denotation for case/defaults
-	*/
+	/*
+	 * TODO: Switch - the fields are bad, and should not be needed (e.g.
+	 * defaultFound, data etc.) - break now only works within cases, but it
+	 * should also work for while/for (use the brk continuation to deal with
+	 * break) - you cannot use foreach over the cases, chain them. Start with
+	 * the first, pass the tail as the normal continuation (e.g., when there’s
+	 * no break). - it should also work for Strings, so use Object, not Integer
+	 * - data.caseNumber should be avoided by having a ​*different*​ denotation
+	 * for case/defaults
+	 */
 	SwitchContext data = new SwitchContext();
 
-	public <S> Cont<S> Switch(Cont<Integer> expr, Cont<S>... cases) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> expr.expressionDenotation.accept(x -> {
+	public <S> SD<S> Switch(ED<Integer> expr, SD<S>... cases) {
+		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
 			data.caseNumber = x;
 			Stream.of(cases).forEach(_case -> {
 				if (!data.breakFound)
-					_case.statementDenotation.accept(rho, sigma, brk, contin, err);
+					_case.accept(rho, sigma, brk, contin, err);
 			});
-		} , err));
+		} , err);
 	}
 
-	public Cont<R> Case(Cont<Integer> constant, Cont<R> expStat) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			constant.expressionDenotation.accept(r -> {
+	public SD<R> Case(ED<Integer> constant, SD<R> expStat) {
+		return (rho, sigma, brk, contin, err) -> {
+			constant.accept(r -> {
 				if (r.equals(data.caseNumber)) {
 					data.caseFound = true;
 				}
 				if (data.caseFound || data.defaultFound) {
-					expStat.statementDenotation.accept(rho, sigma, brk, contin, err);
+					expStat.accept(rho, sigma, brk, contin, err);
 				}
 			} , err);
-		});
+		};
 	}
 
-	public Cont<R> Default(Cont<R> expStat) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			expStat.statementDenotation.accept(rho, sigma, brk, contin, err);
+	public SD<R> Default(SD<R> expStat) {
+		return (rho, sigma, brk, contin, err) -> {
+			expStat.accept(rho, sigma, brk, contin, err);
 			data.defaultFound = true;
-		});
+		};
 	}
 
-	public Cont<R> Break() {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+	public SD<R> Break() {
+		return (rho, sigma, brk, contin, err) -> {
 			data.breakFound = true;
 			brk.accept("");
-		});
+		};
 	}
 
-	public Cont<R> Break(String label) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
+	public SD<R> Break(String label) {
+		return (rho, sigma, brk, contin, err) -> {
 			data.breakFound = true;
 			brk.accept(label);
-		});
+		};
 	}
 
-	public Cont<R> Continue() {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> contin.call());
+	public SD<R> Continue() {
+		return (rho, sigma, brk, contin, err) -> contin.call();
 	}
 
-	public Cont<R> Continue(String label) {
+	public SD<R> Continue(String label) {
 		return null;
 	}
 
-	public Cont<R> Return(Cont<R> e) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(rho, err));
+	public SD<R> Return(ED<R> e) {
+		return (rho, sigma, brk, contin, err) -> e.accept(rho, err);
 	}
 
-	public Cont<R> Return() {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> rho.accept(null));
+	public SD<R> Return() {
+		return (rho, sigma, brk, contin, err) -> rho.accept(null);
 	}
 
-	public final Cont<R> Seq(Cont<R>... ss) {
+	public final SD<R> Seq(SD<R>... ss) {
 		assert ss.length > 0;
 		return Stream.of(ss).reduce(this::Seq2).get();
 	}
 
-	protected Cont<R> Seq2(Cont<R> s1, Cont<R> s2) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> s1.statementDenotation.accept(rho,
-				() -> s2.statementDenotation.accept(rho, sigma, brk, contin, err), brk, contin, err));
+	protected SD<R> Seq2(SD<R> s1, SD<R> s2) {
+		return (rho, sigma, brk, contin, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, brk, contin, err), brk,
+				contin, err);
 	}
 
-	public <T extends Throwable> Cont<R> Throw(Cont<T> e) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> e.expressionDenotation.accept(r -> err.accept(r), err));
+	public <T extends Throwable> SD<R> Throw(ED<T> e) {
+		return (rho, sigma, brk, contin, err) -> e.accept(r -> err.accept(r), err);
 	}
 
-	public <T extends Throwable> Cont<R> TryCatch(Cont<R> body, Class<T> type, Function<T, Cont<R>> handle) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			body.statementDenotation.accept(rho, sigma, brk, contin, (Throwable exc) -> {
+	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
+		return (rho, sigma, brk, contin, err) -> {
+			body.accept(rho, sigma, brk, contin, (Throwable exc) -> {
 				if (type.isInstance(exc)) {
-					handle.apply((T) exc).statementDenotation.accept(rho, sigma, brk, contin, err);
+					handle.apply((T) exc).accept(rho, sigma, brk, contin, err);
 				} else {
 					err.accept(exc);
 				}
 			});
-		});
+		};
 	}
 
-	public Cont<R> TryFinally(Cont<R> body, SD<R> fin) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> {
-			body.statementDenotation.accept(r -> {
+	public SD<R> TryFinally(SD<R> body, SD<R> fin) {
+		return (rho, sigma, brk, contin, err) -> {
+			body.accept(r -> {
 				fin.accept(rho, () -> rho.accept(r), brk, contin, err);
 			} , () -> {
 			} , (s) -> {
@@ -184,37 +185,34 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 			} , (Throwable exc) -> {
 				fin.accept(rho /* todo: exception here too */, () -> err.accept(exc), brk, contin, err);
 			});
-		});
+		};
 	}
 
-	public <U> Cont<R> ExpStat(K0 thunk) {
-		return Cont
-				.fromSD((rho, sigma, brk, contin, err) -> {
-					try {
-					  thunk.call(); 
-					  sigma.call();
-					}
-					catch (Throwable t) {
-						err.accept(t);
-					}
-				});
+	public <U> SD<R> ExpStat(K0 thunk) {
+		return (rho, sigma, brk, contin, err) -> {
+			try {
+				thunk.call();
+				sigma.call();
+			} catch (Throwable t) {
+				err.accept(t);
+			}
+		};
 	}
 
 	/*
 	 * HOAS for let expressions int x = 3; s ==> Let(Exp(3), x -> [[s]]) S Let(E
 	 * exp, Function<E, S> body);
 	 */
-	public <U> Cont<R> Decl(Cont<U> exp, Function<U, Cont<R>> body) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> exp.expressionDenotation
-				.accept(r -> body.apply(r).statementDenotation.accept(rho, sigma, brk, contin, err), err));
+	public <U> SD<R> Decl(ED<U> exp, Function<U, SD<R>> body) {
+		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(r).accept(rho, sigma, brk, contin, err),
+				err);
 	}
 
-	public <U> Cont<R> For(Cont<Iterable<U>> coll, Function<U, Cont<R>> body) {
-		return Cont.fromSD((rho, sigma, brk, contin, err) -> coll.expressionDenotation.accept(iterable -> {
+	public <U> SD<R> For(ED<Iterable<U>> coll, Function<U, SD<R>> body) {
+		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
 			Iterator<U> iter = iterable.iterator();
-			While(Cont.fromED((s, err2) -> s.accept(iter.hasNext())),
-					Decl(Cont.fromED((s, err2) -> s.accept(iter.next())), body)).statementDenotation.accept(rho, sigma,
-							brk, contin, err);
-		} , err));
+			While((s, err2) -> s.accept(iter.hasNext()), Decl((s, err2) -> s.accept(iter.next()), body)).accept(rho,
+					sigma, brk, contin, err);
+		} , err);
 	}
 }

@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import recaf.core.AbstractJavaImpl;
-import recaf.core.Cont;
 import recaf.core.functional.ED;
 import recaf.core.functional.SD;
 
 public class ParFor<R> extends AbstractJavaImpl<R> {
 	
-	public R Method(Cont<R> body) {
+	public R Method(SD<R> body) {
 		return typePreserving(body);
 	}
 
