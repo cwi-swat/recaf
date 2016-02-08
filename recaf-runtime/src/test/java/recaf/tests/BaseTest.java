@@ -11,18 +11,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,13 +28,20 @@ import org.junit.rules.TestWatcher;
 import org.rascalmpl.values.ValueFactoryFactory;
 
 public class BaseTest {
+
+	private static final String COMPILE_OUTPUT_DIR = "target/test-classes/";
+	private static final String COMPILETIME_CP = "src/main/java/:src/test-generated/";
+	private static final String RUNTIME_CP = "target/classes/:target/test-classes/";
+	private static final String PACKAGE_NAME = "generated.";
+	private static final String GENERATED_DIR = "src/test-generated/generated/";
+	private static final String RECAF_SRC = "/../recaf-desugar/src/";
+	private static final String RECAF_GENERATED_DIR = "cwd:///" + GENERATED_DIR;
+	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
+
 	protected PrintWriter out;
 	protected PrintWriter err;
 
 	private static boolean generated_sources = false;
-
-	private static final String RECAF_DESUGAR_SRC = "/../recaf-desugar/src/";
-	private static final String SRC_TEST_RESOURCES = "src/test-generated/";
 
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
@@ -52,9 +56,8 @@ public class BaseTest {
 
 			try {
 				runner.addRascalSearchPathContributor(
-						ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", RECAF_DESUGAR_SRC));
-				runner.run("lang::recaf::DesugarMain",
-						new String[] { "cwd:///../recaf-desugar/input", "cwd:///" + SRC_TEST_RESOURCES });
+						ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", RECAF_SRC));
+				runner.run("lang::recaf::DesugarMain", new String[] { RECAF_INPUT, RECAF_GENERATED_DIR });
 			} catch (Exception e) {
 				LogManager.getLogger().error("Generation failed", e);
 				LogManager.getLogger().info("Exiting...");
@@ -71,9 +74,9 @@ public class BaseTest {
 	}
 
 	protected void runCompiler(String pathname) throws CompiletimeException {
-		String[] compileOptions = new String[] { "-cp", "src/main/java/:" + SRC_TEST_RESOURCES };
+		String[] compileOptions = new String[] { "-cp", COMPILETIME_CP, "-d", COMPILE_OUTPUT_DIR };
 
-		pathname = SRC_TEST_RESOURCES + pathname;
+		pathname = GENERATED_DIR + pathname;
 
 		Iterable<String> compilationOptions = asList(compileOptions);
 
@@ -111,8 +114,8 @@ public class BaseTest {
 
 			listArgs.add(jdk);
 			listArgs.add("-cp");
-			listArgs.add(SRC_TEST_RESOURCES + ":target/classes/");
-			listArgs.add(test);
+			listArgs.add(RUNTIME_CP);
+			listArgs.add(PACKAGE_NAME + test);
 
 			String[] res = new String[listArgs.size()];
 

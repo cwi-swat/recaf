@@ -1,3 +1,5 @@
+package generated;
+
 import recaf.iter.Iter;
 import java.util.stream.IntStream;
 import java.util.Iterator;

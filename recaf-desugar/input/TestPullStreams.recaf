@@ -1,3 +1,4 @@
+package generated;
 public class TestPullStreams {
 	public static void main(String args[]) {
 		Integer result = PStream

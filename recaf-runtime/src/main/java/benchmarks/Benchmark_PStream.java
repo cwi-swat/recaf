@@ -70,7 +70,7 @@ public class Benchmark_PStream {
         return value;
     }
     
-    //TODO: PStream Benchmarks (fundamentally Pull)
+    //PStream Benchmarks (fundamentally Pull)
 //    @Benchmark
 //    public Integer reduce_PStream() {
 //    	Integer value = PStream.of(v).sum();
@@ -93,5 +93,4 @@ public class Benchmark_PStream {
 //                .sum();
 //    	return value;
 //    }
-
 }
