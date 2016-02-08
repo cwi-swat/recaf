@@ -76,8 +76,15 @@ public class AbstractJavaImpl<R> implements AbstractJava<R> {
 		return Seq2(s, While(e, s));
 	}
 
-	// TODO: in case of nested switches, this should be curried and restored
-	// accordingly
+	/* TODO: Switch
+	- the fields are bad, and should not be needed (e.g. defaultFound, data etc.)
+	- break now only works within cases, but it should also work for while/for 
+	  (use the brk continuation to deal with break)
+	- you cannot use foreach over the cases, chain them. Start with the first, 
+	  pass the tail as the normal continuation (e.g., when there’s no break).
+	- it should also work for Strings, so use Object, not Integer
+	- data.caseNumber should be avoided by having a ​*different*​ denotation for case/defaults
+	*/
 	SwitchContext data = new SwitchContext();
 
 	public <S> Cont<S> Switch(Cont<Integer> expr, Cont<S>... cases) {
