@@ -1,6 +1,6 @@
 module lang::recaf::Recaf
 
-extend lang::java::\syntax::Java15;
+extend lang::java::Java8;
 
 syntax KId
   = @category="MetaKeyword" Id
@@ -50,24 +50,13 @@ syntax VarMod
 syntax Modifier
   = "default"
   ;
-  
-keyword Keyword = "default";
-   
+
 syntax Rest
    = KId ":"  Block
    | KId ":" "(" Expr ")" Block
    | KId ":" "(" FormalParam ")" Block
    | KId ":" "(" FormalParam ":" Expr ")" Block
    ;
-
-syntax Expr
-  = right cond: Expr CondMid Expr 
-  > "(" {FormalParam ","}* ")" "-\>" Expr
-  | "(" {FormalParam ","}* ")" "-\>" Block
-  | "(" {Id ","}+ ")" "-\>" Expr
-  | "(" {Id ","}+ ")" "-\>" Block
-  | Id "-\>" Expr
-  | Id "-\>" Block
-  ;
+  
 
 
