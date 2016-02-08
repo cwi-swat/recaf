@@ -5,6 +5,7 @@ public class TestUsing {
 
   static Void println(Object o) {
     System.out.println(o);
+    System.out.println(o);
     return null;
   }
   

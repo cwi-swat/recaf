@@ -13,7 +13,7 @@ public class TestFibIter {
   }
   
   [Iter<Integer>]
-  Iterable<Integer> fib() {
+  private static Iterable<Integer> fib() {
   	//Integer a = 0;->
   	int a = 0;
   	
@@ -27,6 +27,8 @@ public class TestFibIter {
   	}
   } 
   
+
+
   public static void main(String args[]) {
     int count = 10;
     for (Integer n: new TestFibIter().fib()) {
