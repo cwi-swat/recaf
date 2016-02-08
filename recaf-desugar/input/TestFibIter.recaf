@@ -27,11 +27,9 @@ public class TestFibIter {
   	}
   } 
   
-
-
   public static void main(String args[]) {
     int count = 10;
-    for (Integer n: new TestFibIter().fib()) {
+    for (Integer n: fib()) {
       if(count-- == 0) {
         println(n);
         break;
