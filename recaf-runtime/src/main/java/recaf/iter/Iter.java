@@ -18,6 +18,11 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 			this.value = value;
 			this.k = k;
 		}
+		
+		@Override
+		public synchronized Throwable fillInStackTrace() {
+			return this;
+		}
 	}
 
 	public Iterable<R> Method(SD<R> body) {
