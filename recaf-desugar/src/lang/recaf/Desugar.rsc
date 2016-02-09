@@ -458,7 +458,7 @@ Expr expr2alg(Expr e, Id alg, Names names)
 Expr stm2alg((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg, Names names)
   = (Expr)`<Id alg>.Switch(<Expr ecps>, <{Expr ","}* es>)`
   when
-    ecps := expr2alg(e, alg),
+    ecps := expr2alg(e, alg, names),
     exprs := ( [] | it + group2alg(g, alg, names) | g <- groups ) + labels2alg(labels, alg),
     es := lst2sepExps(exprs);
     
@@ -486,7 +486,7 @@ list[Expr] group2alg((SwitchGroup)`<SwitchLabel label> <SwitchLabel+ labels> <Bl
 Expr case2alg((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg, Names names)
   = (Expr)`<Id alg>.Case(<Expr ecps>, <Expr stmscps>)`
   when
-    Expr ecps := expr2alg(e, alg),
+    Expr ecps := expr2alg(e, alg, names),
     Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg,names);
 
 Expr case2alg((SwitchLabel)`default:`, BlockStm+ stms, Id alg, Names names)
