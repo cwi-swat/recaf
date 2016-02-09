@@ -95,7 +95,7 @@ public class TestNonNestedSwitch {
 			case 2: 
 				print("two");
 		} 
-		return selection;
+		return selection; // returns two
 	}
 	
 	public static void main(String args[]) {
