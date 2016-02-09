@@ -1,0 +1,13 @@
+package generated;
+
+import recaf.core.Ref;
+import recaf.dummy.DummyExtension;
+
+public class TestLocals {
+
+  public Integer doit(recaf DummyExtension<Integer> alg, int x, final Integer $x) {
+     return x;
+     return $x;
+  }
+
+}

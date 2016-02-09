@@ -30,7 +30,7 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
         when <bs, names> := fps2decls(fs),
-             cps := method2alg(b, alg)
+             cps := method2alg(b, alg, names)
              
        
       case (MethodDec)`[<ClassOrInterfaceType t>] 
@@ -43,7 +43,7 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
         when
           <bs, names> := fps2decls(fs),
           alg := (Id)`$alg`, 
-          cps := method2alg(b, alg)
+          cps := method2alg(b, alg, names)
    }
 }
 
@@ -72,7 +72,7 @@ tuple[LocalVarDec,Names] fp2decl((FormalParam)`<Type t> <Id x>`, Names names) {
 
 tuple[BlockStm*, Names] fps2decls({FormalParam ","}* fs) {
    b = (Stm)`{}`;
-   names = <{}, ()>;
+   names = <{}, ( x: x | /Id x := fs )>; // init with identity renaming.
    for (f <- fs, (Stm)`{<BlockStm* bs>}` := b) {
      <ld, names> = fp2decl(f, names);
      b = (Stm)`{<BlockStm* bs> <LocalVarDec ld>;}`;
@@ -83,309 +83,383 @@ tuple[BlockStm*, Names] fps2decls({FormalParam ","}* fs) {
    throw "Cannot happen";
 }
 
-Expr method2alg(Block b, Id alg) 
-  = (Expr)`<Id alg>.Method(<Expr bcps2>)`
+Expr method2alg(Block b, Id alg, Names names) 
+  = (Expr)`<Id alg>.Method(<Expr bcps>)`
   when
-    localIds := collectVars(b),
-    bcps := block2alg(b, alg, localIds),
-    newBlock := addRefs(b, localIds),
-    bcps2 := block2alg(newBlock, alg, localIds);
+    bcps := block2alg(b, alg, names);
     
-set[Id] collectVars(Block b){
-	set[Id] localVars = {};
-	visit(b){
-		case (VarDec) `<Id x>`:{ localVars += {x}; }
-		case (VarDec) `<Id x> = <VarInit e>`:{ localVars += {x} ; }
-		default:{};
-	};
-	return localVars;
-}
+//set[Id] collectVars(Block b){
+//	set[Id] localVars = {};
+//	visit(b){
+//		case (VarDec) `<Id x>`:{ localVars += {x}; }
+//		case (VarDec) `<Id x> = <VarInit e>`:{ localVars += {x} ; }
+//		default:{};
+//	};
+//	return localVars;
+//}
+//
+//Block addRefs(Block b, Names names) = visit(b){
+//    	case (LHS) `<Id x>` => x in names ? (LHS) `<Id x>.value` : (LHS) `<Id x>`
+//    	case (Expr) `<Id x>` => x in names ? (Expr) `<Id x>.value` : (Expr) `<Id x>`	
+//    	case (LocalVarDec) `<Type t> <Id x>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x>`
+//    		when newt := boxed(t)
+//    	case (LocalVarDec) `<Type t> <Id x> = <Expr e>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x> = new Ref\<<Type newt>\>(<Expr e>)`
+//    		when newt := boxed(t)
+//};
 
-Block addRefs(Block b, set[Id] localIds) = visit(b){
-    	case (LHS) `<Id x>` => x in localIds ? (LHS) `<Id x>.value` : (LHS) `<Id x>`
-    	case (Expr) `<Id x>` => x in localIds ? (Expr) `<Id x>.value` : (Expr) `<Id x>`	
-    	case (LocalVarDec) `<Type t> <Id x>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x>`
-    		when newt := boxed(t)
-    	case (LocalVarDec) `<Type t> <Id x> = <Expr e>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x> = new Ref\<<Type newt>\>(<Expr e>)`
-    		when newt := boxed(t)
-};
 
-//LocalVarDec wrap(Type t, Id x, Expr e) =  (LocalVarDec) `<Type t> <Id x> = new Ref(<Expr e>)`;
+Names declare(Id x, Names names) 
+  = <names.refs + {x}, names.renaming>;
+
+Names declare((VarDec)`<Id x>`, Names names) 
+  = <names.refs + {x}, names.renaming>;
+
+Names declare((VarDec)`<Id x> = <Expr _>`, Names names) 
+  = <names.refs + {x}, names.renaming>;
+
+Names declare((FormalParam)`<Type t> <Id x>`, Names names) 
+  = <names.refs + {x}, names.renaming>;
+
+default Names declare(FormalParam f, Names names) 
+  = names;
+
 
 /// Extensions
 
 // return-like
-Expr stm2alg((Stm)`<KId ext>! <Expr e>;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext>! <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>)`
   when
-    Expr ecps := expr2alg(e, alg, localIds),
+    Expr ecps := expr2alg(e, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // for like
-Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
   when 
-    Expr ecps := expr2alg(e, alg, localIds),
-    Expr scps := stm2alg(s, alg, localIds),
+    Expr ecps := expr2alg(e, alg, names),
+    Expr scps := stm2alg(s, alg, declare(f, names)),
     Id method := [Id]capitalize("<ext>");
 
 // while like
-Expr stm2alg((Stm)`<KId ext> (<Expr c>) <Block b>`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext> (<Expr c>) <Block b>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr bcps>)`
   when 
-    Expr ecps := expr2alg(c, alg, localIds),
-    Expr bcps := block2alg(b, alg, localIds),
+    Expr ecps := expr2alg(c, alg, names),
+    Expr bcps := block2alg(b, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // try-like
-Expr stm2alg((Stm)`<KId ext> <Block b>`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext> <Block b>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr bcps>)`
   when 
-    Expr bcps := block2alg(b, alg, localIds),
+    Expr bcps := block2alg(b, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // switch-like
-Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr itemscps>;})`
   when 
-    Expr ecps := expr2alg(e, alg, localIds),
-    Expr itemscps := items2alg([ i | i <- items ], alg, localIds),
+    Expr ecps := expr2alg(e, alg, names),
+    Expr itemscps := items2alg([ i | i <- items ], alg, declare(f, names)),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2alg((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr itemscps>)`
   when 
-    Expr ecps := expr2alg(e, alg, localIds),
-    Expr itemscps := items2alg([ i | i <- items ], alg, localIds),
+    Expr ecps := expr2alg(e, alg, names),
+    Expr itemscps := items2alg([ i | i <- items ], alg, names),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2alg((Stm)`<KId ext> {<Item+ items>}`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`<KId ext> {<Item+ items>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr itemscps>)`
   when 
-    Expr itemscps := items2alg([ i | i <- items ], alg, localIds),
+    Expr itemscps := items2alg([ i | i <- items ], alg, names),
     Id method := [Id]capitalize("<ext>");
 
-Expr items2alg(list[Item] items:[], Id alg, set[Id] localIds)
+Expr items2alg(list[Item] items:[], Id alg, Names names)
   = (Expr)`java.util.Arrays.asList()`;
 
-Expr items2alg(list[Item] items:[Item x, *xs], Id alg, set[Id] localIds)
+Expr items2alg(list[Item] items:[Item x, *xs], Id alg, Names names)
   = (Expr)`java.util.Arrays.asList(<Expr xcps>, <{Expr ","}* es>)`
   when
-    Expr xcps := item2alg(x, alg, localIds),
-    (Expr)`java.util.Arrays.asList(<{Expr ","}* es>)` := items2alg(xs, alg, localIds);
+    Expr xcps := item2alg(x, alg, names),
+    (Expr)`java.util.Arrays.asList(<{Expr ","}* es>)` := items2alg(xs, alg, names);
 
-Expr item2alg((Item)`<KId kw> <Expr e>: <BlockStm+ stms>`, Id alg, set[Id] localIds)
+Expr item2alg((Item)`<KId kw> <Expr e>: <BlockStm+ stms>`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr stmscps>)`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr ecps := expr2alg(e, alg, localIds),
-    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, localIds);
+    Expr ecps := expr2alg(e, alg, names),
+    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, names);
   
-Expr item2alg((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg, set[Id] localIds)
+Expr item2alg((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmscps>; })`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, localIds);
+    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, declare(f, names));
 
 
 // new style
-Expr stm2alg((Stm)`<KId kw> (<{FormalParam ","}+ fs>) <Stm stm>`, Id alg, set[Id] localIds)
+Expr stm2alg((Stm)`<KId kw> (<{FormalParam ","}+ fs>) <Stm stm>`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>((<{FormalParam  ","}+ fs>) -\> { return <Expr stmcps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
-    Expr stmcps := stm2alg(stm, alg, localIds);
+    Expr stmcps := stm2alg(stm, alg, ( names | declare(f, it) | f <- fs ));
   
 
 //////
 
 
-Expr stm2alg((Stm)`continue <Id x>;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`continue <Id x>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Continue(<Expr label>)`
   when 
     Expr label := [Expr]"\"<x>\"";
   
-Expr stm2alg((Stm)`continue;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`continue;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Continue()`;
 
-Expr stm2alg((Stm)`break <Id x>;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`break <Id x>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Break(<Expr label>)`
   when 
     Expr label := [Expr]"\"<x>\"";
   
-Expr stm2alg((Stm)`break;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`break;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Break()`;
 
-Expr stm2alg((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, set[Id] localIds) 
-  = (Expr)`<Id alg>.For(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
-  when 
-    Expr ecps := expr2alg(e, alg, localIds),
-    Expr scps := stm2alg(s, alg, localIds);
+FormalParam fp2ref((FormalParam)`<Type t> <Id x>`)
+  = (FormalParam)`Ref\<<Type t2>\> <Id x>`
+  when
+    t2 := boxed(t);
 
-Expr stm2alg((Stm)`for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, set[Id] localIds)
+
+// NB: for loop vars are mutable.
+Expr stm2alg((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
+  = (Expr)`<Id alg>.For(<Expr ecps>, (<FormalParam f2>) -\> {return <Expr scps>;})`
+  when 
+    Expr ecps := expr2alg(e, alg, names),
+    Expr scps := stm2alg(s, alg, declare(f, names)),
+    FormalParam f2 := fp2ref(f);
+
+Expr stm2alg((Stm)`for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
   = TODO;  
 
-Expr stm2alg((Stm)`for (<LocalVarDec vd>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, set[Id] localIds)
-  = stm2alg((Stm)`{<LocalVarDec vd>; for(; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, localIds);  
+Expr stm2alg((Stm)`for (<LocalVarDec vd>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
+  = stm2alg((Stm)`{<LocalVarDec vd>; for(; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, names);  
     
-Expr stm2alg((Stm)`throw <Expr e>;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`throw <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Throw(<Expr ecps>)`
   when
-    Expr ecps := expr2alg(e, alg, localIds);
+    Expr ecps := expr2alg(e, alg, names);
 
-Expr stm2alg((Stm)`return <Expr e>;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`return <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Return(<Expr ecps>)`
   when
-    Expr ecps := expr2alg(e, alg, localIds);
+    Expr ecps := expr2alg(e, alg, names);
 
-Expr stm2alg((Stm)`return;`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`return;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Return()`;
 
-Expr stm2alg((Stm)`;`, Id alg, set[Id] localIds) = (Expr)`<Id alg>.Empty()`;
+Expr stm2alg((Stm)`;`, Id alg, Names names) = (Expr)`<Id alg>.Empty()`;
 
-Expr stm2alg((Stm)`<Block b>`, Id alg, set[Id] localIds) = block2alg(b, alg, localIds);
+Expr stm2alg((Stm)`<Block b>`, Id alg, Names names) = block2alg(b, alg, names);
 
 // TODO: ClassDec as blockstm
-Expr block2alg((Block)`{}`, Id alg, set[Id] localIds) = (Expr)`<Id alg>.Empty()`;
+Expr block2alg((Block)`{}`, Id alg, Names names) = (Expr)`<Id alg>.Empty()`;
 
-// singletons
-Expr block2alg((Block)`{<Type t> <{VarDec ","}+ vs>;}`, Id alg, set[Id] localIds) 
-  = varDecs2alg(t, vs, (Expr)`<Id alg>.Empty()`, alg, localIds);
+Expr block2alg((Block)`{<Type t> <VarDec vd>, <{VarDec ","}+ vs>;}`, Id alg, Names names) 
+  = block2alg((Block)`{<Type t> <VarDec vd>; <Type t> <{VarDec ","}+ vs>;}`);
 
-Expr block2alg((Block)`{<KId kw> <FormalParam f>;}`, Id alg, set[Id] localIds) 
+Expr block2alg((Block)`{<Type t> <VarDec vd>;}`, Id alg, Names names)
+  = varDec2alg(t, vd, (Expr)`<Id alg>.Empty()`, alg, names); 
+
+// todo: annos/modifiers
+Expr block2alg((Block)`{<Type t> <VarDec vd>; <BlockStm+ ss>}`, Id alg, Names names) 
+  = varDec2alg(t, vd, sscps, alg, names)
+  when
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, declare(vd, names));
+
+// binding extensions (let/maybe etc.) introduce final variables. 
+Expr block2alg((Block)`{<KId kw> <FormalParam f>;}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>");
 
-Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, set[Id] localIds) 
+Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
-    Expr ecps := expr2alg(e, alg, localIds);
+    Expr ecps := expr2alg(e, alg, names);
 
-default Expr block2alg((Block)`{<Stm s>}`, Id alg, set[Id] localIds) = stm2alg(s, alg, localIds);
+default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) = stm2alg(s, alg, names);
 
-// end singletons
-
-default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, set[Id] localIds) 
+default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.Seq(<Expr scps>, <Expr sscps>)`
   when
-    Expr scps := stm2alg(s, alg, localIds),
-    Expr sscps := block2alg((Block)`{<BlockStm* ss>}`, alg, localIds);
+    Expr scps := stm2alg(s, alg, names),
+    Expr sscps := block2alg((Block)`{<BlockStm* ss>}`, alg, names);
 
-// todo: annos/modifiers
-Expr block2alg((Block)`{<Type t> <{VarDec ","}+ vs>; <BlockStm+ ss>}`, Id alg, set[Id] localIds) 
-  = varDecs2alg(t, vs, sscps, alg, localIds)
-  when
-    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, localIds);
-
-// decl like
-//   | KId FormalParam ";"
-//   | KId FormalParam "=" Expr ";"
-   
-Expr block2alg((Block)`{<KId kw> <FormalParam f>; <BlockStm+ ss>}`, Id alg, set[Id] localIds)
+// binding extensions (let/maybe etc.) introduce final variables. 
+Expr block2alg((Block)`{<KId kw> <FormalParam f>; <BlockStm+ ss>}`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
-    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, localIds);
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
-Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, set[Id] localIds)
+Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
-    Expr ecps := expr2alg(e, alg, localIds),
-    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, localIds);
+    Expr ecps := expr2alg(e, alg, names),
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
-Expr varDecs2alg(Type t, {VarDec ","}+ vs, Expr k, Id alg, set[Id] localIds) {
-   for (VarDec vd <- reverse([ v | v <- vs])) {
-     k = varDec2alg(t, vd, k, alg, localIds);
-   }
-   return k;
-}   
-
-// TODO: remove null?
-Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, set[Id] localIds) 
-  = (Expr)`<Id alg>.\<<Type t>\>Decl(null, <Id x> -\> {return <Expr k>;})`;
+// TODO: final modifiers.... and then don't make Ref.
+Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, Names names) 
+  = (Expr)`<Id alg>.\<Ref\<<Type t2>\>\>Decl(null, <Id x> -\> {return <Expr k>;})`
+  when 
+    Type t2 := boxed(t);
   
-Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, set[Id] localIds) 
-  = (Expr)`<Id alg>.\<<Type t>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, Names names) 
+  = (Expr)`<Id alg>.\<Ref\<<Type t2>\>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
   when
-    Expr ecps := varInit2alg(t, e, alg, localIds);
+    Type t2 := boxed(t),
+    Expr ecps := varInit2alg(t2, e, alg, names);
 
-//VarInit wrap((VarInit) `<Expr e>`, Type t) = (VarInit) `new Ref\<<Type t>\>(<Expr e>)`;
+// assumes t is already boxed.
+Expr varInit2alg(Type t, (VarInit)`<Expr e>`, Id alg, Names names)
+  = init2alg(e, alg, names);
+  
+Expr init2alg(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.Exp(() -\> new Ref(<Expr e2>))`
+  when 
+    Expr e2 := unwrapRefs(e, names);
+  //expr2alg(e, alg, names);
 
-Expr varInit2alg(Type t, (VarInit)`<Expr e>`, Id alg, set[Id] localIds)
-  = expr2alg(e, alg, localIds);
-
-Expr varInit2alg(Type t, (VarInit)`{<{VarInit ","}* inits>,}`, Id alg, set[Id] localIds)
+Expr varInit2alg(Type t, (VarInit)`{<{VarInit ","}* inits>,}`, Id alg, Names names)
   = TODO; 
 
-Expr varInit2alg(Type t, (VarInit)`{<{VarInit ","}* inits>}`, Id alg, set[Id] localIds)
+Expr varInit2alg(Type t, (VarInit)`{<{VarInit ","}* inits>}`, Id alg, Names names)
   = TODO; 
 
-Expr stm2alg((Stm)`<Id l>: <Stm s>`, Id alg, set[Id] localIds)
+Expr stm2alg((Stm)`<Id l>: <Stm s>`, Id alg, Names names)
    = (Expr)`<Id alg>.Labeled(<Expr label>, <Expr scps>)`
    when 
      Expr label := [Expr]"\"<l>\"",
-     Expr scps := stm2alg(s, alg, localIds);
+     Expr scps := stm2alg(s, alg, names);
      
-Expr stm2alg((Stm)`if (<Expr c>) <Stm s>`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`if (<Expr c>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.If(<Expr ecps>, <Expr scps>)`
   when 
-    Expr ecps := expr2alg(c, alg, localIds),
-    Expr scps := stm2alg(s, alg, localIds);
+    Expr ecps := expr2alg(c, alg, names),
+    Expr scps := stm2alg(s, alg, names);
 
-Expr stm2alg((Stm)`if (<Expr c>) <Stm s1> else <Stm s2>`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`if (<Expr c>) <Stm s1> else <Stm s2>`, Id alg, Names names) 
   = (Expr)`<Id alg>.If(<Expr ecps>, <Expr s1cps>, <Expr s2cps>)`
   when 
-    Expr ecps := expr2alg(c, alg, localIds),
-    Expr s1cps := stm2alg(s1, alg, localIds),
-    Expr s2cps := stm2alg(s2, alg, localIds);
+    Expr ecps := expr2alg(c, alg, names),
+    Expr s1cps := stm2alg(s1, alg, names),
+    Expr s2cps := stm2alg(s2, alg, names);
   
-Expr stm2alg((Stm)`while (<Expr c>) <Stm s>`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`while (<Expr c>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.While(<Expr ecps>, <Expr scps>)`
   when 
-    Expr ecps := expr2alg(c, alg, localIds),
-    Expr scps := stm2alg(s, alg, localIds);
+    Expr ecps := expr2alg(c, alg, names),
+    Expr scps := stm2alg(s, alg, names);
 
-Expr stm2alg((Stm)`do <Stm s> while (<Expr c>);`, Id alg, set[Id] localIds) 
+Expr stm2alg((Stm)`do <Stm s> while (<Expr c>);`, Id alg, Names names) 
   = (Expr)`<Id alg>.Do(<Expr scps>, <Expr ecps>)`
   when 
-    Expr scps := stm2alg(s, alg, localIds),
-    Expr ecps := expr2alg(c, alg, localIds);
+    Expr scps := stm2alg(s, alg, names),
+    Expr ecps := expr2alg(c, alg, names);
 
 
-Expr stm2alg((Stm)`<Expr e>;`, Id alg, set[Id] localIds) 
-  = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e>; })`
-  ;
+// TODO: stop at closure boundaries and anonymous inner classes.
+Expr unwrapRefs(Expr e, Names names) {
+  println("Unwrapping for <e>");
+  for (x <- names.refs) {
+    println("Ref: <x>");
+  }
+  for (k <- names.renaming) {
+    println("<k> -\> <names.renaming[k]>");
+  }
+  // ugh this is ugly.
+  return visit (e) {
+   case (LHS) `<Id x>` => (LHS) `<Id x>.value`
+     when x in names.refs, x notin names.renaming
+     
+   case (Expr) `<Id x>` => (Expr)`<Id x>.value` 
+     when x in names.refs, x notin names.renaming
 
-Expr stm2alg((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`, Id alg, set[Id] localIds)
+   case (AmbName) `<Id x>` => (AmbName)`<Id x>.value` 
+     when x in names.refs, x notin names.renaming
+
+   case (LHS) `<Id x>` => (LHS) `<Id y>.value`
+     when x in names.renaming, 
+          Id y := names.renaming[x],
+          y in names.refs
+     
+   case (Expr) `<Id x>` => (Expr)`<Id y>.value` 
+     when x in names.renaming,
+          Id y := names.renaming[x],
+          y in names.refs
+
+   case (AmbName) `<Id x>` => (AmbName)`<Id y>.value` 
+     when x in names.renaming,
+          Id y := names.renaming[x],
+          y in names.refs
+          
+   case (LHS) `<Id x>` => (LHS) `<Id y>`
+     when x in names.renaming,
+          Id y := names.renaming[x],
+          y notin names.refs
+     
+   case (Expr) `<Id x>` => (Expr)`<Id y>` 
+     when x in names.renaming,
+          Id y := names.renaming[x],
+          y notin names.refs
+
+   case (AmbName) `<Id x>` => (AmbName)`<Id y>` 
+     when x in names.renaming,
+          Id y := names.renaming[x],
+          y notin names.refs
+
+  }    
+}
+
+Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names) 
+  = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e2>; })`
+  when 
+    Expr e2 := unwrapRefs(e, names);
+
+Expr stm2alg((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`, Id alg, Names names)
   = (Expr)`<Id alg>.TryCatchFinally(<Expr bodycps>, <Expr catchescps>, <Expr fincps>)`
   when 
-    Expr bodycps := block2alg(body, alg, localIds),
+    Expr bodycps := block2alg(body, alg, names),
     Expr catchescps := catches2alg(catches, alg),
-    Expr fincps := block2alg(body, alg, localIds); 
+    Expr fincps := block2alg(body, alg, names); 
 
-Expr stm2alg((Stm)`try <Block body> <CatchClause+ catches>`, Id alg, set[Id] localIds)
+Expr stm2alg((Stm)`try <Block body> <CatchClause+ catches>`, Id alg, Names names)
   = (Expr)`<Id alg>.TryCatch(<Expr bodycps>, <Expr catchescps>)`
   when 
-    Expr bodycps := block2alg(body, alg, localIds),
-    Expr catchescps := catches2alg(catches, alg);
+    Expr bodycps := block2alg(body, alg, names),
+    Expr catchescps := catches2alg(catches, alg, names);
 
-// "catch"  "(" FormalParam ")" Block
 
-Expr catch2alg((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg)
+Expr catch2alg((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg, Names names)
   =  (Expr)`<Id alg>.Catch(<Type t>.class, (<Type t> <Id x>) -\> {return <Expr bcps>;})`
   when
-    Expr bcps := block2alg(b, alg, TODO);
+    Expr bcps := block2alg(b, alg, declare(x, names));
     
-Expr expr2alg(Expr e, Id alg, set[Id] localIds)
-  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })` ;
+Expr expr2alg(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.Exp(() -\> <Expr e2>)`
+  when
+    Expr e2 := unwrapRefs(e, names);
 
-Expr stm2alg((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg, set[Id] localIds)
+Expr stm2alg((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg, Names names)
   = (Expr)`<Id alg>.Switch(<Expr ecps>, <{Expr ","}* es>)`
   when
     ecps := expr2alg(e, alg),
-    exprs := ( [] | it + group2alg(g, alg, localIds) | g <- groups ) + labels2alg(labels, alg),
+    exprs := ( [] | it + group2alg(g, alg, names) | g <- groups ) + labels2alg(labels, alg),
     es := lst2sepExps(exprs);
     
 {Expr ","}* lst2sepExps(list[Expr] es) {
@@ -402,28 +476,24 @@ Expr stm2alg((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* label
 list[Expr] labels2alg(SwitchLabel* labels, Id alg)
   = ( [] | it + group2alg((SwitchGroup)`<SwitchLabel l> ;`, alg) | l <- labels );
 
-list[Expr] group2alg((SwitchGroup)`<SwitchLabel label> <BlockStm+ stms>`, Id alg, set[Id] localIds)
-  = [case2alg(label, stms, alg, localIds)];
+list[Expr] group2alg((SwitchGroup)`<SwitchLabel label> <BlockStm+ stms>`, Id alg, Names names)
+  = [case2alg(label, stms, alg, names)];
 
 list[Expr] group2alg((SwitchGroup)`<SwitchLabel label> <SwitchLabel+ labels> <BlockStm+ stms>`, Id alg)
   = group2alg((SwitchGroup)`<SwitchLabel label> ;`, alg)
   + group2alg((SwitchGroup)`<SwitchLabel+ labels> <BlockStm+ stms>`, alg);
   
-Expr case2alg((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg, set[Id] localIds)
+Expr case2alg((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg, Names names)
   = (Expr)`<Id alg>.Case(<Expr ecps>, <Expr stmscps>)`
   when
     Expr ecps := expr2alg(e, alg),
-    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg,localIds);
+    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg,names);
 
-Expr case2alg((SwitchLabel)`default:`, BlockStm+ stms, Id alg, set[Id] localIds)
+Expr case2alg((SwitchLabel)`default:`, BlockStm+ stms, Id alg, Names names)
   = (Expr)`<Id alg>.Default(<Expr stmscps>)`
   when
-    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, localIds);
+    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, names);
 
-
-Expr expr2alg(Expr e, Id alg)
-  // todo: substitute local vars in e here + apply renaming.
-  = (Expr)`<Id alg>.Exp(() -\> { return <Expr e>; })`;
 
 Type boxed((Type)`int`) = (Type) `Integer`;
 Type boxed((Type)`long`) = (Type)`Long`;

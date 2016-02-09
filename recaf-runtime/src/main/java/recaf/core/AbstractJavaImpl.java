@@ -24,7 +24,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		});
 		return result.value;
 	}
-
+	
 	public <T> ED<T> Exp(Supplier<T> e) {
 		return (k, err) -> {
 			T t = null;
@@ -228,10 +228,10 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				err);
 	}
 
-	public <U> SD<R> For(ED<Iterable<U>> coll, Function<U, SD<R>> body) {
+	public <U> SD<R> For(ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
 			Iterator<U> iter = iterable.iterator();
-			While((s, err2) -> s.accept(iter.hasNext()), Decl((s, err2) -> s.accept(iter.next()), body)).accept(rho,
+			While((s, err2) -> s.accept(iter.hasNext()), Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho,
 					sigma, brk, contin, err);
 		} , err);
 	}
