@@ -11,7 +11,7 @@
 	</properties>
 
 	<groupId>com.github.cwi-swat</groupId>
-	<artifactId>recaf</artifactId>
+	<artifactId>recaf-runtime</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
