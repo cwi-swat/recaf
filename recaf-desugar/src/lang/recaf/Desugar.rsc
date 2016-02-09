@@ -20,20 +20,61 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
       case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
+                     '  <BlockStm* bs>
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
-        when cps := method2alg(b, alg)
+        when <bs, names> := fps2decls(fs),
+             cps := method2alg(b, alg)
+             
        
       case (MethodDec)`[<ClassOrInterfaceType t>] 
                      '<BeforeMethod* bm> <TypeParams? tp> <RefType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<BeforeMethod* bm> <TypeParams? tp> <RefType rt> <Id meth>(<{FormalParam ","}* fs>) {
                      '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
+                     '  <BlockStm* bs>
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
         when
+          <bs, names> := fps2decls(fs),
           alg := (Id)`$alg`, 
           cps := method2alg(b, alg)
    }
+}
+
+Id gensym(Id x, set[Id] names) {
+  do {
+    x = [Id]"$<x>";
+  }
+  while (x in names);
+  return x;
+}
+
+alias Names = tuple[set[Id] refs, map[Id, Id] renaming];
+
+tuple[LocalVarDec, Names] fp2decl((FormalParam)`final <Type t> <Id x>`, Names names) {
+  Id y = gensym(x, names.renaming<1>);
+  ld = (LocalVarDec)`final <Type t> <Id y> = <Id x>`;
+  return <ld, <names.refs, names.renaming + (x: y)>>;
+}
+
+tuple[LocalVarDec,Names] fp2decl((FormalParam)`<Type t> <Id x>`, Names names) {
+  Id y = gensym(x, names.renaming<1>);
+  t2 = boxed(t);
+  ld = (LocalVarDec)`Ref\<<Type t2>\> <Id y> = new Ref(<Id x>)`;
+  return <ld, <names.refs + {y}, names.renaming + (x: y)>>;
+}
+
+tuple[BlockStm*, Names] fps2decls({FormalParam ","}* fs) {
+   b = (Stm)`{}`;
+   names = <{}, ()>;
+   for (f <- fs, (Stm)`{<BlockStm* bs>}` := b) {
+     <ld, names> = fp2decl(f, names);
+     b = (Stm)`{<BlockStm* bs> <LocalVarDec ld>;}`;
+   }
+   if ((Stm)`{<BlockStm* bs>}` := b) {
+      return <bs, names>;
+   }
+   throw "Cannot happen";
 }
 
 Expr method2alg(Block b, Id alg) 
