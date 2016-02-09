@@ -1,7 +1,6 @@
 package generated;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
 import recaf.async.AsyncExtension;
  
 public class TestAsyncNoAwait {

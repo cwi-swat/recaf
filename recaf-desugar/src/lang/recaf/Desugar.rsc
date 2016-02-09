@@ -18,6 +18,12 @@ import IO;
   
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
+      case (CompilationUnit)`<PackageDec? ps> <ImportDec* is> <TypeDec* ts>`
+       =>(CompilationUnit)`<PackageDec? ps>	
+       					  '<ImportDec* is>
+       					  'import recaf.core.Ref;
+       					  '<TypeDec* ts>`
+       
       case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>

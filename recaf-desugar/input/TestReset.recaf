@@ -1,5 +1,4 @@
 package generated;
-import recaf.core.Ref;
 
 import recaf.delim.ResetExtension;
 import recaf.delim.Shift;

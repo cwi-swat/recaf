@@ -1,5 +1,4 @@
 package generated;
-
 import recaf.propagate.Propagate;
  
 public class TestPropagate {

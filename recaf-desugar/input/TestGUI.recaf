@@ -1,5 +1,4 @@
 package generated;
-
 import recaf.gui.GUI;
 import recaf.gui.RenderGUI;
 import recaf.gui.HandleGUI;
