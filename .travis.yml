@@ -1,7 +1,5 @@
 language: java
 
-before_script: cd recaf-runtime
-
 jdk:
 - oraclejdk8
 
@@ -9,7 +7,9 @@ addons:
   apt:
       packages:
             - oracle-java8-installer
-            
+
+script: mvn clean test
+
 notifications:
   slack: cwi-swat:mE7iJhJBjCpYUb86OmDz53Qf
   email: false
