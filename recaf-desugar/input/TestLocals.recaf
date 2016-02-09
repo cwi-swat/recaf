@@ -1,6 +1,5 @@
 package generated;
 
-import recaf.core.Ref;
 import recaf.dummy.DummyExtension;
 
 public class TestLocals {

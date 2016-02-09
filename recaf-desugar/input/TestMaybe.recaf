@@ -1,5 +1,4 @@
 package generated;
-import recaf.core.Ref;
 import recaf.maybe.Maybe;
 import java.util.Optional;
  

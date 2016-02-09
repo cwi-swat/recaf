@@ -4,7 +4,6 @@ import recaf.gui.RenderGUI;
 import recaf.gui.HandleGUI;
 import java.util.stream.IntStream;
 import java.util.Iterator;
-import recaf.core.Ref;
 
 public class TestGUI {
 

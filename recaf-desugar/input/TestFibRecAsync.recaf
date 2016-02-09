@@ -7,7 +7,6 @@ import java.util.function.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import recaf.async.AsyncExtension;
-import recaf.core.Ref;
 
 public class TestFibRecAsync {
 

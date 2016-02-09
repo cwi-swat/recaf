@@ -1,6 +1,5 @@
 package generated;
 import recaf.dummy.*;
-import recaf.core.Ref;
 
 public class TestNonNestedSwitch {
  
