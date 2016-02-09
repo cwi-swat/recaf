@@ -1,0 +1,22 @@
+package generated;
+
+import recaf.comefrom.ComeFrom;
+import recaf.core.Ref;
+import java.util.Scanner;
+
+public class TestComeFrom {
+
+  // from wikipedia
+  static Void repl(recaf ComeFrom<Void> cf) {
+    comeFrom! "l40";
+    System.out.println("What is your name?");
+    Scanner scanner = new Scanner(System.in);
+    String name = scanner.next();
+    System.out.println("Hello, " + name);
+    l40: ;
+  }
+
+  public static void main(String[] args) {
+        repl(new ComeFrom<Void>());
+  }
+}
