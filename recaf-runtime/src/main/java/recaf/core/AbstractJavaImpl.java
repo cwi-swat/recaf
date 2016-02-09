@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import recaf.core.functional.ED;
+import recaf.core.functional.K;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
@@ -86,25 +87,39 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	 * - data.caseNumber should be avoided by having a ​*different*​ denotation
 	 *   for case/defaults
 	 */
-	SwitchContext data = new SwitchContext();
+	SwitchContext<?> data;
 
 	public <S> SD<S> Switch(ED<Integer> expr, SD<S>... cases) {
+		data = new SwitchContext<String>();
+
 		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
 			data.caseNumber = x;
+
 			Stream.of(cases).forEach(_case -> {
 				if (!data.breakFound)
 					_case.accept(rho, sigma, brk, contin, err);
 			});
+			
+			if(!data.caseFound){
+				data.recordCases.forEach(_case -> {
+					if (!data.breakFound)
+						_case.accept((K) rho, sigma, brk, contin, err);
+				});
+			}
+		
 		} , err);
 	}
 
 	public SD<R> Case(ED<Integer> constant, SD<R> expStat) {
 		return (rho, sigma, brk, contin, err) -> {
-			constant.accept(r -> {
+			constant.accept(r -> {	
+				if(data.defaultFound) {
+					data.recordCases.add((SD)expStat);
+				}
 				if (r.equals(data.caseNumber)) {
 					data.caseFound = true;
 				}
-				if (data.caseFound || data.defaultFound) {
+				if (data.caseFound) {
 					expStat.accept(rho, sigma, brk, contin, err);
 				}
 			} , err);
@@ -113,8 +128,12 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
 	public SD<R> Default(SD<R> expStat) {
 		return (rho, sigma, brk, contin, err) -> {
-			expStat.accept(rho, sigma, brk, contin, err);
 			data.defaultFound = true;
+			if(!data.caseFound){
+				data.recordCases.add((SD)expStat);
+			} else
+				expStat.accept(rho, sigma, brk, contin, err);
+
 		};
 	}
 

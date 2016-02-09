@@ -53,9 +53,9 @@ public class TestNonNestedSwitch {
 		 
 		switch (number) {
 			case 1: 	
-				;
+				print("one");
 			case 2: 
-				print("one and two");
+				print("two");
 				break;
 			default: 
 				print("default");
@@ -98,6 +98,34 @@ public class TestNonNestedSwitch {
 		return selection; // returns two
 	}
 	
+	[DummyExtension<String>]
+	String testSwitch_nested_default_beginning() { 
+        int number = 1;
+     	int number2 = 3;
+     	String selection = "none";	
+		 
+		switch (number) {
+			default: 
+				print("with default");
+			case 1: 	
+				switch (number2) {
+					case 1: 	
+						print("one");
+						break;					
+					default: 
+						print("with default");
+					case 3: 	
+						print("three");
+						break;
+					case 4: 
+						print("four");
+				} 
+			case 2: 
+				print("two");
+		} 
+		return selection;
+	}
+	
 	public static void main(String args[]) {
 		new TestNonNestedSwitch().testSwitch_nobreak();
 		System.out.println();
@@ -106,7 +134,9 @@ public class TestNonNestedSwitch {
 		new TestNonNestedSwitch().testSwitch_break_second();
 		System.out.println();
 		new TestNonNestedSwitch().testSwitch_break_second_withdefault();
-		
-		//new TestNonNestedSwitch().testSwitch_break_default_beginning();
+		System.out.println();
+		new TestNonNestedSwitch().testSwitch_break_default_beginning();
+		//System.out.println();
+		//new TestNonNestedSwitch().testSwitch_nested_default_beginning();
   	}
 }

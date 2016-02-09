@@ -18,9 +18,12 @@ public class TestVirtualization extends BaseTest {
 				"\n" + 
 				"one\n" + 
 				"\n" + 
-				"one and two\n" + 
+				"one\n" + 
+				"two\n" + 
 				"\n" + 
 				"two\n" + 
-				"with default", output);	
+				"with default\n" + 
+				"\n" + 
+				"two", output);	
 	}
 }
