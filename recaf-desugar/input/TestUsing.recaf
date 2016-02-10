@@ -4,13 +4,7 @@ import recaf.using.Using;
 
 public class TestUsing {
 
-  static Void println(Object o) {
-    System.out.println(o);
-    System.out.println(o);
-    return null;
-  }
-  
-  class Resource implements AutoCloseable {
+  static class Resource implements AutoCloseable {
      @Override
      public void close() {
        System.out.println("Closing: " + this);
@@ -18,7 +12,7 @@ public class TestUsing {
   }
   
   [Using<Void>]
-  Void usingExample() {
+  static Void usingExample() {
      using (Resource r: new Resource()) {
         return null;
      }
@@ -26,7 +20,7 @@ public class TestUsing {
   
 
   public static void main(String args[]) {
-     new TestUsing().usingExample();
+     usingExample();
   }
   
 }

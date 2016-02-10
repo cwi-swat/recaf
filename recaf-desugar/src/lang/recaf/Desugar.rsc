@@ -13,28 +13,41 @@ import IO;
   
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
-      case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
-       => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
+      case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>
-                     '  return (<RefType rt>)<Expr cps>;
+                     '  <Stm ret>
                      '}`
         when <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
-             cps := method2alg(b, alg, names)
+             cps := method2alg(b, alg, names),
+             ret := makeReturn(rt, cps)
              
        
       case (MethodDec)`[<ClassOrInterfaceType t>] 
-                     '<BeforeMethod* bm> <TypeParams? tp> <RefType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
-       => (MethodDec)`<BeforeMethod* bm> <TypeParams? tp> <RefType rt> <Id meth>(<{FormalParam ","}* fs>) {
+                     '<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
                      '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
                      '  <BlockStm* bs>
-                     '  return (<RefType rt>)<Expr cps>;
+                     '  <Stm ret>
                      '}`
         when
           <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
           alg := (Id)`$alg`, 
-          cps := method2alg(b, alg, names)
+          cps := method2alg(b, alg, names),
+          ret := makeReturn(rt, cps)
    }
 }
+
+Stm makeReturn((ResultType)`<RefType rt>`, Expr cps) 
+  = (Stm)`return (<RefType rt>)<Expr cps>;`;
+
+Stm makeReturn((ResultType)`<PrimType pt>`, Expr cps) 
+  = (Stm)`return (<RefType rt>)<Expr cps>;`
+  when 
+    (Type)`<RefType rt>` := boxed((Type)`<PrimType pt>`);
+
+Stm makeReturn((ResultType)`void`, Expr cps) 
+  = (Stm)`<Expr cps>;`;
 
 set[Id] declaredNames(Block b) {
    ns = {};
