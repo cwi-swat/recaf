@@ -6,7 +6,6 @@ import recaf.ql.RQ;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class TestQL {
 
   public static <T> T questionnaire(recaf QL<T> ql) {
