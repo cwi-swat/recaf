@@ -15,7 +15,7 @@ public class TestComeFrom {
     System.out.println("Hello, " + name);
     l40: ;
   }
-
+ 
   public static void main(String[] args) {
         repl(new ComeFrom<Void>());
   }

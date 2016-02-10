@@ -1,6 +1,7 @@
 package recaf.core;
 
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -80,46 +81,50 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	 * - the fields are bad, and should not be needed (e.g. defaultFound, data etc.) 
 	 * - break now only works within cases, but it should also work for while/for 
 	 *   (use the brk continuation to deal with break) 
-	 * - you cannot use foreach over the cases, chain them. Start with
+	 * - you cannot use foreach over the cases, chain them. 
+	 *   Start with
 	 *   the first, pass the tail as the normal continuation (e.g., when there’s
 	 *   no break). 
 	 * - it should also work for Strings, so use Object, not Integer
 	 * - data.caseNumber should be avoided by having a ​*different*​ denotation
 	 *   for case/defaults
 	 */
-	SwitchContext<?> data;
+	
+	Stack<SwitchContext<?>> dataCtx = new Stack<>();
 
 	public <S> SD<S> Switch(ED<Integer> expr, SD<S>... cases) {
-		data = new SwitchContext<String>();
 
 		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
-			data.caseNumber = x;
+			dataCtx.push(new SwitchContext<String>());
+
+			dataCtx.peek().caseNumber = x;
 
 			Stream.of(cases).forEach(_case -> {
-				if (!data.breakFound)
+				if (!dataCtx.peek().breakFound)
 					_case.accept(rho, sigma, brk, contin, err);
 			});
 			
-			if(!data.caseFound){
-				data.recordCases.forEach(_case -> {
-					if (!data.breakFound)
+			if(!dataCtx.peek().caseFound){
+				dataCtx.peek().recordCases.forEach(_case -> {
+					if (!dataCtx.peek().breakFound)
 						_case.accept((K) rho, sigma, brk, contin, err);
 				});
 			}
-		
+			
+			dataCtx.pop();
 		} , err);
 	}
 
 	public SD<R> Case(ED<Integer> constant, SD<R> expStat) {
 		return (rho, sigma, brk, contin, err) -> {
 			constant.accept(r -> {	
-				if(data.defaultFound) {
-					data.recordCases.add((SD)expStat);
+				if(dataCtx.peek().defaultFound) {
+					dataCtx.peek().recordCases.add((SD)expStat);
 				}
-				if (r.equals(data.caseNumber)) {
-					data.caseFound = true;
+				if (r.equals(dataCtx.peek().caseNumber)) {
+					dataCtx.peek().caseFound = true;
 				}
-				if (data.caseFound) {
+				if (dataCtx.peek().caseFound) {
 					expStat.accept(rho, sigma, brk, contin, err);
 				}
 			} , err);
@@ -128,9 +133,9 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
 	public SD<R> Default(SD<R> expStat) {
 		return (rho, sigma, brk, contin, err) -> {
-			data.defaultFound = true;
-			if(!data.caseFound){
-				data.recordCases.add((SD)expStat);
+			dataCtx.peek().defaultFound = true;
+			if(!dataCtx.peek().caseFound){
+				dataCtx.peek().recordCases.add((SD)expStat);
 			} else
 				expStat.accept(rho, sigma, brk, contin, err);
 
@@ -139,14 +144,14 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
 	public SD<R> Break() {
 		return (rho, sigma, brk, contin, err) -> {
-			data.breakFound = true;
+			dataCtx.peek().breakFound = true;
 			brk.accept("");
 		};
 	}
 
 	public SD<R> Break(String label) {
 		return (rho, sigma, brk, contin, err) -> {
-			data.breakFound = true;
+			dataCtx.peek().breakFound = true;
 			brk.accept(label);
 		};
 	}

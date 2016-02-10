@@ -9,8 +9,8 @@ import recaf.tests.CompiletimeException;
 public class TestVirtualization extends BaseTest {
 	
 	@Test
-	public void TestNonNestedSwitch() throws CompiletimeException {
-		String output = compileAndRun("TestNonNestedSwitch");
+	public void TestSwitch() throws CompiletimeException {
+		String output = compileAndRun("TestSwitch");
 		
 		Assert.assertEquals("one\n" + 
 				"two\n" + 
@@ -24,6 +24,9 @@ public class TestVirtualization extends BaseTest {
 				"two\n" + 
 				"with default\n" + 
 				"\n" + 
+				"two\n" + 
+				"\n" + 
+				"three\n" + 
 				"two", output);	
 	}
 }
