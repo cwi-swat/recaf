@@ -1,0 +1,26 @@
+package generated;
+import java.util.*;
+import recaf.dummy.DummyExtension;
+
+public class TestWhile {
+
+	[DummyExtension<Integer>]
+	public Integer testWhile_noBreak() {
+		Integer sum = 0;
+ 
+ 		// TODO: Instead I should be able to write
+ 		// Iterator<Integer> ...
+		Iterator list = Arrays.asList(1,2,3,4,5).iterator();
+	 	
+		while(list.hasNext()) {
+			sum += (Integer)list.next();
+		}
+		
+		return sum;
+	}
+	
+	public static void main(String args[]) {
+		System.out.println(new TestWhile().testWhile_noBreak()); //15
+	}
+
+}

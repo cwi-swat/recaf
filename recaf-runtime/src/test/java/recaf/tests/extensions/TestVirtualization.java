@@ -9,7 +9,7 @@ import recaf.tests.CompiletimeException;
 public class TestVirtualization extends BaseTest {
 	
 	@Test
-	public void TestSwitch() throws CompiletimeException {
+	public void TestSwitch() throws CompiletimeException, RuntimeException {
 		String output = compileAndRun("TestSwitch");
 		
 		Assert.assertEquals("one\n" + 
@@ -29,4 +29,14 @@ public class TestVirtualization extends BaseTest {
 				"three\n" + 
 				"two", output);	
 	}
+	
+//	@Test
+//	public void TestFor() throws CompiletimeException, RuntimeException {
+//		String output = compileAndRun("TestFor");
+//	}
+//	
+//	@Test
+//	public void TestWhile() throws CompiletimeException, RuntimeException {
+//		String output = compileAndRun("TestWhile");
+//	}
 }

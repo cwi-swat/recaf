@@ -236,8 +236,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	public <U> SD<R> For(ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
 			Iterator<U> iter = iterable.iterator();
-			While((s, err2) -> s.accept(iter.hasNext()), Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho,
-					sigma, brk, contin, err);
+			While((s, err2) -> s.accept(iter.hasNext()), 
+					Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho, sigma, brk, contin, err);
 		} , err);
 	}
 }
