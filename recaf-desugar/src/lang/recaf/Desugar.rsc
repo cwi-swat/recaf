@@ -8,22 +8,11 @@ import IO;
 
 /*
  * TODO
- * - fix Ref wrapping, it doesn't respect block scoping of declarations
- * - the unwrapping of Ref vars should also happen within nested closures
- *   if they're not shadowed by the formal parameters. 
- * - introduces new (Ref) local variables for non-final formal params
- * - pass down a renaming to rename local vars if needed because a formal 
- *   param has been renamed
+ * - make the introduced variables for params unique across all scopes in a method.
  */
   
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
-      case (CompilationUnit)`<PackageDec? ps> <ImportDec* is> <TypeDec* ts>`
-       =>(CompilationUnit)`<PackageDec? ps>	
-       					  '<ImportDec* is>
-       					  'import recaf.core.Ref;
-       					  '<TypeDec* ts>`
-       
       case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <RefType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>
@@ -66,7 +55,7 @@ tuple[LocalVarDec, Names] fp2decl((FormalParam)`final <Type t> <Id x>`, Names na
 tuple[LocalVarDec,Names] fp2decl((FormalParam)`<Type t> <Id x>`, Names names) {
   Id y = gensym(x, names.renaming<1>);
   t2 = boxed(t);
-  ld = (LocalVarDec)`Ref\<<Type t2>\> <Id y> = new Ref(<Id x>)`;
+  ld = (LocalVarDec)`recaf.core.Ref\<<Type t2>\> <Id y> = new recaf.core.Ref(<Id x>)`;
   return <ld, <names.refs + {y}, names.renaming + (x: y)>>;
 }
 
@@ -101,9 +90,9 @@ Expr method2alg(Block b, Id alg, Names names)
 //Block addRefs(Block b, Names names) = visit(b){
 //    	case (LHS) `<Id x>` => x in names ? (LHS) `<Id x>.value` : (LHS) `<Id x>`
 //    	case (Expr) `<Id x>` => x in names ? (Expr) `<Id x>.value` : (Expr) `<Id x>`	
-//    	case (LocalVarDec) `<Type t> <Id x>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x>`
+//    	case (LocalVarDec) `<Type t> <Id x>` => (LocalVarDec) `recaf.core.Ref\<<Type newt>\> <Id x>`
 //    		when newt := boxed(t)
-//    	case (LocalVarDec) `<Type t> <Id x> = <Expr e>` => (LocalVarDec) `Ref\<<Type newt>\> <Id x> = new Ref\<<Type newt>\>(<Expr e>)`
+//    	case (LocalVarDec) `<Type t> <Id x> = <Expr e>` => (LocalVarDec) `recaf.core.Ref\<<Type newt>\> <Id x> = new recaf.core.Ref\<<Type newt>\>(<Expr e>)`
 //    		when newt := boxed(t)
 //};
 
@@ -228,7 +217,7 @@ Expr stm2alg((Stm)`break;`, Id alg, Names names)
   = (Expr)`<Id alg>.Break()`;
 
 FormalParam fp2ref((FormalParam)`<Type t> <Id x>`)
-  = (FormalParam)`Ref\<<Type t2>\> <Id x>`
+  = (FormalParam)`recaf.core.Ref\<<Type t2>\> <Id x>`
   when
     t2 := boxed(t);
 
@@ -315,12 +304,12 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, I
 
 // TODO: final modifiers.... and then don't make Ref.
 Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<Ref\<<Type t2>\>\>Decl(null, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.\<recaf.core.Ref\<<Type t2>\>\>Decl(null, <Id x> -\> {return <Expr k>;})`
   when 
     Type t2 := boxed(t);
   
 Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<Ref\<<Type t2>\>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.\<recaf.core.Ref\<<Type t2>\>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
   when
     Type t2 := boxed(t),
     Expr ecps := varInit2alg(t2, e, alg, names);
@@ -330,7 +319,7 @@ Expr varInit2alg(Type t, (VarInit)`<Expr e>`, Id alg, Names names)
   = init2alg(e, alg, names);
   
 Expr init2alg(Expr e, Id alg, Names names)
-  = (Expr)`<Id alg>.Exp(() -\> new Ref(<Expr e2>))`
+  = (Expr)`<Id alg>.Exp(() -\> new recaf.core.Ref(<Expr e2>))`
   when 
     Expr e2 := unwrapRefs(e, names);
   //expr2alg(e, alg, names);
