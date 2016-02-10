@@ -247,11 +247,12 @@ FormalParam fp2ref((FormalParam)`<Type t> <Id x>`)
 
 // NB: for loop vars are mutable.
 Expr stm2alg((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
-  = (Expr)`<Id alg>.For(<Expr ecps>, (<FormalParam f2>) -\> {return <Expr scps>;})`
+  = (Expr)`<Id alg>.\<<Type t>\>For(<Expr ecps>, (<FormalParam f2>) -\> {return <Expr scps>;})`
   when 
     Expr ecps := expr2alg(e, alg, names),
     Expr scps := stm2alg(s, alg, declare(f, names)),
-    FormalParam f2 := fp2ref(f);
+    FormalParam f2 := fp2ref(f),
+    Type t := typeOf(f);
 
 Expr stm2alg((Stm)`for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
   = TODO;  
@@ -293,14 +294,14 @@ Expr block2alg((Block)`{<Type t> <VarDec vd>; <BlockStm+ ss>}`, Id alg, Names na
 
 // binding extensions (let/maybe etc.) introduce final variables. 
 Expr block2alg((Block)`{<KId kw> <FormalParam f>;}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.<Id method>(<Type rt>.class, (<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>((<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f));
     
 
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.<Id method>(<Type rt>.class, <Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
@@ -317,7 +318,7 @@ default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, Names names)
 // binding extensions (let/maybe etc.) introduce final variables
 // and get the reflective class of the declaration. 
 Expr block2alg((Block)`{<KId kw> <FormalParam f>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.<Id method>(<Type rt>.class, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>((<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
@@ -327,7 +328,7 @@ Type typeOf((FormalParam)`final <Type t> <Id _>`) = t;
 Type typeOf((FormalParam)`<Type t> <Id _>`) = t;
 
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.<Id method>(<Type rt>.class, <Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),

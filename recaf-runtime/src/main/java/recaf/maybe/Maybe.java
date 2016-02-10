@@ -19,7 +19,7 @@ public class Maybe<R> extends AbstractJavaImpl<R> {
 		return ref.value;
 	}
 	
-	public <U> SD<R> Maybe(Class<U> klass, ED<Optional<U>> opt, Function<U, SD<R>> body) {
+	public <U> SD<R> Maybe(ED<Optional<U>> opt, Function<U, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> opt.accept(v -> {
 			if (v.isPresent()) {
 				body.apply(v.get()).accept(rho, sigma, brk, contin,err);
