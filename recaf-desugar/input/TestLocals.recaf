@@ -1,6 +1,7 @@
 package generated;
 
 import recaf.dummy.DummyExtension;
+import static java.util.Arrays.asList;
 
 public class TestLocals {
 
@@ -8,7 +9,7 @@ public class TestLocals {
      return x;
      return $x;
      Object[] objs;
-     for (Object $$x: objs) ;
+     for (Object $$x: asList(objs)) ;
   }
 
 }
