@@ -17,7 +17,6 @@ public class TestUsing {
         return null;
      }
   }
-  
 
   public static void main(String args[]) {
      usingExample();
