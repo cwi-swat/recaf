@@ -24,4 +24,6 @@ Head (master), Build & Unit tests
 
 [![Build Status](https://travis-ci.com/cwi-swat/recaf.svg?token=EYsxboxiFVSqpFARwkTX&branch=master)](https://travis-ci.com/cwi-swat/recaf)
 
-* Currently the first test that is executed generates the files. This is obviously wrong, maven should handle this. An artifact of that is that we cannot execute benchmarks as part of the build process. The quick and dirty way is to move the generated package to the recaf-runtie project and then.
+\* Currently the first test that is executed generates the files. This is obviously wrong, maven should handle this. An   
+   artifact of that is that we cannot execute benchmarks as part of the build process. The quick and dirty way is to move the
+   generated package to the recaf-runtie project and then.
