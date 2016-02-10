@@ -18,7 +18,7 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
                      '  <BlockStm* bs>
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
-        when <bs, names> := fps2decls(fs),
+        when <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
              cps := method2alg(b, alg, names)
              
        
@@ -30,10 +30,20 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
                      '  return (<RefType rt>)<Expr cps>;
                      '}`
         when
-          <bs, names> := fps2decls(fs),
+          <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
           alg := (Id)`$alg`, 
           cps := method2alg(b, alg, names)
    }
+}
+
+set[Id] declaredNames(Block b) {
+   ns = {};
+   visit (b) {
+     case (FormalParam)`<Type _> <Id x>`: ns += {x};
+     case (VarDec)`<Id x>`: ns += {x};
+     case (VarDec)`<Id x> = <Expr _>`: ns += {x};
+   }
+   return ns;
 }
 
 Id gensym(Id x, set[Id] names) {
@@ -59,9 +69,9 @@ tuple[LocalVarDec,Names] fp2decl((FormalParam)`<Type t> <Id x>`, Names names) {
   return <ld, <names.refs + {y}, names.renaming + (x: y)>>;
 }
 
-tuple[BlockStm*, Names] fps2decls({FormalParam ","}* fs) {
+tuple[BlockStm*, Names] fps2decls({FormalParam ","}* fs, set[Id] ns) {
    b = (Stm)`{}`;
-   names = <{}, ( x: x | /Id x := fs )>; // init with identity renaming.
+   names = <{}, ( x: x | x <- ns )>; // init with identity renaming.
    for (f <- fs, (Stm)`{<BlockStm* bs>}` := b) {
      <ld, names> = fp2decl(f, names);
      b = (Stm)`{<BlockStm* bs> <LocalVarDec ld>;}`;

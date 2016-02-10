@@ -7,6 +7,8 @@ public class TestLocals {
   public Integer doit(recaf DummyExtension<Integer> alg, int x, final Integer $x) {
      return x;
      return $x;
+     Object[] objs;
+     for (Object $$x: objs) ;
   }
 
 }
