@@ -26,7 +26,7 @@ public class AsyncExtension<R> extends AbstractJavaImpl<R> {
 		return promise;
 	}
 
-	public <T> SD<R> Await(ED<CompletableFuture<T>> e, Function<T, SD<R>> body) {
+	public <T> SD<R> Await(Class<T> clazz, ED<CompletableFuture<T>> e, Function<T, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> e.accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {
