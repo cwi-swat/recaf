@@ -12,9 +12,14 @@ public class Backtrack<R> extends AbstractJavaImpl<R> {
 
 	public List<R> Method(SD<R> body) {
 		List<R> result = new ArrayList<>();
-		body.accept(ret -> {
-			result.add(ret);
-		}, () -> {}, l -> {}, () -> {}, exc -> { throw new RuntimeException(exc); });
+		try {
+			body.accept(ret -> {
+				result.add(ret);
+			}, () -> {}, l -> {}, () -> {}, exc -> { throw new RuntimeException(exc); });
+		}
+		catch (Fail f) {
+			
+		}
 		return result;
 	}
 	
@@ -27,13 +32,15 @@ public class Backtrack<R> extends AbstractJavaImpl<R> {
 			choices.accept(iter -> {
 				for (T t: iter) {
 					try {
+						System.out.println("Trying " + t);
 						body.apply(t).accept(rho, sigma, contin, brk, err);
 						//break; // ????
 					}
 					catch (Fail f) {
-						
+						System.out.println("Fail for " + t);
 					}
 				}
+				throw new Fail();
 			}, err);;
 		};
 	}
