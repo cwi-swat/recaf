@@ -20,7 +20,7 @@ public class TestCoroutine {
   static Co<Integer, Integer> consumer(recaf Coroutine<Integer,Integer> alg) {
     int i = 0;
     while (true) {
-      yield Integer x = i++;
+      Integer x = yield! i++;
       System.out.println("consumer received: " + x); 
     }
   }

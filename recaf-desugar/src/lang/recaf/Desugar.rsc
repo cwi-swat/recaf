@@ -307,6 +307,13 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, Names na
     Type rt := boxed(typeOf(f)),
     Expr ecps := expr2alg(e, alg, names);
 
+Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>;}`, Id alg, Names names) 
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    Expr ecps := expr2alg(e, alg, names);
+
 default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) = stm2alg(s, alg, names);
 
 default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, Names names) 
@@ -328,6 +335,14 @@ Type typeOf((FormalParam)`final <Type t> <Id _>`) = t;
 Type typeOf((FormalParam)`<Type t> <Id _>`) = t;
 
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    Expr ecps := expr2alg(e, alg, names),
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
+
+Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
   = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),

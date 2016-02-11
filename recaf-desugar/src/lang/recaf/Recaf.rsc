@@ -28,6 +28,7 @@ syntax Stm
    // decl like
    | KId FormalParam ";"
    | KId FormalParam "=" Expr ";"
+   | FormalParam "=" KId "!" Expr ";"
    
    // new style
    | KId "(" {FormalParam ","}+ ")" Stm
