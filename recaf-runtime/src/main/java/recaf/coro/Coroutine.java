@@ -18,17 +18,14 @@ public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 		return new Co<T,R>() {
 			private boolean exhausted = false;
 			private R result;
-			private K0 code = () -> { 
-				body.accept(r -> {this.result = r;}, 
-						() -> { exhausted = true; }, 
-						l -> {}, 
-						() -> {}, 
-						exc -> { exhausted = true; throw new RuntimeException(exc); });
-			};
+			private K0 code = null;
 			
 			@Override
 			public R resume(T t) {
 				try {
+					if (code == null) {
+						throw new RuntimeException("Cannot resume if not started");
+					}
 					if (exhausted) {
 						throw new RuntimeException("Exhausted");
 					}
@@ -47,7 +44,11 @@ public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 			@Override
 			public void run() {
 				try {
-					code.call();
+					body.accept(r -> {this.result = r;}, 
+							() -> { exhausted = true; }, 
+							l -> {}, 
+							() -> {}, 
+							exc -> { exhausted = true; throw new RuntimeException(exc); });
 				}
 				catch (Yield y) {
 					code = y.body;
