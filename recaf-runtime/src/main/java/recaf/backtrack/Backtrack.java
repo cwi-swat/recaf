@@ -32,12 +32,9 @@ public class Backtrack<R> extends AbstractJavaImpl<R> {
 			choices.accept(iter -> {
 				for (T t: iter) {
 					try {
-						System.out.println("Trying " + t);
 						body.apply(t).accept(rho, sigma, contin, brk, err);
-						//break; // ????
 					}
 					catch (Fail f) {
-						System.out.println("Fail for " + t);
 					}
 				}
 				throw new Fail();
