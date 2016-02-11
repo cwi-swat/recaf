@@ -27,6 +27,7 @@ public class TestCoroutine {
   
   public static void main(String args[]) throws InterruptedException {
      Co<Integer,Integer> coro = consumer(new Coroutine<Integer,Integer>());
+     coro.run();
      producer(coro);
   }
 

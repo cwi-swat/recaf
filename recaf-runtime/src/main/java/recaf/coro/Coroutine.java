@@ -38,8 +38,22 @@ public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 				}
 				catch (Yield y) {
 					code = y.body;
-					return (R) y.value;
+					R prev = result;
+					result = (R) y.value; 
+					return prev;
 				}
+			}
+			
+			@Override
+			public void run() {
+				try {
+					code.call();
+				}
+				catch (Yield y) {
+					code = y.body;
+					result = (R) y.value;
+				}
+				
 			}
 		};
 	}
