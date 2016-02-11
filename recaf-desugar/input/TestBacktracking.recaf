@@ -1,8 +1,11 @@
 package generated;
 
 import java.util.List;
+import java.util.ArrayList;
 import recaf.backtrack.Backtrack;
 import static java.util.Arrays.asList;
+import java.util.stream.IntStream;
+import java.util.Iterator;
 
 public class TestBacktracking {
 
@@ -26,9 +29,30 @@ public class TestBacktracking {
      return new Pair(x, y);
   }
   
+  static Iterable<Integer> range(int n) {
+    return new Iterable<Integer>() {
+       public Iterator<Integer> iterator() {
+         return IntStream.range(0, n).iterator();
+       }
+    };
+  }
+  
+  static List<Pair> eightQueens(recaf Backtrack<Pair> alg) {
+     List x = new ArrayList();
+     for (Integer column: range(8)) {
+       choose Integer row = range(8);
+       for (Integer i: range(column)) {
+         guard! (Integer)x.get(i) != row;
+         guard! (Integer)x.get(i) != row + column - i;
+         guard! (Integer)x.get(i) != row + i - column;
+       }
+       x.set(column, row);
+     }
+  }
   
   public static void main(String args[]) {
     System.out.println(solve(new Backtrack<Pair>()));
+    System.out.println(eightQueens(new Backtrack<Pair>()));
   }
   
 

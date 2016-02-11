@@ -1,0 +1,33 @@
+
+package generated;
+
+import recaf.coro.Co;
+import recaf.coro.Coroutine;
+import java.util.Random;
+
+
+public class TestCoroutine {
+
+  static void producer(Co<Integer, Integer> other) throws InterruptedException {
+    while (true) {
+      Thread.sleep(1000);
+      int data = (new Random()).nextInt();
+      System.out.println("Sending " + data);
+      System.out.println("Producer received: " + other.resume(data));
+    }
+  }
+  
+  static Co<Integer, Integer> consumer(recaf Coroutine<Integer,Integer> alg) {
+    int i = 0;
+    while (true) {
+      yield Integer x = i++;
+      System.out.println("consumer received: " + x); 
+    }
+  }
+  
+  public static void main(String args[]) throws InterruptedException {
+     Co<Integer,Integer> coro = consumer(new Coroutine<Integer,Integer>());
+     producer(coro);
+  }
+
+}
