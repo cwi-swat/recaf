@@ -30,13 +30,13 @@ public class TestVirtualization extends BaseTest {
 				"two", output);	
 	}
 	
-//	@Test
-//	public void TestFor() throws CompiletimeException, RuntimeException {
-//		String output = compileAndRun("TestFor");
-//	}
-//	
-//	@Test
-//	public void TestWhile() throws CompiletimeException, RuntimeException {
-//		String output = compileAndRun("TestWhile");
-//	}
+	@Test
+	public void TestFor() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestFor");
+	}
+	
+	@Test
+	public void TestWhile() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestWhile");
+	}
 }
