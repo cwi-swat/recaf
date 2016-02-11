@@ -22,6 +22,7 @@ public class TestCoroutine {
     while (true) {
       Integer x = yield! i++;
       System.out.println("consumer received: " + x); 
+      yield! 2 * i++;
     }
   }
   
