@@ -34,13 +34,13 @@ public class TestVirtualization extends BaseTest {
 	public void TestFor() throws CompiletimeException, RuntimeException {
 		String output = compileAndRun("TestFor");
 		
-		Assert.assertEquals(15, output);
+		Assert.assertEquals("15", output);
 	}
 	
 	@Test
 	public void TestWhile() throws CompiletimeException, RuntimeException {
 		String output = compileAndRun("TestWhile");
 		
-		Assert.assertEquals(15, output);
+		Assert.assertEquals("15", output);
 	}
 }
