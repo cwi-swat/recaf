@@ -1,33 +1,26 @@
 package generated;
 import recaf.propagate.Propagate;
+
  
 public class TestPropagate {
 
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
-  
   [Propagate<String, Void>]
-  Void update(String s) {
+  void update(String s) {
      local (s) {
         method();
      }
      ask String x;
-     println(x);
-     return null;
+     System.out.println(x);
   }
   
-  
-  Void method() {
-     return read();
+  void method() {
+     read();
   }
   
   [Propagate<String, Void>]
-  Void read() {
+  void read() {
      ask String s;
-     println("s = " + s);
-     return null;
+     System.out.println("s = " + s);
   }
   
   public static void main(String args[]) {
