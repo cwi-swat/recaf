@@ -52,7 +52,6 @@ public class TestBacktracking {
   
   public static void main(String args[]) {
     System.out.println(solve(new Backtrack<Pair>()));
-    System.out.println(eightQueens(new Backtrack<Pair>()));
   }
   
 
