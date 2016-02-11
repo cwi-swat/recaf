@@ -6,9 +6,9 @@ import org.junit.Test;
 import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
-public class TestBacktracking extends BaseTest {
+public class TestBacktrackingExtension extends BaseTest {
 	@Test
-	public void TestAsyncNoAwait() throws CompiletimeException, RuntimeException {
+	public void TestBacktracking() throws CompiletimeException, RuntimeException {
 		String output = compileAndRun("TestBacktracking");
 		Assert.assertEquals("[(2, 4)]", output);	
 	}
