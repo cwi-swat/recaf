@@ -1,0 +1,33 @@
+package generated;
+
+import java.util.List;
+import recaf.backtrack.Backtrack;
+import static java.util.Arrays.asList;
+
+public class TestBacktracking {
+
+  static class Pair {
+    int x, y;
+    Pair(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+    public String toString() {
+      return "(" + x + ", " + y + ")";
+    }
+  }
+
+  static List<Pair> solve(recaf Backtrack<Pair> alg) {
+     choose Integer x = asList(1, 2, 3);
+     choose Integer y = asList(4, 5, 6);
+     guard! x * y == 8; 
+     return new Pair(x, y);
+  }
+  
+  
+  public static void main(String args[]) {
+    System.out.println(solve(new Backtrack<Pair>()));
+  }
+  
+
+}
