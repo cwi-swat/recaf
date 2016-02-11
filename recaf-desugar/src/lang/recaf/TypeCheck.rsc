@@ -9,9 +9,10 @@ import lang::java::m3::Core;
 import IO;
 import String;
 
-set[Message] typeCheck(start[CompilationUnit] desugaredCU) {
+set[Message] typeCheck(start[CompilationUnit] desugaredCU, start[CompilationUnit] cu) {
   <_, ind> = posIndex(desugaredCU, desugaredCU@\loc);
   return { relocate(m, ind) | m <- createM3FromString(desugaredCU@\loc, "<desugaredCU>", javaVersion = "1.8")@messages };
+  //return { m | m <- createM3FromString(cu@\loc, "<cu>", javaVersion = "1.8")@messages };
 }
 
 Message relocate(error(str s, loc l), rel[loc src, loc origin] ind)

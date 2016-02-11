@@ -30,7 +30,7 @@ void main() {
         newLoc = |project://recaf-runtime/src/test-generated/generated/<l.file>|;
         newCU = desugar(cu);
         writeFile(newLoc, newCU);
-        return typeCheck(newCU);
+        return typeCheck(newCU, cu);
       }
       return {error("Not a <LANG_NAME> program", tree@\loc)};
     })
