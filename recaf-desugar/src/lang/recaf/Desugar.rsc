@@ -212,12 +212,12 @@ Expr item2alg((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg, Names 
     Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, declare(f, names));
 
 
-// new style
+// new style (only final vars).
 Expr stm2alg((Stm)`<KId kw> (<{FormalParam ","}+ fs>) <Stm stm>`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>((<{FormalParam  ","}+ fs>) -\> { return <Expr stmcps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
-    Expr stmcps := stm2alg(stm, alg, ( names | declare(f, it) | f <- fs ));
+    Expr stmcps := stm2alg(stm, alg, names /* ( names | declare(f, it) | f <- fs ) */);
   
 
 //////
