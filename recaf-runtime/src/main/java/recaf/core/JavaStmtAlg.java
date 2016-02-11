@@ -8,7 +8,7 @@ public interface JavaStmtAlg<S, R> {
 	
 	<T> S Decl(Supplier<T> exp, Function<T, S> body);
 
-	<T extends Iterable<?>> S For(Supplier<T> coll, Function<T, S> body);
+	<T extends Iterable<?>> S For(Supplier<T> coll, Function<Ref<T>, S> body);
 	
 	S If(Supplier<Boolean> e, S s);
 	
@@ -38,7 +38,7 @@ public interface JavaStmtAlg<S, R> {
 	
 	S Seq(S s1, S s2);
 	
-	<T extends Throwable> S TryCatch(S body, Class<T> type, Function<T, S> handle);
+	<T extends Throwable> S TryCatch(S body, Class<T> type, Function<? super T, S> handle);
 
 	S TryFinally(S body, S fin);
 	
