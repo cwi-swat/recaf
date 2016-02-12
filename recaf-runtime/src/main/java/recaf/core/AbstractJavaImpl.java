@@ -12,14 +12,16 @@ import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
 public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
-
+	
 	protected R typePreserving(SD<R> body) {
 		Ref<R> result = new Ref<>();
 		body.accept(r -> {
 			result.value = r;
 		} , () -> {
-		} , (s) -> {
-		} , () -> {
+		} , l -> {
+			throw new AssertionError("Cannot call break without loop");
+		} , l -> {
+			throw new AssertionError("Cannot call continue without loop");
 		} , exc -> {
 			throw new RuntimeException(exc);
 		});
@@ -58,7 +60,30 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> Labeled(String label, SD<R> s) {
-		return null;
+		return (rho, sigma, brk, contin, err) -> {
+			new K0() {
+				@Override
+				public void call() {
+					s.accept(rho, sigma, l -> {
+						if (label.equals(l)) {
+							sigma.call();
+						}
+						else {
+							brk.accept(l);;
+						}
+					}, l -> {
+						if (label.equals(l)) {
+							call(); // !!!
+						}
+						else {
+							contin.accept(l);
+						}
+					}, err);
+				}
+				
+				
+			}.call();
+		};
 	}
 
 	public SD<R> While(ED<Boolean> e, SD<R> s) {
@@ -66,7 +91,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 			new K0() {
 				@Override
 				public void call() {
-					If(e, Seq2(s, (a, b, c, d, e) -> call())).accept(rho, sigma, brk, contin, err);
+					If(e, Seq2(s, (a, b, c, d, e) -> call()))
+					 .accept(rho, sigma, brk, contin, err);
 				}
 			}.call();
 		};
@@ -144,24 +170,25 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
 	public SD<R> Break() {
 		return (rho, sigma, brk, contin, err) -> {
-			dataCtx.peek().breakFound = true;
-			brk.accept("");
+//			dataCtx.peek().breakFound = true;
+//			brk.accept("");
+			brk.accept(null);
 		};
 	}
 
 	public SD<R> Break(String label) {
 		return (rho, sigma, brk, contin, err) -> {
-			dataCtx.peek().breakFound = true;
+			//dataCtx.peek().breakFound = true;
 			brk.accept(label);
 		};
 	}
 
 	public SD<R> Continue() {
-		return (rho, sigma, brk, contin, err) -> contin.call();
+		return (rho, sigma, brk, contin, err) -> contin.accept(null);
 	}
 
 	public SD<R> Continue(String label) {
-		return null;
+		return (rho, sigma, brk, contin, err) -> contin.accept(label);
 	}
 
 	public SD<R> Return(ED<R> e) {
@@ -203,8 +230,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 			body.accept(r -> {
 				fin.accept(rho, () -> rho.accept(r), brk, contin, err);
 			} , () -> {
-			} , (s) -> {
-			} , () -> {
+			} , (l) -> {
+			} , (l) -> {
 				fin.accept(rho, sigma, brk, contin, err);
 			} , (Throwable exc) -> {
 				fin.accept(rho /* todo: exception here too */, () -> err.accept(exc), brk, contin, err);
@@ -232,7 +259,19 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(r).accept(rho, sigma, brk, contin, err),
 				err);
 	}
+	
+	// For loops
+	//<Id alg>.For(<Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
+	
+	// for(; cond; update) body;
+	// NB: technically update is not a statement, (so it can't return)
+	// but we model it using SD<R> for simplicity's sake.
+	public SD<R> For(ED<Boolean> cond, SD<R> update, SD<R> body) {
+		return While(cond, Seq2(body, update));
+	}
 
+	
+	// For each loops
 	public <U> SD<R> For(ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
 			Iterator<U> iter = iterable.iterator();
@@ -240,4 +279,15 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 					Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho, sigma, brk, contin, err);
 		} , err);
 	}
+	
+	public <U> SD<R> For(String label, ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+		// todo: deal with the label
+		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
+			Iterator<U> iter = iterable.iterator();
+			While((s, err2) -> s.accept(iter.hasNext()), 
+					Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho, sigma, brk, contin, err);
+		} , err);
+	}
+	
+
 }

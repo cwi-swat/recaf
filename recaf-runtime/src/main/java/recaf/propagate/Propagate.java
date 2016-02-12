@@ -22,7 +22,9 @@ public class Propagate<T, R> extends AbstractJavaImpl<R> {
 			exp.accept(t -> {
 				stack.push(t);
 				body.accept(r -> { stack.pop(); rho.accept(r);}, 
-						() -> { stack.pop(); sigma.call(); }, (s) -> { }, () -> { },
+						() -> { stack.pop(); sigma.call(); }, 
+						l -> { throw new AssertionError("cannot break without loop"); }, 
+						l -> { throw new AssertionError("cannot continue without loop"); },
 						e -> { stack.pop(); err.accept(e); });
 			}, err);
 		};

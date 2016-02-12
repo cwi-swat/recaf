@@ -15,7 +15,7 @@ public class Backtrack<R> extends AbstractJavaImpl<R> {
 		try {
 			body.accept(ret -> {
 				result.add(ret);
-			}, () -> {}, l -> {}, () -> {}, exc -> { throw new RuntimeException(exc); });
+			}, () -> {}, l -> {}, l -> {}, exc -> { throw new RuntimeException(exc); });
 		}
 		catch (Fail f) {
 			

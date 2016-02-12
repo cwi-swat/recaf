@@ -17,8 +17,8 @@ public class AsyncExtension<R> extends AbstractJavaImpl<R> {
 			body.accept(
 					r -> promise.complete(r), 
 					() -> promise.complete(null),
-					(s) -> promise.complete(null),
-					() -> promise.complete(null),
+					l -> {throw new AssertionError("cannot break without loop");},
+					l -> {throw new AssertionError("cannot break without loop");},
 					ex -> promise.completeExceptionally(ex));
 			return null;
 		});

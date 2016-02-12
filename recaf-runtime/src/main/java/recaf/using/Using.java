@@ -1,6 +1,5 @@
 package recaf.using;
 
-import java.io.IOException;
 import java.util.function.Function;
 
 import recaf.core.AbstractJavaImpl;
@@ -12,7 +11,7 @@ public class Using<R> extends AbstractJavaImpl<R> {
 	public R Method(SD<R> body) {
 		return typePreserving(body);
 	}
-
+	
 	public <U extends AutoCloseable> SD<R> Using(ED<U> resource, Function<U, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> {
 			resource.accept(t -> {
@@ -21,6 +20,7 @@ public class Using<R> extends AbstractJavaImpl<R> {
 						t.close();
 					} catch (Exception e) {
 						err.accept(e);
+						return;
 					}
 					rho.accept(r);
 				} , () -> {
@@ -28,20 +28,23 @@ public class Using<R> extends AbstractJavaImpl<R> {
 						t.close();
 					} catch (Exception e) {
 						err.accept(e);
+						return;
 					}
 					sigma.call();
-				} , (s) -> {
+				} , l -> {
 					try {
 						t.close();
 					} catch (Exception e) {
 						err.accept(e);
+						return;
 					}
 					sigma.call();
-				} , () -> {
+				} , l -> {
 					try {
 						t.close();
 					} catch (Exception e) {
 						err.accept(e);
+						return;
 					}
 					sigma.call();
 				} , exc -> {
@@ -49,6 +52,7 @@ public class Using<R> extends AbstractJavaImpl<R> {
 						t.close();
 					} catch (Exception e) {
 						err.accept(e);
+						return;
 					}
 					err.accept(exc);
 				});

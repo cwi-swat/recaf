@@ -47,7 +47,7 @@ public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 					body.accept(r -> {this.result = r;}, 
 							() -> { exhausted = true; }, 
 							l -> {}, 
-							() -> {}, 
+							l -> {}, 
 							exc -> { exhausted = true; throw new RuntimeException(exc); });
 				}
 				catch (Yield y) {

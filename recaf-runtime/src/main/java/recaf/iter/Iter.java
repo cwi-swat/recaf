@@ -32,10 +32,10 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 					exhausted = true;
 				} , () -> {
 					exhausted = true;
-				},  (s) -> {
-					exhausted = true;
-				},  () -> {
-					exhausted = true;
+				},  l -> {
+					throw new AssertionError("cannot break without loop");
+				},  l -> {
+					throw new AssertionError("cannot continuewithout loop");
 				} , exc -> {
 					throw new RuntimeException(exc);
 				});
