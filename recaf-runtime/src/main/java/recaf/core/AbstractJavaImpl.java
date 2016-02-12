@@ -6,6 +6,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.annotation.Nullable;
+
 import recaf.core.functional.ED;
 import recaf.core.functional.K;
 import recaf.core.functional.K0;
@@ -256,37 +258,93 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	 * exp, Function<E, S> body);
 	 */
 	public <U> SD<R> Decl(ED<U> exp, Function<U, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(r).accept(rho, sigma, brk, contin, err),
-				err);
+		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(r).accept(rho, sigma, brk, contin, err), err);
 	}
 	
 	// For loops
 	//<Id alg>.For(<Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
 	
-	// for(; cond; update) body;
+	// label?: for(; cond; update) body;
 	// NB: technically update is not a statement, (so it can't return)
 	// but we model it using SD<R> for simplicity's sake.
-	public SD<R> For(ED<Boolean> cond, SD<R> update, SD<R> body) {
-		return While(cond, Seq2(body, update));
+	// label can be null.
+	public SD<R> For(@Nullable String label, ED<Boolean> cond, SD<R> update, SD<R> body) {
+		// incorrect with break and continue!
+		//return While(cond, Seq2(body, update));
+		
+		return (rho, sigma, brk, contin, err) -> {
+			new K0() {
+
+				@Override
+				public void call() {
+					cond.accept(b -> {
+						if (b) {
+							body.accept(rho, () -> {
+								update.accept(rho, () -> {
+									call();
+								}, brk, contin, err);
+							}, l -> {
+								if (l == label) {
+									sigma.call();
+								}
+								else {
+									brk.accept(l);
+								}
+							}, l -> {
+								if (l == label) {
+									update.accept(rho, () -> {
+										call();	
+									}, brk, contin, err);
+								}
+								else {
+									contin.accept(l);
+								}
+							}, err);
+						}
+						else {
+							sigma.call();
+						}
+					}, err);
+				}
+				
+			}.call();
+		};
 	}
 
-	
-	// For each loops
-	public <U> SD<R> For(ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
-			Iterator<U> iter = iterable.iterator();
-			While((s, err2) -> s.accept(iter.hasNext()), 
-					Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho, sigma, brk, contin, err);
-		} , err);
-	}
-	
-	public <U> SD<R> For(String label, ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
-		// todo: deal with the label
-		return (rho, sigma, brk, contin, err) -> coll.accept(iterable -> {
-			Iterator<U> iter = iterable.iterator();
-			While((s, err2) -> s.accept(iter.hasNext()), 
-					Decl((s, err2) -> s.accept(new Ref<>(iter.next())), body)).accept(rho, sigma, brk, contin, err);
-		} , err);
+	public <U> SD<R> For(@Nullable String label, ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+		return (rho, sigma, brk, contin, err) -> {
+			coll.accept(i -> {
+				Iterator<U> iter = i.iterator(); 
+				new K0() {
+					@Override
+					public void call() {
+						if (iter.hasNext()) {
+							body.apply(new Ref<>(iter.next())).accept(rho, () -> {
+								call();
+							}, l -> {
+								if (l == label) {
+									sigma.call();
+								}
+								else {
+									brk.accept(l);
+								}
+							}, l -> {
+								if (l == label) {
+									call();
+								}
+								else {
+									contin.accept(l);
+								}
+							}, err);
+						}
+						else {
+							sigma.call();
+						}
+					}
+					
+				}.call();				
+			}, err);
+		};
 	}
 	
 
