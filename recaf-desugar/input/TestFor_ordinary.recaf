@@ -1,0 +1,19 @@
+package generated;
+import java.util.*;
+import recaf.dummy.DummyExtension;
+
+public class TestFor_ordinary {
+	
+	[DummyExtension<Integer>]
+    Integer meth() {              
+        int sum = 0;
+        for(int i = 0; i < 10; i++) {
+            sum += i;
+        }
+        return sum; 
+    }  
+	
+	public static void main(String args[]) {
+        System.out.println(new TestFor_ordinary().meth()); //45   
+	}
+}

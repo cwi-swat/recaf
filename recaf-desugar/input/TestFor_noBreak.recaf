@@ -1,0 +1,27 @@
+package generated;
+import java.util.*;
+import recaf.dummy.DummyExtension;
+
+public class TestFor_noBreak {
+
+	[DummyExtension<Integer>]
+	Integer meth() { 		 	 
+	 	Integer sum = 0;
+	 	 
+	 	// TODO: Instead I should be able to write
+ 		// List <Integer> ...
+		List list = Arrays.asList(1,2,3,4,5);
+	 	
+	 	// TODO: For translates without the universal type of the generic method
+	 	// <Integer>For(... in this case 
+		for(Integer i : list) {
+		    sum += (Integer)i;
+		}
+		
+		return sum;	
+	}   
+	
+	public static void main(String args[]) {
+        System.out.println(new TestFor_noBreak().meth()); //15   
+	}
+}

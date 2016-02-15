@@ -88,8 +88,7 @@ public class BaseTest {
 
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(new File(pathname));
 
-		Boolean result = compiler.getTask(null, fileManager, diagnostics, compilationOptions, null, compilationUnits)
-				.call();
+		Boolean result = compiler.getTask(null, fileManager, diagnostics, compilationOptions, null, compilationUnits).call();
 
 		if (!result)
 			throw new CompiletimeException(diagnostics.getDiagnostics());

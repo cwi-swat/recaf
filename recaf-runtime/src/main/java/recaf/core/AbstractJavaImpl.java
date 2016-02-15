@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
 import recaf.core.functional.CD;
 import recaf.core.functional.ED;
 import recaf.core.functional.K0;
@@ -278,7 +275,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	// NB: technically update is not a statement, (so it can't return)
 	// but we model it using SD<R> for simplicity's sake.
 	// label can be null.
-	public SD<R> For(@Nullable String label, ED<Boolean> cond, SD<R> update, SD<R> body) {
+	public SD<R> For(String label, ED<Boolean> cond, SD<R> update, SD<R> body) {
 		// incorrect with break and continue!
 		//return While(cond, Seq2(body, update));
 		
@@ -321,7 +318,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 
-	public <U> SD<R> For(@Nullable String label, ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+	public <U> SD<R> For(String label, ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> {
 			coll.accept(i -> {
 				Iterator<U> iter = i.iterator(); 

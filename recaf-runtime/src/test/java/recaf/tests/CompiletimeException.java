@@ -29,12 +29,15 @@ public class CompiletimeException extends Exception {
         for (Diagnostic<?> diagnostic : diagnostics) {
         	errorMessage.append("Code: ")
         				.append(diagnostic.getCode())
+        				.append("\nKind: ")
         				.append(diagnostic.getKind())
+        				.append("\nPosition: ")
 			            .append(diagnostic.getPosition())
-			            .append(diagnostic.getStartPosition())
-			            .append(diagnostic.getEndPosition())
+        				.append("\nSource: ")
 			            .append(diagnostic.getSource())
-			            .append(diagnostic.getMessage(null));
+        				.append("\nInternal Message: ")
+			            .append(diagnostic.getMessage(null))
+        				.append("\n\t");
         }
 		return errorMessage.toString();
 	}

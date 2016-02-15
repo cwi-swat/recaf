@@ -1,0 +1,33 @@
+package generated;
+import recaf.dummy.*;
+
+public class TestSwitch_no_break {
+ 
+ 	public static Void print(String msg) {
+		System.out.println(msg);
+		return null;
+	}  
+	
+  	[DummyExtension<String>]
+	String meth() { 
+     	int number = 1;
+     	 
+     	String selection = "none";	
+		 
+		switch (number) {
+			case 1: 
+				print("one");	
+			case 2: 
+				print("two");
+			default: 
+				print("default");
+		}
+		 
+		return selection;
+	} 
+	
+public static void main(String args[]) {
+		new TestSwitch_no_break().meth();
+		
+  	}
+}
