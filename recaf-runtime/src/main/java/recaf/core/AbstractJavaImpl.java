@@ -93,8 +93,29 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 			new K0() {
 				@Override
 				public void call() {
-					If(e, Seq2(s, (a, b, c, d, e) -> call()))
-					 .accept(rho, sigma, brk, contin, err);
+					e.accept(b -> {
+						if (b) {
+							s.accept(rho, () -> call(),
+									l -> {
+										if (l == null) {
+											sigma.call();
+										}
+										else {
+											brk.accept(l);
+										}
+									}, l -> {
+										if (l == null) {
+											call();
+										}
+										else {
+											contin.accept(l);
+										}
+									}, err);
+						}
+						else {
+							sigma.call();
+						}
+					}, err);
 				}
 			}.call();
 		};
@@ -207,8 +228,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	protected SD<R> Seq2(SD<R> s1, SD<R> s2) {
-		return (rho, sigma, brk, contin, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, brk, contin, err), brk,
-				contin, err);
+		return (rho, sigma, brk, contin, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, brk, contin, err), brk, contin, err);
 	}
 
 	public <T extends Throwable> SD<R> Throw(ED<T> e) {

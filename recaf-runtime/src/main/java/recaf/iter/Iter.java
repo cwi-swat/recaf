@@ -82,7 +82,6 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 				YIELD.value = v;
 				YIELD.k = sigma;
 				throw YIELD;
-				//throw new Yield(v, sigma);
 			} , err);
 		};
 	}
