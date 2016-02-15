@@ -13,6 +13,7 @@ public class TestFibIter {
   		yield! a;
   		b = a + b; 
   		a = b - a;
+  		break;
   	}
   } 
   

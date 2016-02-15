@@ -27,12 +27,12 @@ public class TestParsing {
    }
    
    Parser<Exp> exp(recaf Parsing<Exp> alg) {
-      alt {  
+      or {  
         let Exp lhs = exp(alg); 
         lit! "+"; 
         let Exp rhs = exp(alg);
       } 
-      alt {
+      or {
         let String x = id();
         return new Var(x);
       }
