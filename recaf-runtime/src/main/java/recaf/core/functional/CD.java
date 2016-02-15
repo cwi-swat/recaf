@@ -5,11 +5,12 @@ import java.util.List;
 /**
  * Case Denotation
  *
- * value:  the value that is switched upon
- * rho:    continuation for return
- * sigma:  continuation for success (fall through)
- * brk:    continuation for break
- * contin: continuation for continue 
+ * matched: if we have matched a case already.
+ * value:   the value that is switched upon
+ * rho:     continuation for return
+ * sigma:   continuation for success (fall through)
+ * brk:     continuation for break
+ * contin:  continuation for continue 
  * err:     continuation for exceptions
  *
  * @param <R>

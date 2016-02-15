@@ -29,6 +29,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return result.value;
 	}
 	
+	// this needs to be factored to make the choice of expression
+	// representation open. 
 	public <T> ED<T> Exp(Supplier<T> e) {
 		return (k, err) -> {
 			T t = null;
@@ -121,15 +123,44 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
-		// TODO: wrong because of scoping....
-		return Seq2(s, While(e, s));
+		return (rho, sigma, brk, contin, err) -> {
+			new K0() {
+
+				@Override
+				public void call() {
+					s.accept(rho, () -> {
+						e.accept(v -> {
+							if (v) {
+								call();
+							}
+							else {
+								sigma.call();
+							}
+						}, err);
+					}, l -> {
+						if (l == null) {
+							sigma.call();
+						}
+						else {
+							brk.accept(l);
+						}
+					}, l -> {
+						if (l == null) {
+							call();
+						}
+						else {
+							contin.accept(l);
+						}
+					}, err);
+				}
+				
+			}.call();
+		};
 	}
 	
 	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
+		final List<CD<R, V>> lst = Arrays.asList(cases);
 
-		List<CD<R, V>> lst = new LinkedList<>();
-		lst.addAll(Arrays.asList(cases));
-		
 		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
 			if (lst.isEmpty()) {
 				sigma.call();
@@ -169,8 +200,11 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				expStat.accept(rho, sigma, brk, contin, err);
 			}
 			else {
-				// do other cases first, move default handler (= this) to end.
+				// do other cases first, move default handler to end.
+				// NB: Java only allows a single default handler for switch-case (phew)
 				List<CD<R, V>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
+				
+				// add a new default handler that's only evaluated if there was no match.
 				newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
 					assert rest2.isEmpty();
 					if (!matched2) {
@@ -186,7 +220,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> Break() {
-		return (rho, sigma, brk, contin, err) -> brk.accept(null);
+		return Break(null);
 	}
 
 	public SD<R> Break(String label) {
@@ -194,21 +228,22 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> Continue() {
-		return (rho, sigma, brk, contin, err) -> contin.accept(null);
+		return Continue(null);
 	}
 
 	public SD<R> Continue(String label) {
 		return (rho, sigma, brk, contin, err) -> contin.accept(label);
 	}
 
-	public SD<R> Return(ED<R> e) {
-		return (rho, sigma, brk, contin, err) -> e.accept(rho, err);
-	}
-
 	public SD<R> Return() {
 		return (rho, sigma, brk, contin, err) -> rho.accept(null);
 	}
 
+	public SD<R> Return(ED<R> e) {
+		return (rho, sigma, brk, contin, err) -> e.accept(rho, err);
+	}
+
+	
 	public final SD<R> Seq(SD<R>... ss) {
 		assert ss.length > 0;
 		return Stream.of(ss).reduce(this::Seq2).get();
@@ -222,6 +257,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return (rho, sigma, brk, contin, err) -> e.accept(r -> err.accept(r), err);
 	}
 
+	// TODO: try catch finally.
 	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
 		return (rho, sigma, brk, contin, err) -> {
 			body.accept(rho, sigma, brk, contin, (Throwable exc) -> {
