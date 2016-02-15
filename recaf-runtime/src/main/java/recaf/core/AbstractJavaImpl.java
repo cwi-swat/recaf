@@ -29,6 +29,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return result.value;
 	}
 	
+	
 	// this needs to be factored to make the choice of expression
 	// representation open. 
 	public <T> ED<T> Exp(Supplier<T> e) {
@@ -275,11 +276,13 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 			body.accept(r -> {
 				fin.accept(rho, () -> rho.accept(r), brk, contin, err);
 			} , () -> {
-			} , (l) -> {
-			} , (l) -> {
 				fin.accept(rho, sigma, brk, contin, err);
+			} , l -> {
+				fin.accept(rho, () -> { brk.accept(l); }, brk, contin, err);
+			} , l -> {
+				fin.accept(rho, () -> { contin.accept(l); }, brk, contin, err);
 			} , (Throwable exc) -> {
-				fin.accept(rho /* todo: exception here too */, () -> err.accept(exc), brk, contin, err);
+				fin.accept(rho /* todo: exception here too??? */, () -> err.accept(exc), brk, contin, err);
 			});
 		};
 	}

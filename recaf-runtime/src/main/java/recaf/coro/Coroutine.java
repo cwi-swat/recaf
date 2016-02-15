@@ -8,8 +8,6 @@ import recaf.core.functional.ED;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
-
-
 public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 
 	private ArrayDeque<T> stack = new ArrayDeque<>();
