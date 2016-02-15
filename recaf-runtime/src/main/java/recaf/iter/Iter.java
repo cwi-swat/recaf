@@ -88,6 +88,6 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <U> SD<R> YieldFrom(ED<Iterable<U>> exp) {
-		return For(exp, e -> Yield(Exp(() -> e)));
+		return For(null, exp, e -> Yield(Exp(() -> e)));
 	}
 }
