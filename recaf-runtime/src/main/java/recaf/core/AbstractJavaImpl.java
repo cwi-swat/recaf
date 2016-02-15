@@ -124,8 +124,39 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
-		// TODO: wrong because of scoping....
-		return Seq2(s, While(e, s));
+		return (rho, sigma, brk, contin, err) -> {
+			new K0() {
+
+				@Override
+				public void call() {
+					s.accept(rho, () -> {
+						e.accept(v -> {
+							if (v) {
+								call();
+							}
+							else {
+								sigma.call();
+							}
+						}, err);
+					}, l -> {
+						if (l == null) {
+							sigma.call();
+						}
+						else {
+							brk.accept(l);
+						}
+					}, l -> {
+						if (l == null) {
+							call();
+						}
+						else {
+							contin.accept(l);
+						}
+					}, err);
+				}
+				
+			}.call();
+		};
 	}
 	
 	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
@@ -172,8 +203,10 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				expStat.accept(rho, sigma, brk, contin, err);
 			}
 			else {
-				// do other cases first, move default handler (= this) to end.
+				// do other cases first, move default handler to end.
 				List<CD<R, V>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
+				
+				// add a new default handler that's only evaluated if there was no match.
 				newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
 					assert rest2.isEmpty();
 					if (!matched2) {
