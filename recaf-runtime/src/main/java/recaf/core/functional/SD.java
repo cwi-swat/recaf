@@ -12,6 +12,6 @@ package recaf.core.functional;
  * @param <R>
  */
 
-public interface SD<R> extends QuinqueConsumer<K<R>, K0, K<String>, K<String>, K<Throwable>> {
-	
+public interface SD<R> {
+	void accept(K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err);
 }
