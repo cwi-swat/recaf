@@ -1,6 +1,9 @@
 package recaf.core;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -8,6 +11,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import recaf.core.functional.CD;
 import recaf.core.functional.ED;
 import recaf.core.functional.K;
 import recaf.core.functional.K0;
@@ -122,6 +126,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
+		// wrong because of scoping....
 		return Seq2(s, While(e, s));
 	}
 
@@ -141,54 +146,72 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	
 	Stack<SwitchContext<?>> dataCtx = new Stack<>();
 
-	public <S> SD<S> Switch(ED<Integer> expr, SD<S>... cases) {
+	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
 
+		List<CD<R, V>> lst = new LinkedList<>();
+		lst.addAll(Arrays.asList(cases));
+		
 		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
-			dataCtx.push(new SwitchContext<String>());
-
-			dataCtx.peek().caseNumber = x;
-
-			Stream.of(cases).forEach(_case -> {
-				if (!dataCtx.peek().breakFound)
-					_case.accept(rho, sigma, brk, contin, err);
-			});
-			
-			if(!dataCtx.peek().caseFound){
-				dataCtx.peek().recordCases.forEach(_case -> {
-					if (!dataCtx.peek().breakFound)
-						_case.accept((K) rho, sigma, brk, contin, err);
-				});
+			if (lst.isEmpty()) {
+				sigma.call();
 			}
-			
-			dataCtx.pop();
+			else {
+				lst.get(0).accept(false, x, lst.subList(1, lst.size()), rho, sigma, l -> {
+					if (l == null) {
+						sigma.call();
+					}
+					else {
+						brk.accept(l);
+					}
+				}, contin, err);
+			}
 		} , err);
 	}
 
-	public SD<R> Case(ED<Integer> constant, SD<R> expStat) {
-		return (rho, sigma, brk, contin, err) -> {
+	public <V> CD<R, V> Case(ED<V> constant, SD<R> expStat) {
+		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			constant.accept(r -> {	
-				if(dataCtx.peek().defaultFound) {
-					dataCtx.peek().recordCases.add((SD)expStat);
+				if (matched  /* fall through */ || v.equals(r)) {
+					expStat.accept(rho, () -> {
+						rest.get(0).accept(true, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
+					}, brk, contin, err);
 				}
-				if (r.equals(dataCtx.peek().caseNumber)) {
-					dataCtx.peek().caseFound = true;
-				}
-				if (dataCtx.peek().caseFound) {
-					expStat.accept(rho, sigma, brk, contin, err);
+				else {
+					rest.get(0).accept(false, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
 				}
 			} , err);
 		};
 	}
-
-	public SD<R> Default(SD<R> expStat) {
-		return (rho, sigma, brk, contin, err) -> {
-			dataCtx.peek().defaultFound = true;
-			if(!dataCtx.peek().caseFound){
-				dataCtx.peek().recordCases.add((SD)expStat);
-			} else
-				expStat.accept(rho, sigma, brk, contin, err);
-
+	
+	public <V> CD<R, V> Default(SD<R> expStat) {
+		return new CD<R, V>() {
+			@Override
+			public void accept(boolean matched, V v, List<CD<R, V>> rest, K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err) {
+				if (rest.isEmpty()) {
+					// if there was no break, and default is at the end, it's always executed
+					expStat.accept(rho, sigma, brk, contin, err);
+				}
+				else {
+					// do other cases first, move default handler (= this) up one level.
+					List<CD<R, V>> newRest = new LinkedList<>();
+					newRest.add(this);
+					if (rest.size() > 0) {
+						newRest.addAll(rest.subList(1, rest.size()));
+					}
+					rest.get(0).accept(matched, v, newRest, rho, sigma, brk, contin, err);
+				}
+			}
+			
 		};
+
+		//		return (rho, sigma, brk, contin, err) -> {
+//			dataCtx.peek().defaultFound = true;
+//			if(!dataCtx.peek().caseFound){
+//				dataCtx.peek().recordCases.add((SD)expStat);
+//			} else
+//				expStat.accept(rho, sigma, brk, contin, err);
+//
+//		};
 	}
 
 	public SD<R> Break() {
