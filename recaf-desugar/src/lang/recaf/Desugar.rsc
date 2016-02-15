@@ -358,8 +358,8 @@ Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>;}`, Id alg, Names n
     Type rt := boxed(typeOf(f)),
     Expr ecps := expr2alg(e, alg, names);
 
-default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) = stm2alg(s, alg, names)
-  when bprintln(s);
+default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) 
+  = stm2alg(s, alg, names);
 
 default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.Seq(<Expr scps>, <Expr sscps>)`
@@ -459,13 +459,13 @@ Expr stm2alg((Stm)`do <Stm s> while (<Expr c>);`, Id alg, Names names)
 
 // TODO: stop at closure boundaries and anonymous inner classes.
 Expr unwrapRefs(Expr e, Names names) {
-  println("Unwrapping for <e>");
-  for (x <- names.refs) {
-    println("Ref: <x>");
-  }
-  for (k <- names.renaming) {
-    println("<k> -\> <names.renaming[k]>");
-  }
+  //println("Unwrapping for <e>");
+  //for (x <- names.refs) {
+  //  println("Ref: <x>");
+  //}
+  //for (k <- names.renaming) {
+  //  println("<k> -\> <names.renaming[k]>");
+  //}
   // ugh this is ugly.
   return visit (e) {
    case (LHS) `<Id x>` => (LHS) `<Id x>.value`
