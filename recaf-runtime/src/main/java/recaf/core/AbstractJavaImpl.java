@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -13,7 +12,6 @@ import javax.annotation.Nullable;
 
 import recaf.core.functional.CD;
 import recaf.core.functional.ED;
-import recaf.core.functional.K;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
@@ -126,26 +124,10 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
-		// wrong because of scoping....
+		// TODO: wrong because of scoping....
 		return Seq2(s, While(e, s));
 	}
-
-	/*
-	 * TODO: Switch 
-	 * - the fields are bad, and should not be needed (e.g. defaultFound, data etc.) 
-	 * - break now only works within cases, but it should also work for while/for 
-	 *   (use the brk continuation to deal with break) 
-	 * - you cannot use foreach over the cases, chain them. 
-	 *   Start with
-	 *   the first, pass the tail as the normal continuation (e.g., when there’s
-	 *   no break). 
-	 * - it should also work for Strings, so use Object, not Integer
-	 * - data.caseNumber should be avoided by having a ​*different*​ denotation
-	 *   for case/defaults
-	 */
 	
-	Stack<SwitchContext<?>> dataCtx = new Stack<>();
-
 	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
 
 		List<CD<R, V>> lst = new LinkedList<>();
@@ -184,51 +166,34 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 	
 	public <V> CD<R, V> Default(SD<R> expStat) {
-		return new CD<R, V>() {
-			@Override
-			public void accept(boolean matched, V v, List<CD<R, V>> rest, K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err) {
-				if (rest.isEmpty()) {
-					// if there was no break, and default is at the end, it's always executed
-					expStat.accept(rho, sigma, brk, contin, err);
-				}
-				else {
-					// do other cases first, move default handler (= this) up one level.
-					List<CD<R, V>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
-					newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
-						assert rest2.isEmpty();
-						if (!matched2) {
-							expStat.accept(rho2, sigma2, brk2, contin2, err2);
-						}
-					});
-					rest.get(0).accept(matched, v, newRest, rho, sigma, brk, contin, err);
-				}
+		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
+			if (rest.isEmpty()) {
+				// if there was no break, and default is at the end, it's always executed
+				expStat.accept(rho, sigma, brk, contin, err);
 			}
-			
+			else {
+				// do other cases first, move default handler (= this) to end.
+				List<CD<R, V>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
+				newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
+					assert rest2.isEmpty();
+					if (!matched2) {
+						expStat.accept(rho2, sigma2, brk2, contin2, err2);
+					}
+					else {
+						sigma2.call();
+					}
+				});
+				rest.get(0).accept(matched, v, newRest, rho, sigma, brk, contin, err);
+			}
 		};
-
-		//		return (rho, sigma, brk, contin, err) -> {
-//			dataCtx.peek().defaultFound = true;
-//			if(!dataCtx.peek().caseFound){
-//				dataCtx.peek().recordCases.add((SD)expStat);
-//			} else
-//				expStat.accept(rho, sigma, brk, contin, err);
-//
-//		};
 	}
 
 	public SD<R> Break() {
-		return (rho, sigma, brk, contin, err) -> {
-//			dataCtx.peek().breakFound = true;
-//			brk.accept("");
-			brk.accept(null);
-		};
+		return (rho, sigma, brk, contin, err) -> brk.accept(null);
 	}
 
 	public SD<R> Break(String label) {
-		return (rho, sigma, brk, contin, err) -> {
-			//dataCtx.peek().breakFound = true;
-			brk.accept(label);
-		};
+		return (rho, sigma, brk, contin, err) -> brk.accept(label);
 	}
 
 	public SD<R> Continue() {
