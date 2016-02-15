@@ -193,11 +193,13 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				}
 				else {
 					// do other cases first, move default handler (= this) up one level.
-					List<CD<R, V>> newRest = new LinkedList<>();
-					newRest.add(this);
-					if (rest.size() > 0) {
-						newRest.addAll(rest.subList(1, rest.size()));
-					}
+					List<CD<R, V>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
+					newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
+						assert rest2.isEmpty();
+						if (!matched2) {
+							expStat.accept(rho2, sigma2, brk2, contin2, err2);
+						}
+					});
 					rest.get(0).accept(matched, v, newRest, rho, sigma, brk, contin, err);
 				}
 			}

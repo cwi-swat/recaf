@@ -126,23 +126,22 @@ public class TestSwitch {
 	}
 	
 	public static void main(String args[]) {
-        System.out.println("**no break");
 		new TestSwitch().testSwitch_nobreak();
 		
-        System.out.println("**break first");
+        System.out.println();
 		new TestSwitch().testSwitch_break_first();
 		
-		System.out.println("**break second");
-		new TestSwitch().testSwitch_break_second();
+		System.out.println();
+        new TestSwitch().testSwitch_break_second();
 		
-		System.out.println("**break second with default");
-		new TestSwitch().testSwitch_break_second_withdefault();
+		System.out.println();
+        new TestSwitch().testSwitch_break_second_withdefault();
 		
-		System.out.println("**break default beginning");
-		new TestSwitch().testSwitch_break_default_beginning();
+		System.out.println();
+        new TestSwitch().testSwitch_break_default_beginning();
 		
-		System.out.println("**nested default beginning");
-		new TestSwitch().testSwitch_nested_default_beginning();
+		System.out.println();
+        new TestSwitch().testSwitch_nested_default_beginning();
 		
   	}
 }
