@@ -209,7 +209,11 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
 					assert rest2.isEmpty();
 					if (!matched2) {
-						expStat.accept(rho2, sigma2, brk2, contin2, err2);
+						expStat.accept(rho2, () -> {
+							// fall through: if default does not break, we get fall through
+							// and all subsequent cases should be executed.
+							rest.get(0).accept(true, v2, rest.subList(1, rest.size()), rho2, sigma2, brk2, contin2, err2);
+						}, brk2, contin2, err2);
 					}
 					else {
 						sigma2.call();
