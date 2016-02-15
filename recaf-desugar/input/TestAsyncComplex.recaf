@@ -5,8 +5,9 @@ import recaf.async.AsyncExtension;
  
 public class TestAsyncComplex {
 
+
 	public static Void pause(long sleeptime) {
-	    try {
+	    try { 
     	    Thread.sleep(sleeptime);
     	} catch (InterruptedException ex) {	}
     	return null;

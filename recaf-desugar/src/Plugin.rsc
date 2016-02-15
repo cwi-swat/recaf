@@ -11,6 +11,9 @@ import util::IDE;
 
 private str LANG_NAME = "Java Recaffeinated";
 
+// relative to HOME dir
+private str RECAF_RUNTIME_HOME = "/CWI/recaf/recaf-runtime";
+
 void main() {
   registerLanguage(LANG_NAME, "recaf", start[CompilationUnit](str src, loc org) {
     return parse(#start[CompilationUnit], src, org);
@@ -30,7 +33,10 @@ void main() {
         newLoc = |project://recaf-runtime/src/test-generated/generated/<l.file>|;
         newCU = desugar(cu);
         writeFile(newLoc, newCU);
-        return typeCheck(newCU, cu);
+        
+        fileLoc = |home://<RECAF_RUNTIME_HOME>/<newLoc.path>|;
+        sourcePaths = [|home://<RECAF_RUNTIME_HOME>/src/main/java|];
+        return typeCheck(fileLoc, sourcePaths, newCU, cu);
       }
       return {error("Not a <LANG_NAME> program", tree@\loc)};
     })

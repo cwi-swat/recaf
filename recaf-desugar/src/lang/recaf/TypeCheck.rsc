@@ -5,20 +5,20 @@ import lang::recaf::Desugar;
 
 import Message;
 import ParseTree;
-import lang::java::m3::Core;
+import lang::java::jdt::m3::Core;
 import IO;
 import String;
 
-set[Message] typeCheck(start[CompilationUnit] desugaredCU, start[CompilationUnit] cu) {
+set[Message] typeCheck(loc generatedFileLoc, list[loc] sourcePaths, start[CompilationUnit] desugaredCU, start[CompilationUnit] cu) {
   <_, ind> = posIndex(desugaredCU, desugaredCU@\loc);
-  return { relocate(m, ind) | m <- createM3FromString(desugaredCU@\loc, "<desugaredCU>", javaVersion = "1.8")@messages };
-  //return { m | m <- createM3FromString(cu@\loc, "<cu>", javaVersion = "1.8")@messages };
+  println(sourcePaths);
+  return { relocate(m, ind) | m <- createM3FromFile(generatedFileLoc, 
+      sourcePath = sourcePaths, javaVersion="1.8")@messages };
 }
 
 Message relocate(error(str s, loc l), rel[loc src, loc origin] ind)
   = error(s, l2)
   when
-    bprintln(l), 
     <loc l1, loc l2> <- ind,
     l1.offset == l.offset, l1.length == l.length; 
 

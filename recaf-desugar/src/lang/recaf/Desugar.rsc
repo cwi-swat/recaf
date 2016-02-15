@@ -6,11 +6,6 @@ import Set;
 import String;
 import IO;  
 
-/*
- * TODO
- * - make the introduced variables for params unique across all scopes in a method.
- */
-  
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
    return visit (cu) {
       case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
