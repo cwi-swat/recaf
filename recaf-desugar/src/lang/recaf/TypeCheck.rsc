@@ -11,7 +11,6 @@ import String;
 
 set[Message] typeCheck(loc generatedFileLoc, list[loc] sourcePaths, start[CompilationUnit] desugaredCU, start[CompilationUnit] cu) {
   <_, ind> = posIndex(desugaredCU, desugaredCU@\loc);
-  println(sourcePaths);
   return { relocate(m, ind) | m <- createM3FromFile(generatedFileLoc, 
       sourcePath = sourcePaths, javaVersion="1.8")@messages };
 }

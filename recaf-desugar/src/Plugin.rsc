@@ -35,7 +35,10 @@ void main() {
         writeFile(newLoc, newCU);
         
         fileLoc = |home://<RECAF_RUNTIME_HOME>/<newLoc.path>|;
-        sourcePaths = [|home://<RECAF_RUNTIME_HOME>/src/main/java|];
+        sourcePaths = [
+          |home://<RECAF_RUNTIME_HOME>/src/main/java|,
+          |home://<RECAF_RUNTIME_HOME>/src/test-generated|
+        ];
         return typeCheck(fileLoc, sourcePaths, newCU, cu);
       }
       return {error("Not a <LANG_NAME> program", tree@\loc)};
