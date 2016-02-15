@@ -160,10 +160,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 	
 	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
+		final List<CD<R, V>> lst = Arrays.asList(cases);
 
-		List<CD<R, V>> lst = new LinkedList<>();
-		lst.addAll(Arrays.asList(cases));
-		
 		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
 			if (lst.isEmpty()) {
 				sigma.call();
