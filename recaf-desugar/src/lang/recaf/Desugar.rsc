@@ -89,7 +89,7 @@ tuple[LocalVarDec, Names] fp2decl((FormalParam)`final <Type t> <Id x>`, Names na
 tuple[LocalVarDec,Names] fp2decl((FormalParam)`<Type t> <Id x>`, Names names) {
   Id y = gensym(x, names.renaming<1>);
   t2 = boxed(t);
-  ld = (LocalVarDec)`recaf.core.Ref\<<Type t2>\> <Id y> = new recaf.core.Ref(<Id x>)`;
+  ld = (LocalVarDec)`recaf.core.Ref\<<Type t2>\> <Id y> = new recaf.core.Ref\<<Type t2>\>(<Id x>)`;
   return <ld, <names.refs + {y}, names.renaming + (x: y)>>;
 }
 
@@ -391,7 +391,7 @@ Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, 
     Expr ecps := expr2alg(e, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
-// TODO: final modifiers.... and then don't make Ref.
+// TODO: final modifiers.... (we don't support it now)
 Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, Names names) 
   = (Expr)`<Id alg>.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
   when 

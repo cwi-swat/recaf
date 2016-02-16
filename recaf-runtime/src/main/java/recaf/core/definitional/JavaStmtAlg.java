@@ -3,10 +3,7 @@ package recaf.core.definitional;
 import java.util.function.Function;
 
 import recaf.core.Ref;
-import recaf.core.functional.CD;
-import recaf.core.functional.ED;
 import recaf.core.functional.K0;
-import recaf.core.functional.SD;
 
 public interface JavaStmtAlg<E, S, C> {
 	<T> S Decl(E exp, Function<Ref<T>, S> body);
