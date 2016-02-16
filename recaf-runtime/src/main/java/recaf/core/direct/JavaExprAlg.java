@@ -1,4 +1,4 @@
-package recaf.core.definitional;
+package recaf.core.direct;
 
 import recaf.core.Ref;
 

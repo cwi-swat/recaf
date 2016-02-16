@@ -1,4 +1,4 @@
-package recaf.core.definitional;
+package recaf.core.direct;
 
 public abstract class Jump extends Exception {
 	private final String label;

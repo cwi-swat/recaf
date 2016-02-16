@@ -1,4 +1,4 @@
-package recaf.core.definitional;
+package recaf.core.direct;
 
 public class Continue extends Jump {
 
