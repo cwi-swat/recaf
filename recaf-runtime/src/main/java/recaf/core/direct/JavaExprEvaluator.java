@@ -1,7 +1,6 @@
-package recaf.core;
+package recaf.core.direct;
 
-import recaf.core.direct.IEval;
-import recaf.core.direct.JavaExprAlg;
+import recaf.core.Ref;
 
 interface JavaExprEvaluator extends JavaExprAlg<IEval> {
 	
