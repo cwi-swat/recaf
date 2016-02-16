@@ -1,5 +1,6 @@
-package recaf.core;
+package recaf.core.definitional;
 
+import recaf.core.Ref;
 
 public interface JavaExprAlg<E> {
 
@@ -33,8 +34,5 @@ public interface JavaExprAlg<E> {
 	E PreDecr(E var);
 	
 	// What to do about static methods and fields?
-	
-	
-	
 	
 }
