@@ -1,0 +1,28 @@
+package generated; 
+import recaf.core.Ref;
+import recaf.core.FullJavaClosImpl;
+import java.util.stream.IntStream;
+import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.function.*;  
+
+public class TestSimple    {
+  private static recaf FullJavaClosImpl<Object> alg = new FullJavaClosImpl<Object>();
+  
+  private recaf static Integer simple(){           
+  	int a = 4; 
+   	int b = a++;     
+   	int c = b++;    
+   	int d = 0; 
+   	while (d < 5     ){      
+      		d++;
+	}
+	return d;
+  } 
+  
+  public static void main(String args[]) {
+    int n = simple();
+    System.out.println(n);
+    
+  }
+}

@@ -8,6 +8,8 @@ import ParseTree;
 import IO;
 import Message;
 import util::IDE;
+import AlternativeDesugaring;
+
 
 private str LANG_NAME = "Java Recaffeinated";
 
@@ -26,6 +28,15 @@ void main() {
     //  }
     //  return tree[@messages={error("Not a <LANG_NAME> program", tree@\loc)}];
     //}),
+    
+    popup(
+      menu("Options",[
+        action("Alternative desugaring", (Tree tree, loc source) {
+          alternativeDesugar(tree);
+        })
+      ])
+    ), 
+    
     builder(set[Message] (Tree tree) {
       if (start[CompilationUnit] cu := tree) {
         loc l = cu@\loc.top;
