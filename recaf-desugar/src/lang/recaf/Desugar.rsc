@@ -565,9 +565,8 @@ list[Expr] group2alg((SwitchGroup)`<SwitchLabel label> <SwitchLabel+ labels> <Bl
   + group2alg((SwitchGroup)`<SwitchLabel+ labels> <BlockStm+ stms>`, alg);
   
 Expr case2alg((SwitchLabel)`case <Expr e>:`, BlockStm+ stms, Id alg, Names names)
-  = (Expr)`<Id alg>.Case(<Expr ecps>, <Expr stmscps>)`
+  = (Expr)`<Id alg>.Case(<Expr e>, <Expr stmscps>)`
   when
-    Expr ecps := expr2alg(e, alg, names),
     Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg,names);
 
 Expr case2alg((SwitchLabel)`default:`, BlockStm+ stms, Id alg, Names names)

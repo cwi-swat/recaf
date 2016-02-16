@@ -1,23 +1,24 @@
 package recaf.core.definitional;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.Ref;
 import recaf.core.functional.K0;
 
 public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
-
+	
 	@Override
-	default <T> IExec Decl(IEval exp, Function<Ref<T>, IExec> body) {
-		return l -> body.apply(new Ref<T>((T) exp.eval())).exec(null);
+	default <T> IExec Decl(Supplier<T> exp, Function<Ref<T>, IExec> body) {
+		return l -> body.apply(new Ref<T>(exp.get())).exec(null);
 	}
 
 	@Override
-	default <T> IExec For(String label, IEval coll, Function<Ref<T>, IExec> body) {
+	default <T> IExec For(String label, Supplier<Iterable<T>> coll, Function<Ref<T>, IExec> body) {
 		return l -> {
-			for (Object x: ((Iterable<?>)coll.eval())) {
+			for (T x: coll.get()) {
 				try {
-					body.apply(new Ref<T>((T) x)).exec(null);
+					body.apply(new Ref<T>(x)).exec(null);
 				}
 				catch (Break b) {
 					if (b.hasLabel(label)) {
@@ -36,10 +37,10 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 	
 	@Override
-	default IExec For(String label, IEval cond, IExec update, IExec body) {
+	default IExec For(String label, Supplier<Boolean> cond, IExec update, IExec body) {
 		return l -> {
 			while (true) {
-				if ((Boolean) cond.eval()) {
+				if (cond.get()) {
 					try {
 						body.exec(null);
 					}
@@ -66,14 +67,14 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 
 	@Override
-	default IExec If(IEval e, IExec s) {
+	default IExec If(Supplier<Boolean> e, IExec s) {
 		return If(e, s, l -> {});
 	}
 
 	@Override
-	default IExec If(IEval e, IExec s1, IExec s2) {
+	default IExec If(Supplier<Boolean> e, IExec s1, IExec s2) {
 		return l -> {
-			if ((Boolean)e.eval()) {
+			if (e.get()) {
 				s1.exec(null);
 			}
 			else {
@@ -83,9 +84,9 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 
 	@Override
-	default IExec While(IEval e, IExec s) {
+	default IExec While(Supplier<Boolean> e, IExec s) {
 		return l -> {
-			while ((Boolean)e.eval()) {
+			while (e.get()) {
 				try {
 					s.exec(null);
 				}
@@ -100,7 +101,7 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 
 	@Override
-	default IExec DoWhile(IExec s, IEval e) {
+	default IExec DoWhile(IExec s, Supplier<Boolean> e) {
 		return l -> {
 			do {
 				try {
@@ -119,7 +120,7 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 					throw c;
 				}
 			}
-			while ((Boolean)e.eval());
+			while (e.get());
 		};
 	}
 
@@ -150,8 +151,8 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 
 	@Override
-	default IExec Return(IEval e) {
-		return l -> { throw new Return(e.eval()); };
+	default <T> IExec Return(Supplier<T> e) {
+		return l -> { throw new Return(e.get()); };
 	}
 
 	@Override
@@ -160,8 +161,8 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 
 	@Override
-	default IExec Throw(IEval e) {
-		return l -> { throw ((Throwable)e.eval()); };
+	default <T extends Throwable> IExec Throw(Supplier<T> e) {
+		return l -> { throw e.get(); };
 	}
 
 	@Override
@@ -177,15 +178,16 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	default IExec TryCatch(IExec body, Class<? extends Throwable> type, Function<Throwable, IExec> handle) {
+	default <T extends Throwable> IExec TryCatch(IExec body, Class<T> type, Function<T, IExec> handle) {
 		return l -> {
 			try {
 				body.exec(null);
 			}
 			catch (Throwable t) {
 				if (type.isInstance(t)) {
-					handle.apply(t).exec(null);
+					handle.apply((T) t).exec(null);
 				}
 				else {
 					throw t;
@@ -212,10 +214,10 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 	
 	@Override
-	default IExec Switch(IEval expr, ICase... cases) {
+	default <T> IExec Switch(Supplier<T> expr, ICase... cases) {
 		return l -> {
 			do {
-				Object v = expr.eval();
+				T v = expr.get();
 				try {
 					boolean fallThrough = false;
 					int defaultIndex = -1;
@@ -244,10 +246,9 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 	
 	@Override
-	default ICase Case(IEval constant, IExec expStat) {
+	default <T> ICase Case(T constant, IExec expStat) {
 		return (v, ft) -> {
-			Object c = constant.eval();
-			if (ft || (v == null && c == null) || v.equals(c)) {
+			if (ft || (v == null && constant == null) || v.equals(constant)) {
 				expStat.exec(null);
 				return true;
 			}

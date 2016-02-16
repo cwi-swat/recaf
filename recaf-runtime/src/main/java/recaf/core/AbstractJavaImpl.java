@@ -179,18 +179,16 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		} , err);
 	}
 
-	public <V> CD<R, V> Case(ED<V> constant, SD<R> expStat) {
+	public <V> CD<R, V> Case(V constant, SD<R> expStat) {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
-			constant.accept(r -> {	
-				if (matched  /* fall through */ || v.equals(r)) {
-					expStat.accept(rho, () -> {
-						rest.get(0).accept(true, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
-					}, brk, contin, err);
-				}
-				else {
-					rest.get(0).accept(false, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
-				}
-			} , err);
+			if (matched  /* fall through */ || v.equals(constant)) {
+				expStat.accept(rho, () -> {
+					rest.get(0).accept(true, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
+				}, brk, contin, err);
+			}
+			else {
+				rest.get(0).accept(false, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
+			}
 		};
 	}
 	

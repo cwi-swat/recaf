@@ -1,24 +1,42 @@
 package recaf.core.definitional;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.Ref;
 import recaf.core.functional.K0;
 
 public interface JavaStmtAlg<E, S, C> {
-	<T> S Decl(E exp, Function<Ref<T>, S> body);
 
-	<T> S For(String label, E coll, Function<Ref<T>, S> body);
+	// inject E into Supplier of some T
+	<T> Supplier<T> Exp(E e);
 	
-	S For(String label, E cond, S update, S body); 
+	<T> S Decl(Supplier<T> exp, Function<Ref<T>, S> body);
+
+	<T> S For(String label, Supplier<Iterable<T>> exp, Function<Ref<T>, S> body);
 	
-	S If(E e, S s);
+	<T> S Return(Supplier<T> e);
 	
-	S If(E e, S s1, S s2);
+	<T extends Throwable> S Throw(Supplier<T> e);
+
+	<T extends Throwable> S TryCatch(S body, Class<T> type, Function<T, S> handle);
 	
-	S While(E e, S s);
+	@SuppressWarnings("unchecked")
+	<T> S Switch(Supplier<T> expr, C... cases);
+		
+	<T> C Case(T constant, S expStat);
 	
-	S DoWhile(S s, E e);
+	C Default(S expStat);
+
+	S For(String label, Supplier<Boolean> cond, S update, S body); 
+	
+	S If(Supplier<Boolean> cond, S s);
+	
+	S If(Supplier<Boolean> cond, S s1, S s2);
+	
+	S While(Supplier<Boolean> cond, S s);
+	
+	S DoWhile(S s, Supplier<Boolean> cond);
 	
 	S Labeled(String label, S s);
 	
@@ -29,27 +47,16 @@ public interface JavaStmtAlg<E, S, C> {
 	S Break();
 	
 	S Continue();
-	
-	S Return(E e);
-	
-	S Return();
 
-	S Throw(E e);
+	S Return();
 
 	S Empty();
 	
 	S Seq(S s1, S s2);
 	
-	S TryCatch(S body, Class<? extends Throwable> type, Function<Throwable, S> handle);
-
 	S TryFinally(S body, S fin);
 	
 	S ExpStat(K0 exp);
 	
-	S Switch(E expr, C... cases);
-		
-	C Case(E constant, S expStat);
-	
-	C Default(S expStat);
 	
 }
