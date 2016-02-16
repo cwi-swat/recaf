@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import recaf.core.Ref;
 
@@ -157,6 +156,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
 		final List<CD<R, V>> lst = Arrays.asList(cases);
 
@@ -259,6 +259,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	// TODO: try catch finally.
+	@SuppressWarnings("unchecked")
 	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
 		return (rho, sigma, brk, contin, err) -> {
 			body.accept(rho, sigma, brk, contin, (Throwable exc) -> {

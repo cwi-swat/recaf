@@ -271,7 +271,6 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 }
 
 // private helper exceptions
-
 @SuppressWarnings("serial")
 abstract class Jump extends Exception {
 	private final String label;
@@ -313,6 +312,7 @@ final class Default extends RuntimeException {
 
 }
 
+@SuppressWarnings("serial")
 final class Return extends Exception {
 	private final Object value;
 
