@@ -249,12 +249,12 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	
-	public final SD<R> Seq(SD<R>... ss) {
-		assert ss.length > 0;
-		return Stream.of(ss).reduce(this::Seq2).get();
-	}
+//	public final SD<R> Seq(SD<R>... ss) {
+//		assert ss.length > 0;
+//		return Stream.of(ss).reduce(this::Seq2).get();
+//	}
 
-	protected SD<R> Seq2(SD<R> s1, SD<R> s2) {
+	public SD<R> Seq(SD<R> s1, SD<R> s2) {
 		return (rho, sigma, brk, contin, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, brk, contin, err), brk, contin, err);
 	}
 
