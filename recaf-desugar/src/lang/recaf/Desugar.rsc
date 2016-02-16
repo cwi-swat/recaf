@@ -28,8 +28,7 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
         => (FieldDec)`<BeforeField* bf0> <BeforeField* bf3> <Type t> <Id x>;`
       
       case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
-       => (MethodDec)`@SuppressWarnings("unchecked")
-                     '<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
+       => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>
                      '  <Stm ret>
                      '}`
@@ -38,8 +37,7 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
              ret := makeReturn(rt, cps)
       
       case (MethodDec)`<BeforeMethod* bm0> recaf <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
-       => (MethodDec)`@SuppressWarnings("unchecked")
-                     '<BeforeMethod* bm0> <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
+       => (MethodDec)`<BeforeMethod* bm0> <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>
                      '  <Stm ret>
                      '}`
