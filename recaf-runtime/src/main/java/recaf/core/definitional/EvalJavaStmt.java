@@ -3,20 +3,21 @@ package recaf.core.definitional;
 import java.util.function.Function;
 
 import recaf.core.Ref;
+import recaf.core.functional.K0;
 
 public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 
 	@Override
-	default IExec Decl(IEval exp, Function<Ref<?>, IExec> body) {
-		return l -> body.apply(new Ref<>(exp.eval())).exec(null);
+	default <T> IExec Decl(IEval exp, Function<Ref<T>, IExec> body) {
+		return l -> body.apply(new Ref<T>((T) exp.eval())).exec(null);
 	}
 
 	@Override
-	default IExec For(String label, IEval coll, Function<Ref<?>, IExec> body) {
+	default <T> IExec For(String label, IEval coll, Function<Ref<T>, IExec> body) {
 		return l -> {
 			for (Object x: ((Iterable<?>)coll.eval())) {
 				try {
-					body.apply(new Ref<>(x)).exec(null);
+					body.apply(new Ref<T>((T) x)).exec(null);
 				}
 				catch (Break b) {
 					if (b.hasLabel(label)) {
@@ -206,8 +207,8 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	}
 	
 	@Override
-	default IExec ExpStat(IEval exp) {
-		return l -> { exp.eval(); };
+	default IExec ExpStat(K0 exp) {
+		return l -> { exp.call(); };
 	}
 	
 	@Override

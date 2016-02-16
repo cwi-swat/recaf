@@ -291,7 +291,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 
-	public <U> SD<R> ExpStat(K0 thunk) {
+	public SD<R> ExpStat(K0 thunk) {
 		return (rho, sigma, brk, contin, err) -> {
 			try {
 				thunk.call();
@@ -307,8 +307,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	 * HOAS for let expressions int x = 3; s ==> Let(Exp(3), x -> [[s]]) S Let(E
 	 * exp, Function<E, S> body);
 	 */
-	public <U> SD<R> Decl(ED<U> exp, Function<U, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(r).accept(rho, sigma, brk, contin, err), err);
+	public <U> SD<R> Decl(ED<U> exp, Function<Ref<U>, SD<R>> body) {
+		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(new Ref<>(r)).accept(rho, sigma, brk, contin, err), err);
 	}
 	
 	// For loops

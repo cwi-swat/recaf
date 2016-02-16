@@ -46,19 +46,6 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
           <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
           cps := method2alg(b, alg, names),
           ret := makeReturn(rt, cps)       
-       
-      //case (MethodDec)`[<ClassOrInterfaceType t>] 
-      //               '<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
-      // => (MethodDec)`<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
-      //               '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
-      //               '  <BlockStm* bs>
-      //               '  <Stm ret>
-      //               '}`
-      //  when
-      //    <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
-      //    alg := (Id)`$alg`, 
-      //    cps := method2alg(b, alg, names),
-      //    ret := makeReturn(rt, cps)
    }
 }
 
@@ -124,26 +111,6 @@ Expr method2alg(Block b, Id alg, Names names)
   when
     bcps := block2alg(b, alg, names);
     
-//set[Id] collectVars(Block b){
-//	set[Id] localVars = {};
-//	visit(b){
-//		case (VarDec) `<Id x>`:{ localVars += {x}; }
-//		case (VarDec) `<Id x> = <VarInit e>`:{ localVars += {x} ; }
-//		default:{};
-//	};
-//	return localVars;
-//}
-//
-//Block addRefs(Block b, Names names) = visit(b){
-//    	case (LHS) `<Id x>` => x in names ? (LHS) `<Id x>.value` : (LHS) `<Id x>`
-//    	case (Expr) `<Id x>` => x in names ? (Expr) `<Id x>.value` : (Expr) `<Id x>`	
-//    	case (LocalVarDec) `<Type t> <Id x>` => (LocalVarDec) `recaf.core.Ref\<<Type newt>\> <Id x>`
-//    		when newt := boxed(t)
-//    	case (LocalVarDec) `<Type t> <Id x> = <Expr e>` => (LocalVarDec) `recaf.core.Ref\<<Type newt>\> <Id x> = new recaf.core.Ref\<<Type newt>\>(<Expr e>)`
-//    		when newt := boxed(t)
-//};
-
-
 Names declare(Id x, Names names) 
   = <names.refs + {x}, names.renaming>;
 
@@ -426,25 +393,25 @@ Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, 
 
 // TODO: final modifiers.... and then don't make Ref.
 Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<recaf.core.Ref\<<Type t2>\>\>Decl(null, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
   when 
     Type t2 := boxed(t);
   
 Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<recaf.core.Ref\<<Type t2>\>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.\<<Type t2>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
   when
     Type t2 := boxed(t),
     Expr ecps := varInit2alg(t2, e, alg, names);
 
 // assumes t is already boxed.
 Expr varInit2alg(Type t, (VarInit)`<Expr e>`, Id alg, Names names)
-  = init2alg(e, alg, names);
+  = expr2alg(e, alg, names);
   
-Expr init2alg(Expr e, Id alg, Names names)
-  = (Expr)`<Id alg>.Exp(() -\> new recaf.core.Ref(<Expr e2>))`
-  when 
-    Expr e2 := unwrapRefs(e, names);
-  //expr2alg(e, alg, names);
+//Expr init2alg(Expr e, Id alg, Names names)
+//  = (Expr)`<Id alg>.Exp(() -\> new recaf.core.Ref(<Expr e2>))`
+//  when 
+//    Expr e2 := unwrapRefs(e, names);
+//  //expr2alg(e, alg, names);
 
 Expr varInit2alg(Type t, (VarInit)`{<{VarInit ","}* inits>,}`, Id alg, Names names)
   = TODO; 
@@ -539,6 +506,7 @@ Expr unwrapRefs(Expr e, Names names) {
   }    
 }
 
+// NB: cannot use expr2alg because of void expressions.
 Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e2>; })`
   when 

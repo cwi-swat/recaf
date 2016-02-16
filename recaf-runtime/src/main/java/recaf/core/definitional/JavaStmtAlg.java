@@ -5,12 +5,13 @@ import java.util.function.Function;
 import recaf.core.Ref;
 import recaf.core.functional.CD;
 import recaf.core.functional.ED;
+import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 
 public interface JavaStmtAlg<E, S, C> {
-	S Decl(E exp, Function<Ref<?>, S> body);
+	<T> S Decl(E exp, Function<Ref<T>, S> body);
 
-	S For(String label, E coll, Function<Ref<?>, S> body);
+	<T> S For(String label, E coll, Function<Ref<T>, S> body);
 	
 	S For(String label, E cond, S update, S body); 
 	
@@ -46,7 +47,7 @@ public interface JavaStmtAlg<E, S, C> {
 
 	S TryFinally(S body, S fin);
 	
-	S ExpStat(E exp);
+	S ExpStat(K0 exp);
 	
 	S Switch(E expr, C... cases);
 		

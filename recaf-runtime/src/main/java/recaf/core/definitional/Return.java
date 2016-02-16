@@ -6,4 +6,8 @@ public class Return extends Exception {
 	public Return(Object value) {
 		this.value = value;
 	}
+	
+	public Object getValue() {
+		return value;
+	}
 }
