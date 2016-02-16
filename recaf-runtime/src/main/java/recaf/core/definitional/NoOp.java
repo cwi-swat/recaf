@@ -2,7 +2,7 @@ package recaf.core.definitional;
 
 import java.util.function.Supplier;
 
-public class NoOp<R> implements EvalJavaStmt {
+public class NoOp<R> implements EvalJavaStmt<IEval> {
 
 	@SuppressWarnings("unchecked")
 	public R Method(IExec body) {
