@@ -15,8 +15,8 @@ public interface JavaExprAlg<E> {
 	
 	// the ref and val things are the real bindings themselves
 	// because of HOAS encoding of binders.
-	E Var(String name, Ref<?> ref);
-	E AssignVar(String name, Ref ref, E value);
+	E Var(String name, Ref<Object> ref);
+	E AssignVar(String name, Ref<Object> ref, E value);
 	<T> E VarFinal(String name, T val);	
 	
 	// fields and methods
@@ -27,11 +27,11 @@ public interface JavaExprAlg<E> {
 	
 	E This();
 	
-	E PostIncr(String name, Ref r);
-	E PreIncr(String name, Ref r);
+	E PostIncr(String name, Ref<Object> r);
+	E PreIncr(String name, Ref<Object> r);
 
-	E PostDecr(String name, Ref r);
-	E PreDecr(String name, Ref r);
+	E PostDecr(String name, Ref<Object> r);
+	E PreDecr(String name, Ref<Object> r);
 	
 	E GreaterThan(E l, E r);
 	E LessThan(E l, E r);

@@ -11,7 +11,8 @@ public class NoOp<R> implements EvalJavaStmt<IEval> {
 		}
 		catch (Return r) {
 			return (R) r.getValue();
-		} catch (Throwable e) {
+		} 
+		catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 		return null;
