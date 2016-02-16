@@ -344,11 +344,11 @@ syntax FieldMod =
   | "private" 
   ;
 
-lexical Comment =
-  "/**/" 
-  | "//" EOLCommentChars !>> ![\n \a0D] LineTerminator 
-  | "/*" !>> [*] CommentPart* "*/" 
-  | "/**" !>> [/] CommentPart* "*/" 
+lexical Comment
+  = @category="Comment" "/**/" 
+  | @category="Comment" "//" EOLCommentChars !>> ![\n \a0D] LineTerminator 
+  | @category="Comment" "/*" !>> [*] CommentPart* "*/" 
+  | @category="Comment" "/**" !>> [/] CommentPart* "*/" 
   ;
 
 syntax ArraySubscript =
