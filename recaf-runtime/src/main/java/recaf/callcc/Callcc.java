@@ -4,8 +4,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import recaf.core.cps.AbstractJavaImpl;
-import recaf.core.functional.K0;
-import recaf.core.functional.SD;
+import recaf.core.cps.K0;
+import recaf.core.cps.SD;
 
 public class Callcc<R> extends AbstractJavaImpl<R> {
 

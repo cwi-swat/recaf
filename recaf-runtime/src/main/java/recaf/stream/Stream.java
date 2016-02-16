@@ -2,7 +2,7 @@ package recaf.stream;
 
 import java.util.function.Consumer;
 
-import recaf.core.functional.K0;
+import recaf.core.cps.K0;
 
 public interface Stream<T> {
 

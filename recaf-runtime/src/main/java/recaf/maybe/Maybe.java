@@ -5,8 +5,8 @@ import java.util.function.Function;
 
 import recaf.core.Ref;
 import recaf.core.cps.AbstractJavaImpl;
-import recaf.core.functional.ED;
-import recaf.core.functional.SD;
+import recaf.core.cps.ED;
+import recaf.core.cps.SD;
 
 
 public class Maybe<R> extends AbstractJavaImpl<R> {

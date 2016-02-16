@@ -4,7 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
-import recaf.core.functional.K0;
+import recaf.core.cps.K0;
 
 public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 	

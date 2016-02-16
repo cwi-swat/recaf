@@ -1,7 +1,7 @@
 package recaf.yield;
 
 import recaf.core.cps.AbstractJavaImpl;
-import recaf.core.functional.SD;
+import recaf.core.cps.SD;
 
 public class YieldExtension<R> extends AbstractJavaImpl<R> {
 

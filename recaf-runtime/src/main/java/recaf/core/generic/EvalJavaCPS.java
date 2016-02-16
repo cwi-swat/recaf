@@ -4,8 +4,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import higher.App;
-import recaf.core.functional.K;
-import recaf.core.functional.K0;
+import recaf.core.cps.K;
+import recaf.core.cps.K0;
 
 public class EvalJavaCPS<R> implements AbstractJava<R, StmCPS.t, CaseCPS.t, ExpCPS.t> {
 

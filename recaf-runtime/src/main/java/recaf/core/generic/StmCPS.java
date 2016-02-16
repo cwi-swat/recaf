@@ -1,7 +1,7 @@
 package recaf.core.generic;
 
 import higher.App;
-import recaf.core.functional.SD;
+import recaf.core.cps.SD;
 
 public interface StmCPS<R> extends App<StmCPS.t, R>, SD<R> {
 	static class t { }

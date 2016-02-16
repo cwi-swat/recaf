@@ -9,10 +9,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import recaf.core.Ref;
-import recaf.core.functional.CD;
-import recaf.core.functional.ED;
-import recaf.core.functional.K0;
-import recaf.core.functional.SD;
 
 public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	

@@ -1,7 +1,7 @@
 package recaf.cflow;
 
-import recaf.core.functional.ED;
-import recaf.core.functional.SD;
+import recaf.core.cps.ED;
+import recaf.core.cps.SD;
 
 public class Until<R> extends CFlow<R> {
 

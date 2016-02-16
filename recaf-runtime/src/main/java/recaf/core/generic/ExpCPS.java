@@ -1,7 +1,7 @@
 package recaf.core.generic;
 
 import higher.App;
-import recaf.core.functional.ED;
+import recaf.core.cps.ED;
 
 public interface ExpCPS<T> extends App<ExpCPS.t, T>, ED<T> {
 	static class t { }

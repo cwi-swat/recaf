@@ -2,8 +2,9 @@ package recaf.cflow;
 
 import java.util.Iterator;
 import java.util.stream.IntStream;
-import recaf.core.functional.ED;
-import recaf.core.functional.SD;
+
+import recaf.core.cps.ED;
+import recaf.core.cps.SD;
 
 public class Times<R> extends CFlow<R> {
 	public SD<R> Times(ED<Integer> n, SD<R> body) {

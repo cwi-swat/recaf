@@ -1,8 +1,9 @@
 package recaf.gui;
 
 import java.io.StringWriter;
-import recaf.core.functional.ED;
-import recaf.core.functional.SD;
+
+import recaf.core.cps.ED;
+import recaf.core.cps.SD;
 
 public class RenderGUI extends GUI {
 	private StringWriter writer = new StringWriter();

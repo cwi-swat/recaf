@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import recaf.core.functional.CD;
-import recaf.core.functional.ED;
-import recaf.core.functional.K0;
-import recaf.core.functional.SD;
+import recaf.core.cps.CD;
+import recaf.core.cps.ED;
+import recaf.core.cps.K0;
+import recaf.core.cps.SD;
 
 public class AbstractJavaLessTypes<R> { // implements AbstractJava<R> {
 	

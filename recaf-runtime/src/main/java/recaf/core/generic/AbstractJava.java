@@ -4,7 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import higher.App;
-import recaf.core.functional.K0;
+import recaf.core.cps.K0;
 
 public interface AbstractJava<R, S, C, E> {
 

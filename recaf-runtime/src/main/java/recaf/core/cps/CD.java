@@ -1,4 +1,4 @@
-package recaf.core.functional;
+package recaf.core.cps;
 
 import java.util.List;
 

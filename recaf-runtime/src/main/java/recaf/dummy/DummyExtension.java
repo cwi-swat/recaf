@@ -1,7 +1,7 @@
 package recaf.dummy;
 
 import recaf.core.cps.AbstractJavaImpl;
-import recaf.core.functional.SD;
+import recaf.core.cps.SD;
 
 public class DummyExtension<R> extends AbstractJavaImpl<R> {
 

@@ -1,6 +1,6 @@
 package recaf.core.generic;
 
-import recaf.core.functional.CD;
+import recaf.core.cps.CD;
 
 public interface CaseCPS<R, V> extends App2<CaseCPS.t, R, V>, CD<R, V> {
 	static class t { }
