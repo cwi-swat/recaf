@@ -2,7 +2,7 @@ package recaf.core.direct;
 
 import recaf.core.Ref;
 
-interface JavaExprEvaluator extends JavaExprAlg<IEval> {
+public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	
 	@Override
 	default IEval Lit(int n) {

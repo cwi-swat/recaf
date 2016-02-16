@@ -1,8 +1,6 @@
 package recaf.core.direct;
 
-import java.util.function.Supplier;
-
-public class NoOp<R> implements EvalJavaStmt<IEval> {
+public class NoOp<R> implements FullJava<R> {
 
 	@SuppressWarnings("unchecked")
 	public R Method(IExec body) {
@@ -16,12 +14,6 @@ public class NoOp<R> implements EvalJavaStmt<IEval> {
 			throw new RuntimeException(e);
 		}
 		return null;
-	}
-
-	// Should this be here, or in EvalJavaStmt?
-	@SuppressWarnings("unchecked")
-	public <T> Supplier<T> Exp(IEval exp) {
-		return () -> (T)exp.eval();
 	}
 	
 }
