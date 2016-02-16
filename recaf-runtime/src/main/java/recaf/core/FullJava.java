@@ -1,8 +1,6 @@
 package recaf.core;
 
-import java.util.function.Supplier;
-
-import recaf.core.functional.ED;
+import recaf.core.cps.AbstractJavaImpl;
 
 public class FullJava<R> extends AbstractJavaImpl<R> implements JavaExprEvaluator {
 

@@ -1,100 +1,99 @@
 package recaf.core;
 
-import java.util.function.Supplier;
+import recaf.core.direct.IEval;
+import recaf.core.direct.JavaExprAlg;
 
-import recaf.core.definitional.JavaExprAlg;
-
-interface JavaExprEvaluator extends JavaExprAlg<Supplier<Object>> {
+interface JavaExprEvaluator extends JavaExprAlg<IEval> {
 	
 	@Override
-	default Supplier<Object> Lit(int n) {
+	default IEval Lit(int n) {
 		return () -> {
 			return Integer.valueOf(n);
 		};
 	}
 
 	@Override
-	default Supplier<Object> Lit(double d) {
+	default IEval Lit(double d) {
 		return () -> {
 			return Double.valueOf(d);
 		};
 	}
 
 	@Override
-	default Supplier<Object> Lit(long l) {
+	default IEval Lit(long l) {
 		return () -> {
 			return Long.valueOf(l);
 		};
 	}
 
 	@Override
-	default Supplier<Object> Lit(float f) {
+	default IEval Lit(float f) {
 		return () -> {
 			return Float.valueOf(f);
 		};
 	}
 
 	@Override
-	default Supplier<Object> Lit(String s) {
+	default IEval Lit(String s) {
 		return () -> {
 			return String.valueOf(s);
 		};
 	}
 
 	@Override
-	default Supplier<Object> Lit(boolean b) {
+	default IEval Lit(boolean b) {
 		return () -> {
 			return Boolean.valueOf(b);
 		};
 	}
 
 	@Override
-	default Supplier<Object> Class(String name, java.lang.Class<?> klass) {
+	default IEval Class(String name, java.lang.Class<?> klass) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	default Supplier<Object> AssignVar(String name, Ref ref, Supplier<Object> value) {
+	default IEval AssignVar(String name, Ref<Object> ref, IEval value) {
 		return () -> {
-			ref.value = value.get();
+			ref.value = value.eval();
 			return ref.value;
 		};
 	}
 
 	@Override
-	default Supplier<Object> Var(String name, Ref<?> val) {
+	default IEval Var(String name, Ref<Object> val) {
 		return () -> {
 			return val.value;
 		};
 	}
 	
 	@Override
-	default Supplier<Object> Call(Supplier<Object> recv, String name, Supplier<Object>... args) {
+	default IEval Call(IEval recv, String name, IEval... args) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	default Supplier<Object> AssignField(Supplier<Object> recv, String name, Supplier<Object> value) {
+	default IEval AssignField(IEval recv, String name, IEval value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	default Supplier<Object> Field(Supplier<Object> recv, String name) {
+	default IEval Field(IEval recv, String name) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	default Supplier<Object> This() {
+	default IEval This() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	default Supplier<Object> PostIncr(String name, Ref ref) {
+	default IEval PostIncr(String name, Ref<Object> ref) {
 		return () -> {
 			Object o = ref.value;
 			Integer old = null;
@@ -108,7 +107,7 @@ interface JavaExprEvaluator extends JavaExprAlg<Supplier<Object>> {
 	
 
 	@Override
-	default Supplier<Object> PostDecr(String name, Ref ref) {
+	default IEval PostDecr(String name, Ref<Object> ref) {
 		return () -> {
 			Object o = ref.value;
 			Integer old = null;
@@ -121,7 +120,7 @@ interface JavaExprEvaluator extends JavaExprAlg<Supplier<Object>> {
 	}
 
 	@Override
-	default Supplier<Object> PreIncr(String name, Ref ref) {
+	default IEval PreIncr(String name, Ref<Object> ref) {
 		return () -> {
 			Object o = ref.value;
 			if (o instanceof Integer){
@@ -133,7 +132,7 @@ interface JavaExprEvaluator extends JavaExprAlg<Supplier<Object>> {
 	
 
 	@Override
-	default Supplier<Object> PreDecr(String name, Ref ref) {
+	default IEval PreDecr(String name, Ref<Object> ref) {
 		return () -> {
 			Object o = ref.value;
 			if (o instanceof Integer){
@@ -144,28 +143,28 @@ interface JavaExprEvaluator extends JavaExprAlg<Supplier<Object>> {
 	}
 
 	@Override
-	default Supplier<Object> GreaterThan(Supplier<Object> l, Supplier<Object> r) {
+	default IEval GreaterThan(IEval l, IEval r) {
 		return () -> {
-			return Boolean.valueOf((Integer) l.get() >= (Integer) r.get());
+			return Boolean.valueOf((Integer) l.eval() >= (Integer) r.eval());
 		};
 	}
 
 	@Override
-	default Supplier<Object> LessThan(Supplier<Object> l, Supplier<Object> r) {
+	default IEval LessThan(IEval l, IEval r) {
 		return () -> {
-			return Boolean.valueOf((Integer) l.get() <= (Integer) r.get());
+			return Boolean.valueOf((Integer) l.eval() <= (Integer) r.eval());
 		};
 	}
 
 	@Override
-	default Supplier<Object> Plus(Supplier<Object> l, Supplier<Object> r) {
+	default IEval Plus(IEval l, IEval r) {
 		return () -> {
-			return Integer.valueOf((Integer) l.get() + (Integer) r.get());
+			return Integer.valueOf((Integer) l.eval() + (Integer) r.eval());
 		};
 	}
 
 	@Override
-	default <T> Supplier<Object> VarFinal(String name, T val) {
+	default <T> IEval VarFinal(String name, T val) {
 		// TODO Auto-generated method stub
 		return null;
 	}
