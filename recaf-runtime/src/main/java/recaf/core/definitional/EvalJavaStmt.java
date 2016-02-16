@@ -226,7 +226,7 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 							defaultIndex = i;
 						}
 					}
-					if (defaultIndex > -1 && fallThrough) {
+					if (defaultIndex > -1 && !fallThrough) {
 						for (int i = defaultIndex; i < cases.length; i++) {
 							cases[i].eval(v, true);
 						}
@@ -245,7 +245,8 @@ public interface EvalJavaStmt extends JavaStmtAlg<IEval, IExec, ICase> {
 	@Override
 	default ICase Case(IEval constant, IExec expStat) {
 		return (v, ft) -> {
-			if (ft || v.equals(constant.eval())) {
+			Object c = constant.eval();
+			if (ft || (v == null && c == null) || v.equals(c)) {
 				expStat.exec(null);
 				return true;
 			}
