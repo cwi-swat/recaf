@@ -269,3 +269,58 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 		};
 	}
 }
+
+// private helper exceptions
+
+@SuppressWarnings("serial")
+abstract class Jump extends Exception {
+	private final String label;
+
+	public Jump(String label) {
+		this.label = label;
+	}
+
+	
+	public boolean hasLabel(String l) {
+		if (l == label) {
+			return true;
+		}
+		if (l != null) {
+			return l.equals(label);
+		}
+		return false;
+	}
+}
+
+@SuppressWarnings("serial")
+final class Break extends Jump {
+	public Break(String label) {
+		super(label);
+	}
+}
+
+@SuppressWarnings("serial")
+final class Continue extends Jump {
+
+	public Continue(String label) {
+		super(label);
+	}
+
+}
+
+@SuppressWarnings("serial")
+final class Default extends RuntimeException {
+
+}
+
+final class Return extends Exception {
+	private final Object value;
+
+	public Return(Object value) {
+		this.value = value;
+	}
+	
+	public Object getValue() {
+		return value;
+	}
+}
