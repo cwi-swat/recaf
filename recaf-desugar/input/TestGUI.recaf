@@ -32,7 +32,7 @@ public class TestGUI {
     h2("Demo");
     
     tag ("div") {
-      for (int i = 0; i < 10; i++) {
+      for (int i = 0; i < n; i++) {
          tag ("p") {
            echo! "Hello & goodbye " + i + "!\n";
            button ("Click " + i ) {

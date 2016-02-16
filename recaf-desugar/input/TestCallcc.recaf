@@ -2,7 +2,6 @@ package generated;
 
 import recaf.core.functional.K0;
 import recaf.callcc.Callcc;
-import java.util.function.Consumer;
 
 public class TestCallcc {
 

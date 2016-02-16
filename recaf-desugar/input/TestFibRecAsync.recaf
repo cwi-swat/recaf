@@ -18,7 +18,7 @@ public class TestFibRecAsync {
   } 
   
   public static void main(String[] args) throws InterruptedException, ExecutionException{
-	CompletableFuture answer;
+	CompletableFuture<Integer> answer;
 			
 	answer = new TestFibRecAsync().fib(10);
 	

@@ -7,7 +7,7 @@ import recaf.core.AbstractJavaImpl;
 import recaf.core.functional.ED;
 import recaf.core.functional.SD;
 
-public class Propagate<T, R> extends AbstractJavaImpl<R> {
+public class Propagate<R> extends AbstractJavaImpl<R> {
 	// BAD!!!
 	// non reentrant, only single type...
 	// but works across ordinary methods...
@@ -17,7 +17,7 @@ public class Propagate<T, R> extends AbstractJavaImpl<R> {
 		return typePreserving(body);
 	}
 
-	public SD<R> Local(ED<T> exp, SD<R> body) {
+	public <T> SD<R> Local(ED<T> exp, SD<R> body) {
 		return (rho, sigma, brk, contin, err) -> {
 			exp.accept(t -> {
 				stack.push(t);
@@ -31,7 +31,7 @@ public class Propagate<T, R> extends AbstractJavaImpl<R> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public SD<R> Ask(Function<T, SD<R>> body) {
+	public <T> SD<R> Ask(Function<T, SD<R>> body) {
 		return (rho, sigma, brk, contin, err) -> {
 			body.apply((T) stack.peek()).accept(rho, sigma, brk, contin, err);
 		};

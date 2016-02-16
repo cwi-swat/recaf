@@ -1,5 +1,4 @@
 package generated;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import recaf.stream.Stream;
@@ -23,7 +22,7 @@ public class TestStream {
   } 
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	Stream i = new TestStream().asyncRange();
+	new TestStream().asyncRange();
   }
 
 }

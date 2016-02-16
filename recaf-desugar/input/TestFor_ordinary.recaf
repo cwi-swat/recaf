@@ -1,5 +1,4 @@
 package generated;
-import java.util.*;
 import recaf.dummy.DummyExtension;
 
 public class TestFor_ordinary {

@@ -3,7 +3,7 @@ import recaf.propagate.Propagate;
 
  
 public class TestPropagate {
-  private recaf Propagate<String,Void> alg = new Propagate<String,Void>();
+  private recaf Propagate<Void> alg = new Propagate<Void>();
 
   recaf void update(String s) {
      local (s) {

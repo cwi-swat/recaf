@@ -3,7 +3,6 @@ import recaf.iter.Iter;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
-import java.util.function.*;
 
 public class TestIter {
   private static recaf Iter<Integer> alg = new Iter<Integer>();  
