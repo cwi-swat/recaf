@@ -62,8 +62,9 @@ public class PStream {
 		return new PStream(filterIter(this.source, pred));
 	}
 
-	[Iter<Integer>]
-	Iterable<Integer> filterIter(Iterable<Integer> source, Predicate<Integer> pred) {
+    private recaf Iter<Integer> alg = new Iter<Integer>();
+
+	recaf Iterable<Integer> filterIter(Iterable<Integer> source, Predicate<Integer> pred) {
 		for (Integer t: source) {
       		if (pred.test(t)) {
         		yield! t;
@@ -75,8 +76,7 @@ public class PStream {
 		return new PStream(mapIter(this.source, f));
 	}
   	
-  	[Iter<Integer>] 
-	Iterable<Integer> mapIter(Iterable<Integer> source, Function<Integer, Integer> f) {
+	recaf Iterable<Integer> mapIter(Iterable<Integer> source, Function<Integer, Integer> f) {
 	  for (Integer t: source) {
 	       yield! f.apply(t);
 	  }

@@ -6,12 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.*;
 
 public class TestIter {
- 
-  // todo: same fringe problem.
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
+  private static recaf Iter<Integer> alg = new Iter<Integer>();  
   
   Iterable<Integer> range(int n) {
     return new Iterable<Integer>() {
@@ -21,8 +16,7 @@ public class TestIter {
     };
   }
 
-  [Iter<Integer>] 
-  Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
+  recaf Iterable<Integer> filter(Iterable<Integer> iter, Predicate<Integer> pred) {
     for (Integer t: iter) {
       if (pred.test(t)) {
          yield! t;
@@ -30,15 +24,13 @@ public class TestIter {
     }
   }
 
-  [Iter<Integer>] 
-  Iterable<Integer> subIter() {
+  recaf Iterable<Integer> subIter() {
      for (Integer i: range(10)) {
         yield! i;
      }
   }
 
-  [Iter<Integer>] 
-  Iterable<Integer> myIter() {
+  recaf Iterable<Integer> myIter() {
      while (true) {
         yieldFrom! filter(subIter(), x -> ((Integer)x) % 2 == 0);
      }

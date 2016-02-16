@@ -3,9 +3,9 @@ package generated;
 import recaf.iter.Iter;
 
 public class TestFibIter {
+  private static recaf Iter<Integer> alg = new Iter<Integer>();
 
-  [Iter<Integer>]
-  private static Iterable<Integer> fib() {
+  private recaf static Iterable<Integer> fib() {
   	int a = 0;
    	int b = 1; 
   	 

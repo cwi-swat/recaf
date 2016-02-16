@@ -325,8 +325,13 @@ lexical CharContent =
   |  single: SingleChar 
   ;
 
+syntax BeforeField
+  = FieldMod
+  | Anno
+  ;
+
 syntax FieldDec =
-   fieldDec: (FieldMod | Anno)* Type {VarDec ","}+ ";" 
+   fieldDec: BeforeField* Type {VarDec ","}+ ";" 
   ;
 
 syntax FieldMod =

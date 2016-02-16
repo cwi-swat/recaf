@@ -47,6 +47,15 @@ syntax Anno
 syntax VarMod
   = "recaf"
   ;
+
+syntax FieldMod
+  = "recaf"
+  ;
+   
+
+syntax MethodMod
+  = "recaf"
+  ;   
    
 syntax Modifier
   = "default"

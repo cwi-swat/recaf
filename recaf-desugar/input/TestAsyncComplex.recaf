@@ -5,12 +5,12 @@ import recaf.async.AsyncExtension;
  
 public class TestAsyncComplex {
 
+    private static recaf AsyncExtension<Integer> alg = new AsyncExtension<Integer>();
 
-	public static Void pause(long sleeptime) {
+	public static void pause(long sleeptime) {
 	    try { 
     	    Thread.sleep(sleeptime);
     	} catch (InterruptedException ex) {	}
-    	return null;
 	}
 	
 	public static Void print(String msg) {
@@ -18,8 +18,7 @@ public class TestAsyncComplex {
 		return null;
 	}
 
-    [AsyncExtension<Integer>]   
-	CompletableFuture<Integer> op() {
+	recaf CompletableFuture<Integer> op() {
     	if (1 < 2) {	
     		pause(2500);
     		print("delayed op");
@@ -28,8 +27,7 @@ public class TestAsyncComplex {
      	return 41;
   	}
 
-    [AsyncExtension<Integer>]   
-	CompletableFuture<Integer> op2() {
+	recaf CompletableFuture<Integer> op2() {
     	if (1 < 2) {
        		await Integer x = op();
     		await Integer y = op();

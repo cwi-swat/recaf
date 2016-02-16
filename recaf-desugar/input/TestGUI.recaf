@@ -7,8 +7,14 @@ import java.util.Iterator;
 
 
 public class TestGUI {
+   private recaf GUI alg;
 
-  void h2(recaf GUI alg, String title) {
+   public TestGUI(GUI alg) {
+     this.alg = alg;
+   }
+
+
+  recaf void h2(String title) {
     tag ("h2") {
       echo! title;
     }
@@ -22,8 +28,8 @@ public class TestGUI {
     };
   }
 
-  void theGUI(recaf GUI alg, int n) {
-    h2(alg, "Demo");
+  recaf void theGUI(int n) {
+    h2("Demo");
     
     tag ("div") {
       for (Integer i: range(n)) {
@@ -44,12 +50,13 @@ public class TestGUI {
   
   public static void main(String args[]) {
     RenderGUI alg = new RenderGUI();
-    TestGUI tg = new TestGUI();
-    tg.theGUI(alg, 10);
+    TestGUI tg = new TestGUI(alg);
+    tg.theGUI(10);
     String html = alg.getHTML();
     System.out.println(html);
     HandleGUI handle = new HandleGUI("id2");
-    tg.theGUI(handle, 10);
+    tg = new TestGUI(handle);
+    tg.theGUI(10);
   }
 
 }

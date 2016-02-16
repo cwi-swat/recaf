@@ -3,9 +3,9 @@ import recaf.propagate.Propagate;
 
  
 public class TestPropagate {
+  private recaf Propagate<String,Void> alg = new Propagate<String,Void>();
 
-  [Propagate<String, Void>]
-  void update(String s) {
+  recaf void update(String s) {
      local (s) {
         method();
      }
@@ -17,8 +17,7 @@ public class TestPropagate {
      read();
   }
   
-  [Propagate<String, Void>]
-  void read() {
+  recaf void read() {
      ask String s;
      System.out.println("s = " + s);
   }

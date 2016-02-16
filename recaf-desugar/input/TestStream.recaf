@@ -12,8 +12,9 @@ public class TestStream {
     return null;
   }
   
-  [StreamExtension<Integer>] 
-  Stream<Integer> asyncRange() {
+  private recaf StreamExtension<Integer> alg = new StreamExtension<Integer>();
+   
+  recaf Stream<Integer> asyncRange() {
     yield! 1;
     yield! 2;
     yield! 3;

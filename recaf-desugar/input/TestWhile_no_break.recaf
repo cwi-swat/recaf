@@ -3,8 +3,9 @@ import java.util.*;
 import recaf.dummy.DummyExtension;
 
 public class TestWhile_no_break {
-	[DummyExtension<Integer>]
-	public Integer meth() {
+    private recaf DummyExtension<Integer> alg = new DummyExtension<Integer>();
+    
+	public recaf Integer meth() {
 		Integer sum = 0;
  
  		// TODO: Instead I should be able to write

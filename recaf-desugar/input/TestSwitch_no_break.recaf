@@ -2,14 +2,14 @@ package generated;
 import recaf.dummy.*;
 
 public class TestSwitch_no_break {
+    private recaf DummyExtension<String> alg = new DummyExtension<String>();
  
  	public static Void print(String msg) {
 		System.out.println(msg);
 		return null;
 	}  
 	
-  	[DummyExtension<String>]
-	String meth() { 
+  	recaf String meth() { 
      	int number = 1;
      	 
      	String selection = "none";	
@@ -26,7 +26,7 @@ public class TestSwitch_no_break {
 		return selection;
 	} 
 	
-public static void main(String args[]) {
+    public static void main(String args[]) {
 		new TestSwitch_no_break().meth();
 		
   	}

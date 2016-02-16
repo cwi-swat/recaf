@@ -3,9 +3,9 @@ import recaf.maybe.Maybe;
 import java.util.Optional;
  
 public class TestMaybe {
+  private recaf Maybe<Integer> alg = new Maybe<Integer>();
   
-  [Maybe<Integer>]
-  Optional<Integer> maybe() {
+  recaf Optional<Integer> maybe() {
      int x = 3;
      System.out.println("maybe");
      if (7 > 5) {
@@ -14,10 +14,7 @@ public class TestMaybe {
      }
   }
   
-  
-
-  [Maybe<Integer>]  
-  Optional<Integer> readOptional() {
+  recaf Optional<Integer> readOptional() {
      maybe Integer x = maybe();
      return x + 1;
   }

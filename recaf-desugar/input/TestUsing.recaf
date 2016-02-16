@@ -11,8 +11,9 @@ public class TestUsing {
      }
   }
   
-  [Using<Void>]
-  static Void usingExample() {
+  private static recaf Using<Void> alg = new Using<Void>();
+  
+  static recaf Void usingExample() {
      using (Resource r: new Resource()) {
         return null;
      }

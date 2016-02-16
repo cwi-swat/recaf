@@ -9,14 +9,9 @@ import java.util.concurrent.ExecutionException;
 import recaf.async.AsyncExtension;
 
 public class TestFibRecAsync {
-
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
+  private static recaf AsyncExtension<Integer> alg = new AsyncExtension<Integer>();
   
-  [AsyncExtension<Integer>]   
-  CompletableFuture<Integer> fib(Integer x) {
+  recaf CompletableFuture<Integer> fib(Integer x) {
   	if(x < 2) {
   		return x;
   	} else {

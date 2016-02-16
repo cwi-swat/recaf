@@ -2,14 +2,14 @@ package generated;
 import recaf.dummy.*;
 
 public class TestSwitch_nested_default_beginning {
+    private recaf DummyExtension<String> alg = new DummyExtension<String>();
  
  	public static Void print(String msg) {
 		System.out.println(msg);
 		return null;
 	}  
 	
-	[DummyExtension<String>]
-	String meth() { 
+	recaf String meth() { 
         int number = 1;
      	int number2 = 3;
      	String selection = "none";	

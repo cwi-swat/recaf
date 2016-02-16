@@ -5,9 +5,28 @@ import List;
 import Set;
 import String;
 import IO;  
+import util::Maybe;
+
 
 start[CompilationUnit] desugar(start[CompilationUnit] cu) {
-   return visit (cu) {
+   
+   list[Id] algFields = [];
+   visit (cu) {
+      case (FieldDec)`<BeforeField* bf1> recaf <BeforeField* bf2> <Type t> <Id x> = <Expr e>;`:
+        algFields += [x];
+      case (FieldDec)`<BeforeField* bf1> recaf <BeforeField* bf2> <Type t> <Id x>;`:
+        algFields += [x];
+   }
+      
+
+
+   return top-down visit (cu) {
+      case (FieldDec)`<BeforeField* bf1> recaf <BeforeField* bf2> <Type t> <Id x> = <Expr e>;`
+        => (FieldDec)`<BeforeField* bf1> <BeforeField* bf2> <Type t> <Id x> = <Expr e>;`
+
+      case (FieldDec)`<BeforeField* bf0> recaf <BeforeField* bf3> <Type t> <Id x>;`
+        => (FieldDec)`<BeforeField* bf0> <BeforeField* bf3> <Type t> <Id x>;`
+      
       case (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>` 
        => (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>
@@ -16,20 +35,30 @@ start[CompilationUnit] desugar(start[CompilationUnit] cu) {
         when <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
              cps := method2alg(b, alg, names),
              ret := makeReturn(rt, cps)
-             
-       
-      case (MethodDec)`[<ClassOrInterfaceType t>] 
-                     '<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
-       => (MethodDec)`<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
-                     '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
+      
+      case (MethodDec)`<BeforeMethod* bm0> recaf <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
+       => (MethodDec)`<BeforeMethod* bm0> <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
                      '  <BlockStm* bs>
                      '  <Stm ret>
                      '}`
         when
+          Id alg <- algFields, 
           <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
-          alg := (Id)`$alg`, 
           cps := method2alg(b, alg, names),
-          ret := makeReturn(rt, cps)
+          ret := makeReturn(rt, cps)       
+       
+      //case (MethodDec)`[<ClassOrInterfaceType t>] 
+      //               '<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>` 
+      // => (MethodDec)`<BeforeMethod* bm> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
+      //               '  <ClassOrInterfaceType t> <Id alg> = new <ClassOrInterfaceType t>();
+      //               '  <BlockStm* bs>
+      //               '  <Stm ret>
+      //               '}`
+      //  when
+      //    <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
+      //    alg := (Id)`$alg`, 
+      //    cps := method2alg(b, alg, names),
+      //    ret := makeReturn(rt, cps)
    }
 }
 

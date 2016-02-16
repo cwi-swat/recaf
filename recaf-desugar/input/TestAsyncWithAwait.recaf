@@ -4,9 +4,9 @@ import java.util.concurrent.ExecutionException;
 import recaf.async.AsyncExtension;
  
 public class TestAsyncWithAwait {
+   private static recaf AsyncExtension<Integer> alg = new AsyncExtension<Integer>();
 
-    [AsyncExtension<Integer>]   
-	CompletableFuture<Integer> op() {
+    recaf CompletableFuture<Integer> op() {
     	if (1 < 2) {
        		await Integer x = secondOp();
        		return x;
@@ -14,8 +14,7 @@ public class TestAsyncWithAwait {
      	return 41;
   	} 
   	
-  	[AsyncExtension<Integer>]   
-  	CompletableFuture<Integer> secondOp() {
+  	recaf CompletableFuture<Integer> secondOp() {
     	if (1 < 2) { 	
        		return 42;
      	}
