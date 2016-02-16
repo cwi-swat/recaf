@@ -1,6 +1,6 @@
 package generated;
 
-import recaf.core.definitional.NoOp;
+import recaf.core.direct.NoOp;
 
 
 public class TestDef {

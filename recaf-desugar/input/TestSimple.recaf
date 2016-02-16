@@ -1,13 +1,13 @@
 package generated; 
 import recaf.core.Ref;
-import recaf.core.FullJavaClosImpl;
+import recaf.core.direct.NoOp;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.function.*;  
 
 public class TestSimple    {
-  private static recaf FullJavaClosImpl<Object> alg = new FullJavaClosImpl<Object>();
+  private static recaf NoOp<Object> alg = new NoOp<Object>();
   
   private recaf static Integer simple(){           
   	int a = 4; 
