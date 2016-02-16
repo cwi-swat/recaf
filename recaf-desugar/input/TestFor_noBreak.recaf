@@ -8,9 +8,7 @@ public class TestFor_noBreak {
 	recaf Integer meth() { 		 	 
 	 	Integer sum = 0;
 	 	 
-	 	// TODO: Instead I should be able to write
- 		// List <Integer> ...
-		List list = Arrays.asList(1,2,3,4,5);
+		List<Integer> list = Arrays.asList(1,2,3,4,5);
 	 	
 	 	// TODO: For translates without the universal type of the generic method
 	 	// <Integer>For(... in this case 
