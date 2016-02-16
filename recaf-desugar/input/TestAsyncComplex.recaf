@@ -38,7 +38,7 @@ public class TestAsyncComplex {
   	}
   	
   	public static void main(String[] args) throws InterruptedException, ExecutionException{
-  		CompletableFuture answer;
+  		CompletableFuture<Integer> answer;
   				
   		answer = new TestAsyncComplex().op2();
 			

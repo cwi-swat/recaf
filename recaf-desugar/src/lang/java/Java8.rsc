@@ -600,7 +600,7 @@ syntax Expr =
       | left instanceOf: Expr "instanceof" RefType 
       | left gt: Expr "\>" Expr 
       | left ltEq: Expr "\<=" Expr 
-      | left lt: Expr "\<" Expr 
+      | left lt: Expr [\ \t\n\r] << "\<" Expr 
       )
   > left 
       ( left eq: Expr "==" Expr 
@@ -903,8 +903,10 @@ syntax LHS =
   | FieldAccess \ FieldAccessKeywords 
   ;
 
+// making the language smaller to avoid ambiguity with
+// lt/gt expressions in declarations.
 syntax TypeArgs =
-   typeArgs: "\<" {ActualTypeArg ","}+ "\>" 
+   typeArgs: [\ \t\n\r] !<< "\<" {ActualTypeArg ","}+ "\>" 
   ;
 
 
