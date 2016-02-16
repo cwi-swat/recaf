@@ -1,6 +1,6 @@
 package recaf.delim;
 
-import recaf.core.AbstractJavaImpl;
+import recaf.core.cps.AbstractJavaImpl;
 import recaf.core.functional.SD;
 
 public class ResetExtension<R> extends AbstractJavaImpl<R> {

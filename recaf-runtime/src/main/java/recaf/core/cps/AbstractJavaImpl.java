@@ -1,4 +1,4 @@
-package recaf.core;
+package recaf.core.cps;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import recaf.core.Ref;
 import recaf.core.functional.CD;
 import recaf.core.functional.ED;
 import recaf.core.functional.K0;

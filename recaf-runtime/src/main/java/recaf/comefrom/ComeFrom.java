@@ -3,7 +3,7 @@ package recaf.comefrom;
 import java.util.HashMap;
 import java.util.Map;
 
-import recaf.core.AbstractJavaImpl;
+import recaf.core.cps.AbstractJavaImpl;
 import recaf.core.functional.ED;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;

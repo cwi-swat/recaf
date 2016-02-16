@@ -3,8 +3,8 @@ package recaf.maybe;
 import java.util.Optional;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaImpl;
 import recaf.core.Ref;
+import recaf.core.cps.AbstractJavaImpl;
 import recaf.core.functional.ED;
 import recaf.core.functional.SD;
 

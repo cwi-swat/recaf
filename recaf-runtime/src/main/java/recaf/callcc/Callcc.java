@@ -3,7 +3,7 @@ package recaf.callcc;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaImpl;
+import recaf.core.cps.AbstractJavaImpl;
 import recaf.core.functional.K0;
 import recaf.core.functional.SD;
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import recaf.core.AbstractJavaImpl;
+import recaf.core.cps.AbstractJavaImpl;
 import recaf.core.functional.ED;
 import recaf.core.functional.SD;
 
