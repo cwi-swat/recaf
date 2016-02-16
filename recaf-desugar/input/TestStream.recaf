@@ -21,8 +21,15 @@ public class TestStream {
     yield! 5;
   } 
   
+  recaf void consumeStream() {
+     awaitFor (Integer x: asyncRange()) {
+       System.out.println(x);
+     }
+  }
+  
+  
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	new TestStream().asyncRange();
+	new TestStream().consumeStream();
   }
 
 }
