@@ -36,6 +36,7 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 		};
 	}
 	
+	// TODO: make consistent, allow init and localvardec.
 	@Override
 	default IExec For(String label, Supplier<Boolean> cond, IExec update, IExec body) {
 		return l -> {
@@ -248,7 +249,7 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 	@Override
 	default <T> ICase Case(T constant, IExec expStat) {
 		return (v, ft) -> {
-			if (ft || (v == null && constant == null) || v.equals(constant)) {
+			if (ft || (v == constant) || (v != null && v.equals(constant))) {
 				expStat.exec(null);
 				return true;
 			}

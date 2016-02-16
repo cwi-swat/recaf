@@ -56,6 +56,8 @@ public interface JavaStmtAlg<E, S, C> {
 	
 	S TryFinally(S body, S fin);
 	
+	
+	// what do we do here if expression are desugared?
 	S ExpStat(K0 exp);
 	
 	

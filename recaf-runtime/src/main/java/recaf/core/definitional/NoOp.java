@@ -17,7 +17,7 @@ public class NoOp<R> implements EvalJavaStmt<IEval> {
 		return null;
 	}
 
-	// Should this be here, or in JavaStmtAlg?
+	// Should this be here, or in EvalJavaStmt?
 	@SuppressWarnings("unchecked")
 	public <T> Supplier<T> Exp(IEval exp) {
 		return () -> (T)exp.eval();

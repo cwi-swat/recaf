@@ -1,62 +1,61 @@
-package recaf.core;
+package recaf.core.generic;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import recaf.core.functional.ED;
+import higher.App;
 import recaf.core.functional.K0;
-import recaf.core.functional.SD;
 
-public interface AbstractJava<R> {
+public interface AbstractJava<R, S, C, E> {
 
-	<T> ED<T> Exp(Supplier<T> e);
+	<T> App<E, T> Exp(Supplier<T> e);
 
-	SD<R> Empty();
+	App<S, R> Empty();
 
-	SD<R> If(ED<Boolean> e, SD<R> s);
+	App<S, R> If(App<E, Boolean> e, App<S, R> s);
 
-	SD<R> If(ED<Boolean> e, SD<R> s1, SD<R> s2);
+	App<S, R> If(App<E, Boolean> e, App<S, R> s1, App<S, R> s2);
 
-	SD<R> Labeled(String label, SD<R> s);
+	App<S, R> Labeled(String label, App<S, R> s);
 
-	SD<R> While(ED<Boolean> e, SD<R> s);
+	App<S, R> While(App<E, Boolean> e, App<S, R> s);
 
-	SD<R> DoWhile(SD<R> s, ED<Boolean> e);
+	App<S, R> DoWhile(App<S, R> s, App<E, Boolean> e);
 
-	<S> SD<S> Switch(ED<Integer> expr, SD<S>... cases);
+	App<S, R> Switch(App<E, Integer> expr, App<C, R>... cases);
 
-	SD<R> Case(ED<Integer> constant, SD<R> expStat);
+	App<C, R> Case(App<E, Integer> constant, App<S, R> expStat);
 
-	SD<R> Default(SD<R> expStat);
+	App<C, R> Default(App<S, R> expStat);
 
-	SD<R> Break();
+	App<S, R> Break();
 
-	SD<R> Break(String label);
+	App<S, R> Break(String label);
 
-	SD<R> Continue();
+	App<S, R> Continue();
 
-	SD<R> Continue(String label);
+	App<S, R> Continue(String label);
 
-	SD<R> Return(ED<R> e);
+	App<S, R> Return(App<E, R> e);
 
-	SD<R> Return();
+	App<S, R> Return();
 
-	SD<R> Seq(SD<R>... ss);
+	App<S, R> Seq(App<S, R>... ss);
 
-	<T extends Throwable> SD<R> Throw(ED<T> e);
+	<T extends Throwable> App<S, R> Throw(App<E, T> e);
 
-	<T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle);
+	<T extends Throwable> App<S, R> TryCatch(App<S, R> body, Class<T> type, Function<T, App<S, R>> handle);
 
-	SD<R> TryFinally(SD<R> body, SD<R> fin);
+	App<S, R> TryFinally(App<S, R> body, App<S, R> fin);
 
-	<U> SD<R> ExpStat(K0 thunk);
+	<U> App<S, R> ExpStat(K0 thunk);
 
 	/*
 	 * HOAS for let expressions int x = 3; s ==> Let(Exp(3), x -> [[s]]) S Let(E
 	 * exp, Function<E, S> body);
 	 */
-	<U> SD<R> Decl(ED<U> exp, Function<U, SD<R>> body);
+	<U> App<S, R> Decl(App<E, U> exp, Function<U, App<S, R>> body);
 
-	<U> SD<R> For(ED<Iterable<U>> coll, Function<U, SD<R>> body);
+	<U> App<S, R> For(App<E, Iterable<U>> coll, Function<U, App<S, R>> body);
 
 }
