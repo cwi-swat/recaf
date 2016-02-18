@@ -151,7 +151,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval LessThan(IEval l, IEval r) {
 		return () -> {
-			return Boolean.valueOf((Integer) l.eval() <= (Integer) r.eval());
+			return Boolean.valueOf((Integer) l.eval() < (Integer) r.eval());
 		};
 	}
 
