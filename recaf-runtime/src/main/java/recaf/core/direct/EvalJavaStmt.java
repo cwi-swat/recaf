@@ -14,20 +14,20 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 	}
 
 	@Override
-	default <T> IExec For(String label, Supplier<Iterable<T>> coll, Function<Ref<T>, IExec> body) {
+	default <T> IExec ForEach(Supplier<Iterable<T>> coll, Function<Ref<T>, IExec> body) {
 		return l -> {
 			for (T x: coll.get()) {
 				try {
 					body.apply(new Ref<T>(x)).exec(null);
 				}
 				catch (Break b) {
-					if (b.hasLabel(label)) {
+					if (b.hasLabel(l)) {
 						break;
 					}
 					throw b;
 				}
 				catch (Continue c) {
-					if (c.hasLabel(label)) {
+					if (c.hasLabel(l)) {
 						continue;
 					}
 					throw c;
@@ -35,10 +35,23 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 			}
 		};
 	}
+
 	
-	// TODO: make consistent, allow init and localvardec.
 	@Override
-	default IExec For(String label, Supplier<Boolean> cond, IExec update, IExec body) {
+	default IExec For(IExec init, Supplier<Boolean> cond, IExec update, IExec body) {
+		return l -> {
+			init.exec(null);
+			ForBody(cond, update, body).exec(l);
+		};
+	}
+
+	@Override
+	default <T> IExec ForDecl(Supplier<T> init, Function<Ref<T>, IExec> body) {
+		return l -> body.apply(new Ref<>(init.get())).exec(l);
+	}
+	
+	@Override
+	default IExec ForBody(Supplier<Boolean> cond, IExec update, IExec body) {
 		return l -> {
 			while (true) {
 				if (cond.get()) {
@@ -268,59 +281,61 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 			throw new Default();
 		};
 	}
-}
-
-// private helper exceptions
-@SuppressWarnings("serial")
-abstract class Jump extends Exception {
-	private final String label;
-
-	public Jump(String label) {
-		this.label = label;
-	}
-
 	
-	public boolean hasLabel(String l) {
-		if (l == label) {
-			return true;
+	//  helper exceptions
+	@SuppressWarnings("serial")
+	abstract class Jump extends Exception {
+		private final String label;
+
+		public Jump(String label) {
+			this.label = label;
 		}
-		if (l != null) {
-			return l.equals(label);
+
+		
+		public boolean hasLabel(String l) {
+			if (l == label) {
+				return true;
+			}
+			if (l != null) {
+				return l.equals(label);
+			}
+			return false;
 		}
-		return false;
-	}
-}
-
-@SuppressWarnings("serial")
-final class Break extends Jump {
-	public Break(String label) {
-		super(label);
-	}
-}
-
-@SuppressWarnings("serial")
-final class Continue extends Jump {
-
-	public Continue(String label) {
-		super(label);
 	}
 
-}
-
-@SuppressWarnings("serial")
-final class Default extends RuntimeException {
-
-}
-
-@SuppressWarnings("serial")
-final class Return extends Exception {
-	private final Object value;
-
-	public Return(Object value) {
-		this.value = value;
+	@SuppressWarnings("serial")
+	final class Break extends Jump {
+		public Break(String label) {
+			super(label);
+		}
 	}
-	
-	public Object getValue() {
-		return value;
+
+	@SuppressWarnings("serial")
+	final class Continue extends Jump {
+
+		public Continue(String label) {
+			super(label);
+		}
+
 	}
+
+	@SuppressWarnings("serial")
+	final class Default extends RuntimeException {
+
+	}
+
+	@SuppressWarnings("serial")
+	final class Return extends Exception {
+		private final Object value;
+
+		public Return(Object value) {
+			this.value = value;
+		}
+		
+		public Object getValue() {
+			return value;
+		}
+	}
+
 }
+

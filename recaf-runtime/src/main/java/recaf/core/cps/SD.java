@@ -13,5 +13,5 @@ package recaf.core.cps;
  */
 
 public interface SD<R> {
-	void accept(K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err);
+	void accept(String label, K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err);
 }

@@ -12,9 +12,13 @@ public interface JavaStmtAlg<E, S, C> {
 	<T> Supplier<T> Exp(E e);
 	
 	<T> S Decl(Supplier<T> exp, Function<Ref<T>, S> body);
-
-	<T> S For(String label, Supplier<Iterable<T>> exp, Function<Ref<T>, S> body);
 	
+	<T> S ForEach(Supplier<Iterable<T>> exp, Function<Ref<T>, S> body);
+	
+	<T> S ForDecl(Supplier<T> init, Function<Ref<T>, S> body);
+
+	S ForBody(Supplier<Boolean> cond, S update, S body);
+
 	<T> S Return(Supplier<T> e);
 	
 	<T extends Throwable> S Throw(Supplier<T> e);
@@ -28,8 +32,8 @@ public interface JavaStmtAlg<E, S, C> {
 	
 	C Default(S expStat);
 
-	S For(String label, Supplier<Boolean> cond, S update, S body); 
-	
+	S For(S init, Supplier<Boolean> cond, S update, S body);
+
 	S If(Supplier<Boolean> cond, S s);
 	
 	S If(Supplier<Boolean> cond, S s1, S s2);
@@ -56,9 +60,9 @@ public interface JavaStmtAlg<E, S, C> {
 	
 	S TryFinally(S body, S fin);
 	
-	
-	// what do we do here if expression are desugared?
+	// what do we do here if expressions are desugared?
 	S ExpStat(K0 exp);
+
 	
 	
 }

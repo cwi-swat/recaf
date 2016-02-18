@@ -28,7 +28,7 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 			boolean exhausted = false;
 			R current = null;
 			K0 k = () -> {
-				body.accept(r -> {
+				body.accept(null, r -> {
 					exhausted = true;
 				} , () -> {
 					exhausted = true;
@@ -77,7 +77,7 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <U> SD<R> Yield(ED<U> exp) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			exp.accept(v -> {
 				YIELD.value = v;
 				YIELD.k = sigma;
@@ -87,6 +87,6 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <U> SD<R> YieldFrom(ED<Iterable<U>> exp) {
-		return For(null, exp, e -> Yield(Exp(() -> e)));
+		return ForEach(exp, e -> Yield(Exp(() -> e)));
 	}
 }

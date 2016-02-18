@@ -18,10 +18,10 @@ public class Propagate<R> extends AbstractJavaImpl<R> {
 	}
 
 	public <T> SD<R> Local(ED<T> exp, SD<R> body) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			exp.accept(t -> {
 				stack.push(t);
-				body.accept(r -> { stack.pop(); rho.accept(r);}, 
+				body.accept(null, r -> { stack.pop(); rho.accept(r);}, 
 						() -> { stack.pop(); sigma.call(); }, 
 						l -> { throw new AssertionError("cannot break without loop"); }, 
 						l -> { throw new AssertionError("cannot continue without loop"); },
@@ -32,8 +32,8 @@ public class Propagate<R> extends AbstractJavaImpl<R> {
 
 	@SuppressWarnings("unchecked")
 	public <T> SD<R> Ask(Function<T, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> {
-			body.apply((T) stack.peek()).accept(rho, sigma, brk, contin, err);
+		return (label, rho, sigma, brk, contin, err) -> {
+			body.apply((T) stack.peek()).accept(null, rho, sigma, brk, contin, err);
 		};
 	}
 	

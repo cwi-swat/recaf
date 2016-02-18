@@ -13,9 +13,9 @@ public class Using<R> extends AbstractJavaImpl<R> {
 	}
 	
 	public <U extends AutoCloseable> SD<R> Using(ED<U> resource, Function<U, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			resource.accept(t -> {
-				body.apply(t).accept(r -> {
+				body.apply(t).accept(null, r -> {
 					try {
 						t.close();
 					} catch (Exception e) {

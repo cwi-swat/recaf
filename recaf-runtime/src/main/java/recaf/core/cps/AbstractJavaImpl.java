@@ -13,7 +13,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	
 	protected R typePreserving(SD<R> body) {
 		Ref<R> result = new Ref<>();
-		body.accept(r -> {
+		body.accept(null, r -> {
 			result.value = r;
 		} , () -> {
 		} , l -> {
@@ -43,7 +43,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> Empty() {
-		return (rho, sigma, brk, contin, err) -> sigma.call();
+		return (label, rho, sigma, brk, contin, err) -> sigma.call();
 	}
 
 	public SD<R> If(ED<Boolean> e, SD<R> s) {
@@ -51,50 +51,27 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> If(ED<Boolean> e, SD<R> s1, SD<R> s2) {
-		return (rho, sigma, brk, contin, err) -> e.accept(x -> {
+		return (label, rho, sigma, brk, contin, err) -> e.accept(x -> {
 			if (x) {
-				s1.accept(rho, sigma, brk, contin, err);
+				s1.accept(label, rho, sigma, brk, contin, err);
 			} else {
-				s2.accept(rho, sigma, brk, contin, err);
+				s2.accept(label, rho, sigma, brk, contin, err);
 			}
 		} , err);
 	}
 
 	public SD<R> Labeled(String label, SD<R> s) {
-		return (rho, sigma, brk, contin, err) -> {
-			new K0() {
-				@Override
-				public void call() {
-					s.accept(rho, sigma, l -> {
-						if (label.equals(l)) {
-							sigma.call();
-						}
-						else {
-							brk.accept(l);;
-						}
-					}, l -> {
-						if (label.equals(l)) {
-							call(); // !!!
-						}
-						else {
-							contin.accept(l);
-						}
-					}, err);
-				}
-				
-				
-			}.call();
-		};
+		return (label0, rho, sigma, brk, contin, err) -> s.accept(label, rho, sigma, brk, contin, err);
 	}
 
 	public SD<R> While(ED<Boolean> e, SD<R> s) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 				@Override
 				public void call() {
 					e.accept(b -> {
 						if (b) {
-							s.accept(rho, () -> call(),
+							s.accept(null, rho, () -> call(),
 									l -> {
 										if (l == null) {
 											sigma.call();
@@ -121,12 +98,12 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 
 				@Override
 				public void call() {
-					s.accept(rho, () -> {
+					s.accept(null, rho, () -> {
 						e.accept(v -> {
 							if (v) {
 								call();
@@ -160,7 +137,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
 		final List<CD<R, V>> lst = Arrays.asList(cases);
 
-		return (rho, sigma, brk, contin, err) -> expr.accept(x -> {
+		return (label, rho, sigma, brk, contin, err) -> expr.accept(x -> {
 			if (lst.isEmpty()) {
 				sigma.call();
 			}
@@ -180,7 +157,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	public <V> CD<R, V> Case(V constant, SD<R> expStat) {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			if (matched  /* fall through */ || v.equals(constant)) {
-				expStat.accept(rho, () -> {
+				expStat.accept(null, rho, () -> {
 					rest.get(0).accept(true, v, rest.subList(1, rest.size()), rho, sigma, brk, contin, err);
 				}, brk, contin, err);
 			}
@@ -194,7 +171,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			if (rest.isEmpty()) {
 				// if there was no break, and default is at the end, it's always executed
-				expStat.accept(rho, sigma, brk, contin, err);
+				expStat.accept(null, rho, sigma, brk, contin, err);
 			}
 			else {
 				// do other cases first, move default handler to end.
@@ -205,7 +182,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
 					assert rest2.isEmpty();
 					if (!matched2) {
-						expStat.accept(rho2, () -> {
+						expStat.accept(null, rho2, () -> {
 							// fall through: if default does not break, we get fall through
 							// and all subsequent cases should be executed.
 							rest.get(0).accept(true, v2, rest.subList(1, rest.size()), rho2, sigma2, brk2, contin2, err2);
@@ -225,7 +202,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> Break(String label) {
-		return (rho, sigma, brk, contin, err) -> brk.accept(label);
+		return (label0, rho, sigma, brk, contin, err) -> brk.accept(label);
 	}
 
 	public SD<R> Continue() {
@@ -233,15 +210,15 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> Continue(String label) {
-		return (rho, sigma, brk, contin, err) -> contin.accept(label);
+		return (label0, rho, sigma, brk, contin, err) -> contin.accept(label);
 	}
 
 	public SD<R> Return() {
-		return (rho, sigma, brk, contin, err) -> rho.accept(null);
+		return (label, rho, sigma, brk, contin, err) -> rho.accept(null);
 	}
 
 	public SD<R> Return(ED<R> e) {
-		return (rho, sigma, brk, contin, err) -> e.accept(rho, err);
+		return (label, rho, sigma, brk, contin, err) -> e.accept(rho, err);
 	}
 
 	
@@ -251,20 +228,20 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 //	}
 
 	public SD<R> Seq(SD<R> s1, SD<R> s2) {
-		return (rho, sigma, brk, contin, err) -> s1.accept(rho, () -> s2.accept(rho, sigma, brk, contin, err), brk, contin, err);
+		return (label, rho, sigma, brk, contin, err) -> s1.accept(label, rho, () -> s2.accept(null, rho, sigma, brk, contin, err), brk, contin, err);
 	}
 
 	public <T extends Throwable> SD<R> Throw(ED<T> e) {
-		return (rho, sigma, brk, contin, err) -> e.accept(r -> err.accept(r), err);
+		return (label, rho, sigma, brk, contin, err) -> e.accept(r -> err.accept(r), err);
 	}
 
 	// TODO: try catch finally.
 	@SuppressWarnings("unchecked")
 	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
-		return (rho, sigma, brk, contin, err) -> {
-			body.accept(rho, sigma, brk, contin, (Throwable exc) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
+			body.accept(null, rho, sigma, brk, contin, (Throwable exc) -> {
 				if (type.isInstance(exc)) {
-					handle.apply((T) exc).accept(rho, sigma, brk, contin, err);
+					handle.apply((T) exc).accept(label, rho, sigma, brk, contin, err);
 				} else {
 					err.accept(exc);
 				}
@@ -273,23 +250,23 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 
 	public SD<R> TryFinally(SD<R> body, SD<R> fin) {
-		return (rho, sigma, brk, contin, err) -> {
-			body.accept(r -> {
-				fin.accept(rho, () -> rho.accept(r), brk, contin, err);
+		return (label, rho, sigma, brk, contin, err) -> {
+			body.accept(null, r -> {
+				fin.accept(null, rho, () -> rho.accept(r), brk, contin, err);
 			} , () -> {
-				fin.accept(rho, sigma, brk, contin, err);
+				fin.accept(null, rho, sigma, brk, contin, err);
 			} , l -> {
-				fin.accept(rho, () -> { brk.accept(l); }, brk, contin, err);
+				fin.accept(null, rho, () -> { brk.accept(l); }, brk, contin, err);
 			} , l -> {
-				fin.accept(rho, () -> { contin.accept(l); }, brk, contin, err);
+				fin.accept(null, rho, () -> { contin.accept(l); }, brk, contin, err);
 			} , (Throwable exc) -> {
-				fin.accept(rho /* todo: exception here too??? */, () -> err.accept(exc), brk, contin, err);
+				fin.accept(null, rho /* todo: exception here too??? */, () -> err.accept(exc), brk, contin, err);
 			});
 		};
 	}
 
 	public SD<R> ExpStat(K0 thunk) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			try {
 				thunk.call();
 			} catch (Throwable t) {
@@ -305,29 +282,42 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	 * exp, Function<E, S> body);
 	 */
 	public <U> SD<R> Decl(ED<U> exp, Function<Ref<U>, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(new Ref<>(r)).accept(rho, sigma, brk, contin, err), err);
+		return (label, rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(new Ref<>(r)).accept(label, rho, sigma, brk, contin, err), err);
 	}
 	
 	// For loops
-	//<Id alg>.For(<Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
 	
-	// label?: for(; cond; update) body;
-	// NB: technically update is not a statement, (so it can't return)
+	// todo multiple bindings may be introduced (BTW: we cannot do this, need heterogenoeous list).
+	// for (int x = 3; cond; update)
+	public <T> SD<R> ForDecl(ED<T> init, Function<Ref<T>, SD<R>> body) {
+		return (label, rho, sigma, brk, contin, err) -> {
+			init.accept(v -> {
+				// NB: we pass in the label of the for loop into the for body.
+				body.apply(new Ref<>(v)).accept(label, rho, sigma, brk, contin, err);
+			}, err);
+		};
+	}
+	
+	public SD<R> ForBody(ED<Boolean> cond, SD<R> update, SD<R> body) {
+		return For(Empty(), cond, update, body);
+	}
+	
+	// NB: technically init/update is not a statement, (so it can't return)
 	// but we model it using SD<R> for simplicity's sake.
-	// label can be null.
-	public SD<R> For(String label, ED<Boolean> cond, SD<R> update, SD<R> body) {
+	// for (x = 3; cond; update)
+	public SD<R> For(SD<R> init, ED<Boolean> cond, SD<R> update, SD<R> body) {
 		// incorrect with break and continue!
 		//return While(cond, Seq2(body, update));
 		
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 
 				@Override
 				public void call() {
 					cond.accept(b -> {
 						if (b) {
-							body.accept(rho, () -> {
-								update.accept(rho, () -> {
+							body.accept(null, rho, () -> {
+								update.accept(null, rho, () -> {
 									call();
 								}, brk, contin, err);
 							}, l -> {
@@ -339,7 +329,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 								}
 							}, l -> {
 								if (l == label) {
-									update.accept(rho, () -> {
+									update.accept(null, rho, () -> {
 										call();	
 									}, brk, contin, err);
 								}
@@ -358,15 +348,15 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 
-	public <U> SD<R> For(String label, ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
-		return (rho, sigma, brk, contin, err) -> {
+	public <U> SD<R> ForEach(ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+		return (label, rho, sigma, brk, contin, err) -> {
 			coll.accept(i -> {
 				Iterator<U> iter = i.iterator(); 
 				new K0() {
 					@Override
 					public void call() {
 						if (iter.hasNext()) {
-							body.apply(new Ref<>(iter.next())).accept(rho, () -> {
+							body.apply(new Ref<>(iter.next())).accept(null, rho, () -> {
 								call();
 							}, l -> {
 								if (l == label) {

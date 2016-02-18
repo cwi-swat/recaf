@@ -17,10 +17,10 @@ public class HandleGUI extends GUI {
 	@Override
 	public SD<Void> Button(ED<String> label, SD<Void> body) {
 		// in handle, we execute the body if the current button was clickd.
-		return (rho, sigma, brk, contin, err) -> {
+		return (label0, rho, sigma, brk, contin, err) -> {
 			String id = nextId();
 			if (buttonClicked.equals(id)) {
-				body.accept(rho, sigma, brk, contin, err);
+				body.accept(null, rho, sigma, brk, contin, err);
 			}
 			else {
 				sigma.call();

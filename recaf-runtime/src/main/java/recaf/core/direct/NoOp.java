@@ -1,5 +1,7 @@
 package recaf.core.direct;
 
+import java.util.function.Supplier;
+
 public class NoOp<R> implements FullJava<R> {
 
 	@SuppressWarnings("unchecked")

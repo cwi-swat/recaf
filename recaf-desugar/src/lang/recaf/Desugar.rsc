@@ -237,50 +237,44 @@ FormalParam fp2ref((FormalParam)`<Type t> <Id x>`)
 
 
 // NB: for loop vars are mutable.
-// TODO: what to do with labels?
 Expr stm2alg((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type t>\>For(null, <Expr ecps>, (<FormalParam f2>) -\> {return <Expr scps>;})`
+  = (Expr)`<Id alg>.\<<Type t>\>ForEach(<Expr ecps>, (<FormalParam f2>) -\> <Expr scps>)`
   when 
     Expr ecps := expr2alg(e, alg, names),
     Expr scps := stm2alg(s, alg, declare(f, names)),
     FormalParam f2 := fp2ref(f),
-    Type t := typeOf(f);
+    Type t := boxed(typeOf(f));
 
-// labeled for each
-Expr stm2alg((Stm)`<Id label>: for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type t>\>For(<Expr labelExp>, <Expr ecps>, (<FormalParam f2>) -\> {return <Expr scps>;})`
-  when 
-    Expr ecps := expr2alg(e, alg, names),
-    Expr scps := stm2alg(s, alg, declare(f, names)),
-    FormalParam f2 := fp2ref(f),
-    Type t := typeOf(f),
-    Expr labelExp := [Expr]"\"<label>\"";
-
-
-// For loops with init expressions (unlabeled and labeled)
-Expr stm2alg((Stm)`for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  = stm2alg((Stm)`{<{Expr ","}* es1>; for (; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, names)
-  when _ <- es1;  
-
-Expr stm2alg((Stm)`<Id label>: for (<{Expr ","}* es1>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  = stm2alg((Stm)`{<{Expr ","}* es1>; <Id label>: for (; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, names)  
-  when _ <- es1;  
-
-// For loops with decls (unlabeled and labeled)
-Expr stm2alg((Stm)`for (<LocalVarDec vd>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  = stm2alg((Stm)`{<LocalVarDec vd>; for(; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, names);  
-
-Expr stm2alg((Stm)`<Id label>: for (<LocalVarDec vd>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  = stm2alg((Stm)`{<LocalVarDec vd>; <Id label>: for(; <Expr cond>; <{Expr ","}* update>) <Stm body>}`, alg, names);  
-
-// base case for for loops (init has been hoisted already)
-Expr stm2alg((Stm)`for (; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  = (Expr)`<Id alg>.For(null, <Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
+// For loops with init expressions
+Expr stm2alg((Stm)`for (<{Expr ","}* init>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
+  = (Expr)`<Id alg>.For(<Expr initcps>, <Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
   when
+    Expr initcps := exps2alg(init, alg, names),
     Expr condcps := expr2alg(cond, alg, names),
     Expr updatecps := exps2alg(update, alg, names),
     Expr bodycps := stm2alg(body, alg, names);
-    
+
+// For loops with decls (unlabeled and labeled)
+// NB multiple vardecs cannot be supported
+Expr stm2alg((Stm)`for (<Type t> <Id x>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
+  =(Expr)`<Id alg>.\<<Type t2>\>ForDecl(null, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
+  when
+    Names names2 := declare(x, names),
+    Expr condcps := expr2alg(cond, alg, names2),
+    Expr updatecps := exps2alg(update, alg, names2),
+    Expr bodycps := stm2alg(body, alg, names2),
+    Type t2 := boxed(t);
+
+Expr stm2alg((Stm)`for (<Type t> <Id x> = <Expr init>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
+  =(Expr)`<Id alg>.\<<Type t2>\>ForDecl(<Expr initcps>, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
+  when
+    Expr initcps := expr2alg(init, alg, names),
+    Names names2 := declare(x, names),
+    Expr condcps := expr2alg(cond, alg, names2),
+    Expr updatecps := exps2alg(update, alg, names2),
+    Expr bodycps := stm2alg(body, alg, names2),
+    Type t2 := boxed(t);
+  
 
 Expr exps2alg({Expr ","}* exps, Id alg, Names names) {
   cur = (Expr)`<Id alg>.Empty()`;
@@ -290,15 +284,6 @@ Expr exps2alg({Expr ","}* exps, Id alg, Names names) {
   }
   return cur; 
 }
-  //= ( (Expr)`<Id alg>.Empty()` | stm2alg((Stm)`<Expr e>;`, alg, names) | e <- reverse([e | 
-
-Expr stm2alg((Stm)`<Id label>: for (; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  = (Expr)`<Id alg>.For(<Expr labelExp>, <Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
-  when
-    Expr condcps := expr2alg(cond, alg, names),
-    Expr updatecps := stm2alg((Stm)`{<{Expr ","}* update>;}`, alg, names),
-    Expr bodycps := stm2alg(body, alg, names),
-    Expr labelExp := [Expr]"\"<label>\"";
     
 Expr stm2alg((Stm)`throw <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Throw(<Expr ecps>)`

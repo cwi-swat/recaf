@@ -34,11 +34,11 @@ public class RenderGUI extends GUI {
 	
 	@Override
 	public SD<Void> Tag(ED<String> t, SD<Void> body) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label, rho, sigma, brk, contin, err) -> {
 			t.accept(tag -> {
 				output("<" + tag + ">\n");
 				indent();
-				body.accept(rho, () -> {
+				body.accept(null, rho, () -> {
 					dedent();
 					output("</" + tag + ">\n");
 					sigma.call();
@@ -50,7 +50,7 @@ public class RenderGUI extends GUI {
 	@Override
 	public SD<Void> Button(ED<String> label, SD<Void> body) {
 		// in render, we don't execute the body.
-		return (rho, sigma, brk, contin, err) -> {
+		return (label0, rho, sigma, brk, contin, err) -> {
 			label.accept(l -> {
 				output("<button id=\"" + nextId() + "\">" + escapeHTML(l) + "</button>\n");
 				sigma.call();
@@ -60,7 +60,7 @@ public class RenderGUI extends GUI {
 	
 	@Override
 	public SD<Void> Echo(ED<String> exp) {
-		return (rho, sigma,  brk, contin, err) -> {
+		return (label, rho, sigma,  brk, contin, err) -> {
 			exp.accept(txt -> {
 				output(escapeHTML(txt));
 				sigma.call();

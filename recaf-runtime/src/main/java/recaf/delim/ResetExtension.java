@@ -6,7 +6,7 @@ import recaf.core.cps.SD;
 public class ResetExtension<R> extends AbstractJavaImpl<R> {
 
 	public Shift<R, R, R> Method(SD<R> body) {
-		body.accept(v -> {}, ()-> {}, l -> {}, l -> {}, ex -> {});
+		body.accept(null, v -> {}, ()-> {}, l -> {}, l -> {}, ex -> {});
 		return null;
 	}
 

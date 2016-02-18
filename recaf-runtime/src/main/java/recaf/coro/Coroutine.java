@@ -42,7 +42,7 @@ public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 			@Override
 			public void run() {
 				try {
-					body.accept(r -> {this.result = r;}, 
+					body.accept(null, r -> {this.result = r;}, 
 							() -> { exhausted = true; }, 
 							l -> {}, 
 							l -> {}, 
@@ -74,9 +74,9 @@ public class Coroutine<R, T> extends AbstractJavaImpl<R> {
 	}
 	
 	public SD<R> Yield(ED<R> exp, Function<T, SD<R>> body) {
-		return (rho, sigma, contin, brk, err) -> {
+		return (label, rho, sigma, contin, brk, err) -> {
 			exp.accept(v -> {
-				throw new Yield(v, () -> body.apply(stack.pop()).accept(rho, sigma, contin, brk, err));
+				throw new Yield(v, () -> body.apply(stack.pop()).accept(null, rho, sigma, contin, brk, err));
 			}, err);
 		};
 	}

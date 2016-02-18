@@ -17,7 +17,7 @@ public class ComeFrom<R> extends AbstractJavaImpl<R> {
 	}
 
 	public SD<R> ComeFrom(ED<String> label) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label0, rho, sigma, brk, contin, err) -> {
 			label.accept(l -> {
 				ks.put(l, sigma);
 				sigma.call();
@@ -27,12 +27,12 @@ public class ComeFrom<R> extends AbstractJavaImpl<R> {
 	
 	@Override
 	public SD<R> Labeled(String label, SD<R> s) {
-		return (rho, sigma, brk, contin, err) -> {
+		return (label0, rho, sigma, brk, contin, err) -> {
 			if (ks.containsKey(label)) {
 				ks.get(label).call();
 				return;
 			}
-			s.accept(rho, sigma, brk, contin, err);
+			s.accept(label, rho, sigma, brk, contin, err);
 		};
 	}
 	
