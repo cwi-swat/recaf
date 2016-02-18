@@ -73,14 +73,14 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 						if (b) {
 							s.accept(null, rho, () -> call(),
 									l -> {
-										if (l == null) {
+										if (l == label) {
 											sigma.call();
 										}
 										else {
 											brk.accept(l);
 										}
 									}, l -> {
-										if (l == null) {
+										if (l == label) {
 											call();
 										}
 										else {
