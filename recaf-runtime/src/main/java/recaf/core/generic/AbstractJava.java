@@ -56,6 +56,12 @@ public interface AbstractJava<R, S, C, E> {
 	 */
 	<U> App<S, R> Decl(App<E, U> exp, Function<U, App<S, R>> body);
 
-	<U> App<S, R> For(App<E, Iterable<U>> coll, Function<U, App<S, R>> body);
+	<U> App<S, R> ForEach(App<E, Iterable<U>> coll, Function<U, App<S, R>> body);
+
+	<U> App<S, R> ForDecl(App<E, U> init, Function<U, App<S, R>> body);
+
+	App<S, R> ForBody(App<E, Boolean> init, App<S, R> update, App<S, R> body);
+
+	App<S, R> For(App<S, R> init, App<E, Boolean> cond, App<S, R> update, App<S, R> body);
 
 }
