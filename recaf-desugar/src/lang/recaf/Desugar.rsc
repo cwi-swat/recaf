@@ -493,7 +493,7 @@ Expr unwrapRefs(Expr e, Names names) {
 
 // NB: cannot use expr2alg because of void expressions.
 Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names) 
-  = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e2>; })`
+  = (Expr)`<Id alg>.ExpStat(() -\> <Expr e2>)`
   when 
     Expr e2 := unwrapRefs(e, names);
 
