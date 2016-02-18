@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import recaf.core.direct.FullJava;
 import recaf.core.direct.IExec;
-import recaf.core.direct.NoOp;
 
-public class Times<R> extends NoOp<R> {
+public interface Times<R> extends FullJava<R> {
 	
-	private static Iterable<Integer> range(Integer n) {
+	static Iterable<Integer> range(Integer n) {
 		return new Iterable<Integer>() {
 			@Override
 			public Iterator<Integer> iterator() {
@@ -19,7 +19,7 @@ public class Times<R> extends NoOp<R> {
 		
 	}
 	
-	public IExec Times(Supplier<Integer> exp, IExec body) {
+	default IExec Times(Supplier<Integer> exp, IExec body) {
 		return ForEach(() -> range(exp.get()), ignored -> body);
 	}
 }

@@ -3,13 +3,12 @@ package recaf.demo.direct.using;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.direct.FullJava;
 import recaf.core.direct.IExec;
-import recaf.core.direct.NoOp;
 
-public class Using<R> extends NoOp<R> {
+public interface Using<R> extends FullJava<R> {
 
-	
-	public <U extends AutoCloseable> IExec Using(Supplier<U> resource, Function<U, IExec> body) {
+	default <U extends AutoCloseable> IExec Using(Supplier<U> resource, Function<U, IExec> body) {
 		return l -> {
 			U u = null;
 			try {
@@ -23,4 +22,5 @@ public class Using<R> extends NoOp<R> {
 			}
 		};
 	}
+
 }
