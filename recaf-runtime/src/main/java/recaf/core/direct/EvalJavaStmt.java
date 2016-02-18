@@ -223,11 +223,6 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 	}
 	
 	@Override
-	default IExec ExpStat(K0 exp) {
-		return l -> { exp.call(); };
-	}
-	
-	@Override
 	default <T> IExec Switch(Supplier<T> expr, ICase... cases) {
 		return l -> {
 			do {

@@ -459,9 +459,9 @@ Expr unwrapRefs(Expr e, Names names) {
 }
 
 Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names) 
-  = (Expr)`<Id alg>.ExpStat2(<Id alg>.Exp(<Expr e2>))`
+  = (Expr)`<Id alg>.ExpStat(<Expr e2>)`
   when 
-    Expr e2 := justDesugar(e, alg, names);
+    Expr e2 := unwrapAndDesugarExpr(e, alg, names);
 
 Expr stm2alg((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`, Id alg, Names names)
   = (Expr)`<Id alg>.TryCatchFinally(<Expr bodycps>, <Expr catchescps>, <Expr fincps>)`
@@ -571,9 +571,9 @@ Expr expr2alg(Expr e, Id alg, Names names)
 Expr expr2alg(Expr e, Id alg, Names names)  
 	= (Expr)`<Id alg>.Exp(<Expr desugaredE>)`
 	when
-		Expr desugaredE := justDesugar(e, alg, names);
+		Expr desugaredE := unwrapAndDesugarExpr(e, alg, names);
 		
-Expr justDesugar(Expr e, Id alg, Names names)  
+Expr unwrapAndDesugarExpr(Expr e, Id alg, Names names)  
 	= unwrapRefs(desugarExpr(e, alg, names), names);
 		
 Expr desugarExpr((Expr) `<IntLiteral n>`, Id alg, Names names)  

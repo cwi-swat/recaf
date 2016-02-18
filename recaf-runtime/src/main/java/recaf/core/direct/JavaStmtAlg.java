@@ -4,7 +4,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
-import recaf.core.cps.K0;
 
 public interface JavaStmtAlg<E, S, C> {
 
@@ -61,7 +60,7 @@ public interface JavaStmtAlg<E, S, C> {
 	S TryFinally(S body, S fin);
 	
 	// what do we do here if expressions are desugared?
-	S ExpStat(K0 exp);
+	S ExpStat(E exp);
 
 	
 	
