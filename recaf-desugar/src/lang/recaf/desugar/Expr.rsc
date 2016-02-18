@@ -5,6 +5,7 @@ extend lang::recaf::desugar::Stmt;
 import ParseTree;
 import List;
 import String;
+import IO;
 
 //
 // TODO:
@@ -90,6 +91,20 @@ Expr expr2alg((Expr)`<TypeName tn>.super.<TypeArgs? _><Id m>(<{Expr ","}* es>)`,
     name := id2strExp(m),
     {Expr ","}* es2 := args2alg(es, alg, names);
 
+Expr expr2alg((Expr)`<AmbName x>.<Id m>(<{Expr ","}* es>)`, Id alg, Names names)
+  = (Expr)`<Id alg>.Invoke(<Expr e2>, <Expr name>, <{Expr ","}* es2>)`
+  when 
+    Expr name := id2strExpr(m),
+    Expr e2 := amb2alg(x, alg, names),
+    {Expr ","}* es2 := args2alg(es, alg, names);
+
+Expr amb2alg((AmbName)`<Id x>`, Id alg, Names names)
+  = expr2alg((Expr)`<Id x>`, alg, names);
+
+Expr amb2alg((AmbName)`<AmbName a>.<Id x>`, Id alg, Names names)
+  = expr2alg((FieldAccess)`<Expr a2>.<Id x>`, alg, names)
+  when
+    a2 := amb2alg(a, alg, names);
 
 Expr expr2alg((Expr)`<Expr e>.<TypeArgs? _><Id m>(<{Expr ","}* es>)`, Id alg, Names names)
   = (Expr)`<Id alg>.Invoke(<Expr e2>, <Expr name>, <{Expr ","}* es2>)`
@@ -121,7 +136,7 @@ Expr id2strExpr(Id x) = [Expr]"\"<x>\"";
 Expr expr2alg((Expr)`<Expr x>.<Id f>`, Id alg, Names names)
   = (Expr)`<Id alg>.Field(<Expr x2>, <Expr name>)`
   when
-    Expr x2 := expr2alg(x, alg, name),
+    Expr x2 := expr2alg(x, alg, names),
     Expr name := id2strExpr(f);
 
 Expr expr2alg((Expr)`super.<Id x>`, Id alg, Names names)
@@ -182,7 +197,7 @@ default Expr expr2alg(Expr e, Id alg, Names names) {
      r = expr2alg(getRhs(e), alg, names);
      return (Expr)`<Id alg>.<Id m>(<Expr l>, <Expr r>)`; 
    }
-   throw "Unsupported expression: <e>";
+   throw "Unsupported expression: <e> (<e.prod>)";
 }
 
 Expr lhs2alg((LHS)`<ExprName x>`, Id alg, Names names) 
