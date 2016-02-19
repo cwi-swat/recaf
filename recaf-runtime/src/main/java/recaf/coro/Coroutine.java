@@ -9,10 +9,15 @@ import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
 
-public class Coroutine<R, T> implements StmtJava<R>, JavaMethodAlg<Co<T,R>, SD<R>> {
+public class Coroutine<R, T> implements StmtJava<R>, JavaMethodAlg<Coroutine.Co<T,R>, SD<R>> {
+	public static interface Co<T, U> {
+		U resume(T t);
+		void run();
+	}
 
 	private ArrayDeque<T> stack = new ArrayDeque<>();
 	
+	@Override
 	public Co<T, R> Method(SD<R> body) {
 		return new Co<T,R>() {
 			private boolean exhausted = false;
