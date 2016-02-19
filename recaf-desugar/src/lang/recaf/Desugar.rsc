@@ -113,13 +113,13 @@ Expr method2alg(Block b, Id alg, Names names)
 
 // provide the implementation for exp2alg    
 Expr expr2alg(Expr e, Id alg, Names names)
-  = (Expr)`<Id alg>.Exp(() -\> <Expr e2>)`
+  = (Expr)`() -\> <Expr e2>`
   when
     Expr e2 := unwrapRefs(e, names);
 
 // and exp stats.
 Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names) 
-  = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e2>; })`
+  = (Expr)`<Id alg>.ExpStat(() -\> { <Expr e2>; return null; })`
   when 
     Expr e2 := unwrapRefs(e, names);
 
