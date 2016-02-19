@@ -238,21 +238,19 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	
-//	public final SD<R> Seq(SD<R>... ss) {
-//		assert ss.length > 0;
-//		return Stream.of(ss).reduce(this::Seq2).get();
-//	}
-
+	@Override
 	public SD<R> Seq(SD<R> s1, SD<R> s2) {
 		return (label, rho, sigma, brk, contin, err) -> s1.accept(label, rho, () -> s2.accept(null, rho, sigma, brk, contin, err), brk, contin, err);
 	}
 
+	@Override
 	public <T extends Throwable> SD<R> Throw(Supplier<T> e) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(r -> err.accept(r), err);
 	}
 
 	// TODO: try catch finally.
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			body.accept(null, rho, sigma, brk, contin, (Throwable exc) -> {
@@ -265,6 +263,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 		};
 	}
 
+	@Override
 	public SD<R> TryFinally(SD<R> body, SD<R> fin) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			body.accept(null, r -> {
@@ -281,10 +280,11 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 		};
 	}
 
-	public SD<R> ExpStat(K0 thunk) {
+	@Override
+	public SD<R> ExpStat(Supplier<Void> thunk) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			try {
-				thunk.call();
+				thunk.get();
 			} catch (Throwable t) {
 				err.accept(t);
 				return;
@@ -297,6 +297,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	 * HOAS for let expressions int x = 3; s ==> Let(Exp(3), x -> [[s]]) S Let(E
 	 * exp, Function<E, S> body);
 	 */
+	@Override
 	public <U> SD<R> Decl(Supplier<U> exp, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(exp).accept(r -> body.apply(new Ref<>(r)).accept(label, rho, sigma, brk, contin, err), err);
 	}
@@ -305,6 +306,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	
 	// todo multiple bindings may be introduced (BTW: we cannot do this, need heterogenoeous list).
 	// for (int x = 3; cond; update)
+	@Override
 	public <T> SD<R> ForDecl(Supplier<T> init, Function<Ref<T>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(init).accept(v -> {
@@ -314,6 +316,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 		};
 	}
 	
+	@Override
 	public SD<R> ForBody(Supplier<Boolean> cond, SD<R> update, SD<R> body) {
 		return For(Empty(), cond, update, body);
 	}
@@ -322,6 +325,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	// but we model it using SD<R> for simplicity's sake.
 	// for (x = 3; cond; update)
 	
+	@Override
 	public SD<R> For(SD<R> init, Supplier<Boolean> cond, SD<R> update, SD<R> body) {
 		// incorrect with break and continue!
 		//return While(cond, Seq2(body, update));
@@ -365,6 +369,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 		};
 	}
 
+	@Override
 	public <U> SD<R> ForEach(Supplier<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(coll).accept(i -> {
@@ -401,10 +406,6 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 		};
 	}
 
-	@Override
-	public SD<R> ExpStat(Supplier<Void> exp) {
-		return (l, rho, sigma, brk, contin, exc) ->exp.get();
-	}
 	
 
 }

@@ -1,11 +1,9 @@
 package recaf.core.direct;
 
-import java.util.function.Supplier;
-
-public class NoOp<R> implements FullJava<R> {
+public interface NoOp<R> extends FullJava<R> {
 
 	@SuppressWarnings("unchecked")
-	public R Method(IExec body) {
+	default R Method(IExec body) {
 		try {
 			body.exec(null);
 		}

@@ -1,6 +1,6 @@
 package generated;
 
-import recaf.using.Using;
+import recaf.demo.direct.using.Using;
 
 public class TestUsing {
 
@@ -11,7 +11,7 @@ public class TestUsing {
      }
   }
   
-  private static recaf Using<Void> alg = new Using<Void>();
+  private static recaf Using<Void> alg = new Using<Void>() {};
   
   static recaf Void usingExample() {
      using (Resource r: new Resource()) {
