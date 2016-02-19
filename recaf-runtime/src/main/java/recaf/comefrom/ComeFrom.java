@@ -3,12 +3,12 @@ package recaf.comefrom;
 import java.util.HashMap;
 import java.util.Map;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 
-public class ComeFrom<R> extends AbstractJavaImpl<R> {
+public class ComeFrom<R> extends EvalJavaStmt<R> {
 
 	private final static Map<String, K0> ks = new HashMap<>();
 	

@@ -4,12 +4,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import recaf.core.Ref;
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 
-public class Maybe<R> extends AbstractJavaImpl<R> {
+public class Maybe<R> extends EvalJavaStmt<R> {
 
 	public Optional<R> Method(SD<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();

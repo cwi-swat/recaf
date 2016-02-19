@@ -1,9 +1,9 @@
 package recaf.delim;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
 
-public class ResetExtension<R> extends AbstractJavaImpl<R> {
+public class ResetExtension<R> extends EvalJavaStmt<R> {
 
 	public Shift<R, R, R> Method(SD<R> body) {
 		body.accept(null, v -> {}, ()-> {}, l -> {}, l -> {}, ex -> {});

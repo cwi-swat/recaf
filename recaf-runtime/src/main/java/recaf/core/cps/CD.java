@@ -16,6 +16,6 @@ import java.util.List;
  * @param <R>
  */
 
-public interface CD<R, V> {
-	void accept(boolean matched, V v, List<CD<R, V>> rest, K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err);
+public interface CD<R> {
+	void accept(boolean matched, Object v, List<CD<R>> rest, K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err);
 }

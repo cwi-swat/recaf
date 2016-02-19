@@ -1,15 +1,11 @@
-package recaf.core.direct;
+package recaf.core.alg;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
 
-public interface JavaStmtAlg<E, S, C> {
-
-	// inject E into Supplier of some T
-	<T> Supplier<T> Exp(E e);
-	
+public interface JavaStmtAlg<R, S, C> {
 	<T> S Decl(Supplier<T> exp, Function<Ref<T>, S> body);
 	
 	<T> S ForEach(Supplier<Iterable<T>> exp, Function<Ref<T>, S> body);
@@ -18,7 +14,7 @@ public interface JavaStmtAlg<E, S, C> {
 
 	S ForBody(Supplier<Boolean> cond, S update, S body);
 
-	<T> S Return(Supplier<T> e);
+	S Return(Supplier<R> e);
 	
 	<T extends Throwable> S Throw(Supplier<T> e);
 
@@ -59,9 +55,6 @@ public interface JavaStmtAlg<E, S, C> {
 	
 	S TryFinally(S body, S fin);
 	
-	// what do we do here if expressions are desugared?
-	S ExpStat(E exp);
-
-	
+	S ExpStat(Supplier<Void> exp);
 	
 }

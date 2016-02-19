@@ -3,11 +3,11 @@ package recaf.parfor;
 import java.util.Collection;
 import java.util.function.Function;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
-public class ParFor<R> extends AbstractJavaImpl<R> {
+public class ParFor<R> extends EvalJavaStmt<R> {
 	
 	public R Method(SD<R> body) {
 		return typePreserving(body);

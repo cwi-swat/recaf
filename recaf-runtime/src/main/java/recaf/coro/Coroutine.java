@@ -3,12 +3,12 @@ package recaf.coro;
 import java.util.ArrayDeque;
 import java.util.function.Function;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 
-public class Coroutine<R, T> extends AbstractJavaImpl<R> {
+public class Coroutine<R, T> extends EvalJavaStmt<R> {
 
 	private ArrayDeque<T> stack = new ArrayDeque<>();
 	

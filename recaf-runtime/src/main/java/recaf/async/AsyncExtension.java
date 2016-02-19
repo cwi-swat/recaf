@@ -4,11 +4,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
-public class AsyncExtension<R> extends AbstractJavaImpl<R> {
+public class AsyncExtension<R> extends EvalJavaStmt<R> {
 
 	public Future<R> Method(SD<R> body) {
 		CompletableFuture<R> promise = new CompletableFuture<R>();

@@ -4,9 +4,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
-import recaf.core.cps.K0;
+import recaf.core.alg.JavaStmtAlg;
 
-public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
+public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, IExec, ICase> {
 	
 	@Override
 	default <T> IExec Decl(Supplier<T> exp, Function<Ref<T>, IExec> body) {
@@ -165,7 +165,7 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 	}
 
 	@Override
-	default <T> IExec Return(Supplier<T> e) {
+	default IExec Return(Supplier<R> e) {
 		return l -> { throw new Return(e.get()); };
 	}
 
@@ -275,6 +275,11 @@ public interface EvalJavaStmt<E> extends JavaStmtAlg<E, IExec, ICase> {
 			}
 			throw new Default();
 		};
+	}
+	
+	@Override
+	default IExec ExpStat(Supplier<Void> exp) {
+		return l -> { exp.get(); };
 	}
 	
 	//  helper exceptions

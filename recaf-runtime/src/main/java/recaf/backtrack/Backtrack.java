@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
-public class Backtrack<R> extends AbstractJavaImpl<R> {
+public class Backtrack<R> extends EvalJavaStmt<R> {
 
 	public List<R> Method(SD<R> body) {
 		List<R> result = new ArrayList<>();

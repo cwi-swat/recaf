@@ -3,11 +3,11 @@ package recaf.propagate;
 import java.util.ArrayDeque;
 import java.util.function.Function;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
-public class Propagate<R> extends AbstractJavaImpl<R> {
+public class Propagate<R> extends EvalJavaStmt<R> {
 	// BAD!!!
 	// non reentrant, only single type...
 	// but works across ordinary methods...

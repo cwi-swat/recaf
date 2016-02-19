@@ -1,13 +1,14 @@
 package recaf.iter;
 
 import java.util.Iterator;
+import java.util.function.Supplier;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 
-public class Iter<R> extends AbstractJavaImpl<R> {
+public class Iter<R> extends EvalJavaStmt<R> {
 
 	@SuppressWarnings("serial")
 	private static final class Yield extends RuntimeException {
@@ -72,13 +73,13 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 	}
 
 	@Override
-	public SD<R> Return(ED<R> e) {
+	public SD<R> Return(Supplier<R> e) {
 		throw new AssertionError("Cannot return value from iterator.");
 	}
 
-	public <U> SD<R> Yield(ED<U> exp) {
+	public <U> SD<R> Yield(Supplier<U> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
-			exp.accept(v -> {
+			get(exp).accept(v -> {
 				YIELD.value = v;
 				YIELD.k = sigma;
 				throw YIELD;
@@ -86,7 +87,7 @@ public class Iter<R> extends AbstractJavaImpl<R> {
 		};
 	}
 
-	public <U> SD<R> YieldFrom(ED<Iterable<U>> exp) {
-		return ForEach(exp, e -> Yield(Exp(() -> e)));
+	public <U> SD<R> YieldFrom(Supplier<Iterable<U>> exp) {
+		return ForEach(exp, e -> Yield(() -> e));
 	}
 }

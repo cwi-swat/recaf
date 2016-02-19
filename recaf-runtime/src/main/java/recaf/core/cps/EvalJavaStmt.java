@@ -8,9 +8,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
+import recaf.core.alg.JavaStmtAlg;
 
-public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
+public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	
+	// TODO: move elsewhere
 	protected R typePreserving(SD<R> body) {
 		Ref<R> result = new Ref<>();
 		body.accept(null, r -> {
@@ -26,14 +28,12 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return result.value;
 	}
 	
-	
-	// this needs to be factored to make the choice of expression
-	// representation open. 
-	public <T> ED<T> Exp(Supplier<T> e) {
+	// TODO remove dependency on ED<>
+	public static <T> ED<T> get(Supplier<T> exp) {
 		return (k, err) -> {
 			T t = null;
 			try {
-				t = e.get();
+				t = exp.get();
 			} catch (Throwable ex) {
 				err.accept(ex);
 				return;
@@ -41,17 +41,20 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 			k.accept(t);
 		};
 	}
-
+	
+	@Override
 	public SD<R> Empty() {
 		return (label, rho, sigma, brk, contin, err) -> sigma.call();
 	}
 
-	public SD<R> If(ED<Boolean> e, SD<R> s) {
+	@Override
+	public SD<R> If(Supplier<Boolean> e, SD<R> s) {
 		return If(e, s, Empty());
 	}
 
-	public SD<R> If(ED<Boolean> e, SD<R> s1, SD<R> s2) {
-		return (label, rho, sigma, brk, contin, err) -> e.accept(x -> {
+	@Override
+	public SD<R> If(Supplier<Boolean> e, SD<R> s1, SD<R> s2) {
+		return (label, rho, sigma, brk, contin, err) -> get(e).accept(x -> {
 			if (x) {
 				s1.accept(label, rho, sigma, brk, contin, err);
 			} else {
@@ -60,16 +63,18 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		} , err);
 	}
 
+	@Override
 	public SD<R> Labeled(String label, SD<R> s) {
 		return (label0, rho, sigma, brk, contin, err) -> s.accept(label, rho, sigma, brk, contin, err);
 	}
 
-	public SD<R> While(ED<Boolean> e, SD<R> s) {
+	@Override
+	public SD<R> While(Supplier<Boolean> e, SD<R> s) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 				@Override
 				public void call() {
-					e.accept(b -> {
+					get(e).accept(b -> {
 						if (b) {
 							s.accept(null, rho, () -> call(),
 									l -> {
@@ -97,14 +102,15 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 
-	public SD<R> DoWhile(SD<R> s, ED<Boolean> e) {
+	@Override
+	public SD<R> DoWhile(SD<R> s, Supplier<Boolean> e) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 
 				@Override
 				public void call() {
 					s.accept(null, rho, () -> {
-						e.accept(v -> {
+						get(e).accept(v -> {
 							if (v) {
 								call();
 							}
@@ -134,10 +140,11 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <V> SD<R> Switch(ED<V> expr, CD<R, V>... cases) {
-		final List<CD<R, V>> lst = Arrays.asList(cases);
+	@Override
+	public <T> SD<R> Switch(Supplier<T> expr, CD<R>... cases) {
+		final List<CD<R>> lst = Arrays.asList(cases);
 
-		return (label, rho, sigma, brk, contin, err) -> expr.accept(x -> {
+		return (label, rho, sigma, brk, contin, err) -> get(expr).accept(x -> {
 			if (lst.isEmpty()) {
 				sigma.call();
 			}
@@ -154,7 +161,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		} , err);
 	}
 
-	public <V> CD<R, V> Case(V constant, SD<R> expStat) {
+	@Override
+	public <T> CD<R> Case(T constant, SD<R> expStat) {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			if (matched  /* fall through */ || v.equals(constant)) {
 				expStat.accept(null, rho, () -> {
@@ -167,7 +175,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 	
-	public <V> CD<R, V> Default(SD<R> expStat) {
+	@Override
+	public CD<R> Default(SD<R> expStat) {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			if (rest.isEmpty()) {
 				// if there was no break, and default is at the end, it's always executed
@@ -176,7 +185,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 			else {
 				// do other cases first, move default handler to end.
 				// NB: Java only allows a single default handler for switch-case (phew)
-				List<CD<R, V>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
+				List<CD<R>> newRest = new LinkedList<>(rest.subList(1, rest.size()));
 				
 				// add a new default handler that's only evaluated if there was no match.
 				newRest.add((matched2, v2, rest2, rho2, sigma2, brk2, contin2, err2) -> {
@@ -197,28 +206,34 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 
+	@Override
 	public SD<R> Break() {
 		return Break(null);
 	}
 
+	@Override
 	public SD<R> Break(String label) {
 		return (label0, rho, sigma, brk, contin, err) -> brk.accept(label);
 	}
 
+	@Override
 	public SD<R> Continue() {
 		return Continue(null);
 	}
 
+	@Override
 	public SD<R> Continue(String label) {
 		return (label0, rho, sigma, brk, contin, err) -> contin.accept(label);
 	}
 
+	@Override
 	public SD<R> Return() {
 		return (label, rho, sigma, brk, contin, err) -> rho.accept(null);
 	}
 
-	public SD<R> Return(ED<R> e) {
-		return (label, rho, sigma, brk, contin, err) -> e.accept(rho, err);
+	@Override
+	public SD<R> Return(Supplier<R> e) {
+		return (label, rho, sigma, brk, contin, err) -> get(e).accept(rho, err);
 	}
 
 	
@@ -231,8 +246,8 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		return (label, rho, sigma, brk, contin, err) -> s1.accept(label, rho, () -> s2.accept(null, rho, sigma, brk, contin, err), brk, contin, err);
 	}
 
-	public <T extends Throwable> SD<R> Throw(ED<T> e) {
-		return (label, rho, sigma, brk, contin, err) -> e.accept(r -> err.accept(r), err);
+	public <T extends Throwable> SD<R> Throw(Supplier<T> e) {
+		return (label, rho, sigma, brk, contin, err) -> get(e).accept(r -> err.accept(r), err);
 	}
 
 	// TODO: try catch finally.
@@ -281,24 +296,24 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	 * HOAS for let expressions int x = 3; s ==> Let(Exp(3), x -> [[s]]) S Let(E
 	 * exp, Function<E, S> body);
 	 */
-	public <U> SD<R> Decl(ED<U> exp, Function<Ref<U>, SD<R>> body) {
-		return (label, rho, sigma, brk, contin, err) -> exp.accept(r -> body.apply(new Ref<>(r)).accept(label, rho, sigma, brk, contin, err), err);
+	public <U> SD<R> Decl(Supplier<U> exp, Function<Ref<U>, SD<R>> body) {
+		return (label, rho, sigma, brk, contin, err) -> get(exp).accept(r -> body.apply(new Ref<>(r)).accept(label, rho, sigma, brk, contin, err), err);
 	}
 	
 	// For loops
 	
 	// todo multiple bindings may be introduced (BTW: we cannot do this, need heterogenoeous list).
 	// for (int x = 3; cond; update)
-	public <T> SD<R> ForDecl(ED<T> init, Function<Ref<T>, SD<R>> body) {
+	public <T> SD<R> ForDecl(Supplier<T> init, Function<Ref<T>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
-			init.accept(v -> {
+			get(init).accept(v -> {
 				// NB: we pass in the label of the for loop into the for body.
 				body.apply(new Ref<>(v)).accept(label, rho, sigma, brk, contin, err);
 			}, err);
 		};
 	}
 	
-	public SD<R> ForBody(ED<Boolean> cond, SD<R> update, SD<R> body) {
+	public SD<R> ForBody(Supplier<Boolean> cond, SD<R> update, SD<R> body) {
 		return For(Empty(), cond, update, body);
 	}
 	
@@ -306,7 +321,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 	// but we model it using SD<R> for simplicity's sake.
 	// for (x = 3; cond; update)
 	
-	public SD<R> For(SD<R> init, ED<Boolean> cond, SD<R> update, SD<R> body) {
+	public SD<R> For(SD<R> init, Supplier<Boolean> cond, SD<R> update, SD<R> body) {
 		// incorrect with break and continue!
 		//return While(cond, Seq2(body, update));
 		
@@ -315,7 +330,7 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 
 				@Override
 				public void call() {
-					cond.accept(b -> {
+					get(cond).accept(b -> {
 						if (b) {
 							body.accept(null, rho, () -> {
 								update.accept(null, rho, () -> {
@@ -349,9 +364,9 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 		};
 	}
 
-	public <U> SD<R> ForEach(ED<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+	public <U> SD<R> ForEach(Supplier<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
-			coll.accept(i -> {
+			get(coll).accept(i -> {
 				Iterator<U> iter = i.iterator(); 
 				new K0() {
 					@Override
@@ -383,6 +398,11 @@ public class AbstractJavaImpl<R> { // implements AbstractJava<R> {
 				}.call();				
 			}, err);
 		};
+	}
+
+	@Override
+	public SD<R> ExpStat(Supplier<Void> exp) {
+		return (l, rho, sigma, brk, contin, exc) ->exp.get();
 	}
 	
 

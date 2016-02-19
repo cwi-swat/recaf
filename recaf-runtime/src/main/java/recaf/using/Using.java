@@ -2,11 +2,11 @@ package recaf.using;
 
 import java.util.function.Function;
 
-import recaf.core.cps.AbstractJavaImpl;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
-public class Using<R> extends AbstractJavaImpl<R> {
+public class Using<R> extends EvalJavaStmt<R> {
 
 	public R Method(SD<R> body) {
 		return typePreserving(body);
