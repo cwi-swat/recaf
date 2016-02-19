@@ -3,7 +3,6 @@ package recaf.demo.direct;
 import java.io.StringWriter;
 import java.util.function.Supplier;
 
-import recaf.core.cps.SD;
 import recaf.core.direct.IExec;
 import recaf.core.direct.NoOp;
 
