@@ -1,7 +1,7 @@
 package generated;
-import recaf.gui.GUI;
-import recaf.gui.RenderGUI;
-import recaf.gui.HandleGUI;
+import recaf.demo.direct.GUI;
+import recaf.demo.direct.GUI.Render;
+import recaf.demo.direct.GUI.Handle;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 
@@ -49,12 +49,12 @@ public class TestGUI {
   }
   
   public static void main(String args[]) {
-    RenderGUI alg = new RenderGUI();
+    Render alg = new Render();
     TestGUI tg = new TestGUI(alg);
     tg.theGUI(10);
     String html = alg.getHTML();
     System.out.println(html);
-    HandleGUI handle = new HandleGUI("id2");
+    GUI handle = new Handle("id2");
     tg = new TestGUI(handle);
     tg.theGUI(10);
   }
