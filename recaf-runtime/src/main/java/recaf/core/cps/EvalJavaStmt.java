@@ -279,18 +279,6 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 		};
 	}
 
-	@Override
-	default SD<R> ExpStat(Supplier<Void> thunk) {
-		return (label, rho, sigma, brk, contin, err) -> {
-			try {
-				thunk.get();
-			} catch (Throwable t) {
-				err.accept(t);
-				return;
-			}
-			sigma.call();
-		};
-	}
 
 	/*
 	 * HOAS for let expressions int x = 3; s ==> Let(Exp(3), x -> [[s]]) S Let(E

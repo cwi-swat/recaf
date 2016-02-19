@@ -55,7 +55,7 @@ public interface JavaStmtAlg<R, E, S, C> {
 	
 	S TryFinally(S body, S fin);
 	
-	S ExpStat(Supplier<Void> exp);
+	S ExpStat(E e);
 	
 	<T> Supplier<T> Exp(E e);
 }

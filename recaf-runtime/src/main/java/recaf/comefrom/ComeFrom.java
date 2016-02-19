@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
-public class ComeFrom<R> implements EvalJavaStmt<R, Supplier<?>> {
+public class ComeFrom<R> implements StmtJava<R> {
 
 	private final static Map<String, K0> ks = new HashMap<>();
 	

@@ -9,4 +9,8 @@ public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {
 		return () -> (T)exp.eval();
 	}
 	
+	@Override
+	default IExec ExpStat(IEval e) {
+		return l -> { e.eval(); };
+	}
 }

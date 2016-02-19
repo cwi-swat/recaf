@@ -277,12 +277,6 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 		};
 	}
 	
-	@Override
-	default IExec ExpStat(Supplier<Void> exp) {
-		return l -> { exp.get(); };
-	}
-	
-	//  helper exceptions
 	@SuppressWarnings("serial")
 	abstract class Jump extends Exception {
 		private final String label;
