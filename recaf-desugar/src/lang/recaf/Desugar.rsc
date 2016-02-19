@@ -111,7 +111,7 @@ Expr method2alg(Block b, Id alg, Names names)
     bcps := block2alg(b, alg, names);
     
 
-// provide the implementation for exp2alg    
+// provide the implementation for injectExpr    
 Expr injectExpr(Expr e, Id alg, Names names)
   = (Expr)`<Id alg>.Exp(() -\> <Expr e2>)`
   when
