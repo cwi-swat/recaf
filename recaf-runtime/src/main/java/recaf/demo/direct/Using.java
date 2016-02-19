@@ -1,4 +1,4 @@
-package recaf.demo.direct.using;
+package recaf.demo.direct;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
