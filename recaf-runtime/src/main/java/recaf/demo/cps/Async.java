@@ -9,7 +9,7 @@ import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
 
-public class AsyncExtension<R> implements StmtJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
+public class Async<R> implements StmtJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
 
 	public Future<R> Method(SD<R> body) {
 		CompletableFuture<R> promise = new CompletableFuture<R>();
