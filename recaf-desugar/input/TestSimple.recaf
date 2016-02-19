@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import java.util.function.*;  
 
 public class TestSimple    {
-  private static recaf NoOp<Object> alg = new NoOp<Object>();
+  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
   
   private recaf static Integer simple(){           
   	int a = 4; 

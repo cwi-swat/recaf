@@ -4,7 +4,7 @@ import recaf.core.direct.NoOp;
 
 
 public class TestDef {
-   private static recaf NoOp<Void> alg = new NoOp<Void>();
+   private static recaf NoOp<Void> alg = new NoOp<Void>() {};
    
    static recaf void doSomething() {
       int sum = 0;
