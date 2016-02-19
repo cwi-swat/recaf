@@ -1,9 +1,9 @@
 package generated;
 import java.util.*;
-import recaf.dummy.DummyExtension;
+import recaf.core.cps.NoOp;
 
 public class TestWhile_withBreak {
-    private recaf DummyExtension<Integer> alg = new DummyExtension<Integer>();
+    private recaf NoOp<Integer> alg = new NoOp<Integer>() {};
 	
 	public recaf Integer meth() {
         Integer sum = 0;

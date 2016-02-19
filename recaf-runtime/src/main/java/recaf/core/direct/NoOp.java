@@ -1,8 +1,11 @@
 package recaf.core.direct;
 
-public interface NoOp<R> extends FullJava<R> {
+import recaf.core.alg.JavaMethodAlg;
+
+public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExec> {
 
 	@SuppressWarnings("unchecked")
+	@Override
 	default R Method(IExec body) {
 		try {
 			body.exec(null);

@@ -4,19 +4,15 @@ import java.util.ArrayDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
-public class Propagate<R> implements StmtJava<R> {
+public class Propagate<R> implements NoOp<R> {
 	// BAD!!!
 	// non reentrant, only single type...
 	// but works across ordinary methods...
 	private static final ArrayDeque<Object> stack = new ArrayDeque<>();
 	
-	public R Method(SD<R> body) {
-		return typePreserving(body);
-	}
-
 	public <T> SD<R> Local(Supplier<T> exp, SD<R> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(t -> {

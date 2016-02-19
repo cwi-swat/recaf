@@ -13,22 +13,6 @@ import recaf.core.alg.JavaStmtAlg;
 
 public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	
-	// TODO: move elsewhere
-	default R typePreserving(SD<R> body) {
-		Ref<R> result = new Ref<>();
-		body.accept(null, r -> {
-			result.value = r;
-		} , () -> {
-		} , l -> {
-			throw new AssertionError("Cannot call break without loop");
-		} , l -> {
-			throw new AssertionError("Cannot call continue without loop");
-		} , exc -> {
-			throw new RuntimeException(exc);
-		});
-		return result.value;
-	}
-	
 	default <T> BiConsumer<K<T>, K<Throwable>> get(Supplier<T> exp) {
 		return (k, err) -> {
 			T t = null;

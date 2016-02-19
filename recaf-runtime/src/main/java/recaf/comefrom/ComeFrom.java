@@ -5,17 +5,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import recaf.core.cps.K0;
+import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
-public class ComeFrom<R> implements StmtJava<R> {
+public class ComeFrom<R> implements NoOp<R> {
 
 	private final static Map<String, K0> ks = new HashMap<>();
 	
-	public R Method(SD<R> body) {
-		return typePreserving(body);
-	}
-
 	public SD<R> ComeFrom(Supplier<String> label) {
 		return (label0, rho, sigma, brk, contin, err) -> {
 			get(label).accept(l -> {

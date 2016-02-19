@@ -1,8 +1,8 @@
 package generated;
-import recaf.dummy.*;
+import recaf.core.cps.NoOp;
 
 public class TestSwitch_break_default_beginning {
-    private recaf DummyExtension<String> alg = new DummyExtension<String>();
+    private recaf NoOp<String> alg = new NoOp<String>(){};
  
  	public static Void print(String msg) {
 		System.out.println(msg);

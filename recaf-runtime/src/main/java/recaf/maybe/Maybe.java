@@ -5,12 +5,14 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
+import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
 
 
-public class Maybe<R> implements StmtJava<R> {
+public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, SD<R>> {
 
+	@Override
 	public Optional<R> Method(SD<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();
 		body.accept(null, r -> { ref.value = Optional.of(r); }, 

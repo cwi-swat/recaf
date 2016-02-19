@@ -1,11 +1,11 @@
 package generated;
 
-import recaf.dummy.DummyExtension;
+import recaf.core.cps.NoOp;
 import static java.util.Arrays.asList;
 
 public class TestLocals {
 
-  public Integer doit(recaf DummyExtension<Integer> alg, int x, final Integer $x) {
+  public Integer doit(recaf NoOp<Integer> alg, int x, final Integer $x) {
      return x;
      return $x;
      Object[] objs;

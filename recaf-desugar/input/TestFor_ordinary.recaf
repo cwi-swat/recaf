@@ -1,8 +1,8 @@
 package generated;
-import recaf.dummy.DummyExtension;
+import recaf.core.cps.NoOp;
 
 public class TestFor_ordinary {
-	    private recaf DummyExtension<Integer> alg = new DummyExtension<Integer>();
+	    private recaf NoOp<Integer> alg = new NoOp<Integer>() {};
 	
     recaf Integer meth() {              
         int sum = 0;

@@ -4,11 +4,12 @@ import java.util.ArrayDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
 
-public class Coroutine<R, T> implements StmtJava<R> {
+public class Coroutine<R, T> implements StmtJava<R>, JavaMethodAlg<Co<T,R>, SD<R>> {
 
 	private ArrayDeque<T> stack = new ArrayDeque<>();
 	
