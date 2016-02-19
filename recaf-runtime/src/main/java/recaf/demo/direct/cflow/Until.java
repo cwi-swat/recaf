@@ -2,12 +2,11 @@ package recaf.demo.direct.cflow;
 
 import java.util.function.Supplier;
 
-import recaf.core.direct.FullJava;
-import recaf.core.direct.IExec;
+import recaf.core.alg.JavaStmtAlg;
 
-public interface Until<R> extends FullJava<R> {
+public interface Until<R, E, S, C> extends JavaStmtAlg<R, E, S, C>  {
 
-	default IExec Until(Supplier<Boolean> cond, IExec body) {
+	default S Until(Supplier<Boolean> cond, S body) {
 		return DoWhile(body, () -> !cond.get());
 	}
 

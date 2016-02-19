@@ -4,10 +4,9 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import recaf.core.direct.FullJava;
-import recaf.core.direct.IExec;
+import recaf.core.alg.JavaStmtAlg;
 
-public interface Times<R> extends FullJava<R> {
+public interface Times<R, E, S, C> extends JavaStmtAlg<R, E, S, C> {
 	
 	static Iterable<Integer> range(Integer n) {
 		return new Iterable<Integer>() {
@@ -19,7 +18,7 @@ public interface Times<R> extends FullJava<R> {
 		
 	}
 	
-	default IExec Times(Supplier<Integer> exp, IExec body) {
+	default S Times(Supplier<Integer> exp, S body) {
 		return ForEach(() -> range(exp.get()), ignored -> body);
 	}
 }
