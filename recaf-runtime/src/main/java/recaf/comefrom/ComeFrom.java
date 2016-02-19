@@ -2,9 +2,9 @@ package recaf.comefrom;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 
@@ -16,9 +16,9 @@ public class ComeFrom<R> extends EvalJavaStmt<R> {
 		return typePreserving(body);
 	}
 
-	public SD<R> ComeFrom(ED<String> label) {
+	public SD<R> ComeFrom(Supplier<String> label) {
 		return (label0, rho, sigma, brk, contin, err) -> {
-			label.accept(l -> {
+			get(label).accept(l -> {
 				ks.put(l, sigma);
 				sigma.call();
 			}, err);

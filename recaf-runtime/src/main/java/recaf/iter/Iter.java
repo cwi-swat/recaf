@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 

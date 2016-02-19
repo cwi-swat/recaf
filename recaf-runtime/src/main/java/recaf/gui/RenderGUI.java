@@ -1,8 +1,8 @@
 package recaf.gui;
 
 import java.io.StringWriter;
+import java.util.function.Supplier;
 
-import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 public class RenderGUI extends GUI {
@@ -33,9 +33,9 @@ public class RenderGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Tag(ED<String> t, SD<Void> body) {
+	public SD<Void> Tag(Supplier<String> t, SD<Void> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
-			t.accept(tag -> {
+			get(t).accept(tag -> {
 				output("<" + tag + ">\n");
 				indent();
 				body.accept(null, rho, () -> {
@@ -48,10 +48,10 @@ public class RenderGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Button(ED<String> label, SD<Void> body) {
+	public SD<Void> Button(Supplier<String> label, SD<Void> body) {
 		// in render, we don't execute the body.
 		return (label0, rho, sigma, brk, contin, err) -> {
-			label.accept(l -> {
+			get(label).accept(l -> {
 				output("<button id=\"" + nextId() + "\">" + escapeHTML(l) + "</button>\n");
 				sigma.call();
 			}, err);
@@ -59,9 +59,9 @@ public class RenderGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Echo(ED<String> exp) {
+	public SD<Void> Echo(Supplier<String> exp) {
 		return (label, rho, sigma,  brk, contin, err) -> {
-			exp.accept(txt -> {
+			get(exp).accept(txt -> {
 				output(escapeHTML(txt));
 				sigma.call();
 			}, err);

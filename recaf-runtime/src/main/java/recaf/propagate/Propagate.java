@@ -2,9 +2,9 @@ package recaf.propagate;
 
 import java.util.ArrayDeque;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 public class Propagate<R> extends EvalJavaStmt<R> {
@@ -17,9 +17,9 @@ public class Propagate<R> extends EvalJavaStmt<R> {
 		return typePreserving(body);
 	}
 
-	public <T> SD<R> Local(ED<T> exp, SD<R> body) {
+	public <T> SD<R> Local(Supplier<T> exp, SD<R> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
-			exp.accept(t -> {
+			get(exp).accept(t -> {
 				stack.push(t);
 				body.accept(null, r -> { stack.pop(); rho.accept(r);}, 
 						() -> { stack.pop(); sigma.call(); }, 

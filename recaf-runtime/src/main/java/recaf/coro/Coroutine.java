@@ -2,9 +2,9 @@ package recaf.coro;
 
 import java.util.ArrayDeque;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 
@@ -69,13 +69,13 @@ public class Coroutine<R, T> extends EvalJavaStmt<R> {
 		}
 	}
 
-	public SD<R> Yield(ED<R> exp) {
+	public SD<R> Yield(Supplier<R> exp) {
 		return Yield(exp, t -> Empty());
 	}
 	
-	public SD<R> Yield(ED<R> exp, Function<T, SD<R>> body) {
+	public SD<R> Yield(Supplier<R> exp, Function<T, SD<R>> body) {
 		return (label, rho, sigma, contin, brk, err) -> {
-			exp.accept(v -> {
+			get(exp).accept(v -> {
 				throw new Yield(v, () -> body.apply(stack.pop()).accept(null, rho, sigma, contin, brk, err));
 			}, err);
 		};

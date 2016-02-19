@@ -1,5 +1,6 @@
 package recaf.gui;
-import recaf.core.cps.ED;
+import java.util.function.Supplier;
+
 import recaf.core.cps.SD;
 
 public class HandleGUI extends GUI {
@@ -10,12 +11,12 @@ public class HandleGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Tag(ED<String> t, SD<Void> body) {
+	public SD<Void> Tag(Supplier<String> t, SD<Void> body) {
 		return body;
 	}
 	
 	@Override
-	public SD<Void> Button(ED<String> label, SD<Void> body) {
+	public SD<Void> Button(Supplier<String> label, SD<Void> body) {
 		// in handle, we execute the body if the current button was clickd.
 		return (label0, rho, sigma, brk, contin, err) -> {
 			String id = nextId();
@@ -29,7 +30,7 @@ public class HandleGUI extends GUI {
 	}
 	
 	@Override
-	public SD<Void> Echo(ED<String> exp) {
+	public SD<Void> Echo(Supplier<String> exp) {
 		return Empty();
 	}
 	

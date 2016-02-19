@@ -3,9 +3,9 @@ package recaf.backtrack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 public class Backtrack<R> extends EvalJavaStmt<R> {
@@ -27,9 +27,9 @@ public class Backtrack<R> extends EvalJavaStmt<R> {
 		
 	}
 	
-	public <T> SD<R> Choose(ED<Iterable<T>> choices, Function<? super T, SD<R>> body) {
+	public <T> SD<R> Choose(Supplier<Iterable<T>> choices, Function<? super T, SD<R>> body) {
 		return (label, rho, sigma, contin, brk, err) -> {
-			choices.accept(iter -> {
+			get(choices).accept(iter -> {
 				for (T t: iter) {
 					try {
 						body.apply(t).accept(null, rho, sigma, contin, brk, err);
@@ -42,9 +42,9 @@ public class Backtrack<R> extends EvalJavaStmt<R> {
 		};
 	}
 	
-	public SD<R> Guard(ED<Boolean> cond) {
+	public SD<R> Guard(Supplier<Boolean> cond) {
 		return (label, rho, sigma, contin, brk, err) -> {
-			cond.accept(b -> {
+			get(cond).accept(b -> {
 				if (!b) {
 					throw new Fail();
 				}

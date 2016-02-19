@@ -1,7 +1,8 @@
 package recaf.gui;
 
+import java.util.function.Supplier;
+
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 public abstract class GUI extends EvalJavaStmt<Void> {
@@ -15,9 +16,9 @@ public abstract class GUI extends EvalJavaStmt<Void> {
 		return typePreserving(body);
 	}
 	
-	public abstract SD<Void> Tag(ED<String> t, SD<Void> body);
+	public abstract SD<Void> Tag(Supplier<String> t, SD<Void> body);
 
-	public abstract SD<Void> Button(ED<String> label, SD<Void> body);
+	public abstract SD<Void> Button(Supplier<String> label, SD<Void> body);
 
-	public abstract SD<Void> Echo(ED<String> exp);	
+	public abstract SD<Void> Echo(Supplier<String> exp);	
 }

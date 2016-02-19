@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -29,7 +30,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 	
 	// TODO remove dependency on ED<>
-	public static <T> ED<T> get(Supplier<T> exp) {
+	public static <T> BiConsumer<K<T>, K<Throwable>> get(Supplier<T> exp) {
 		return (k, err) -> {
 			T t = null;
 			try {

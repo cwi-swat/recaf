@@ -2,10 +2,10 @@ package recaf.maybe;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.Ref;
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 
@@ -21,8 +21,8 @@ public class Maybe<R> extends EvalJavaStmt<R> {
 		return ref.value;
 	}
 	
-	public <U> SD<R> Maybe(ED<Optional<U>> opt, Function<U, SD<R>> body) {
-		return (label, rho, sigma, brk, contin, err) -> opt.accept(v -> {
+	public <U> SD<R> Maybe(Supplier<Optional<U>> opt, Function<U, SD<R>> body) {
+		return (label, rho, sigma, brk, contin, err) -> get(opt).accept(v -> {
 			if (v.isPresent()) {
 				body.apply(v.get()).accept(null, rho, sigma, brk, contin,err);
 			}

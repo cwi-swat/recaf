@@ -3,9 +3,9 @@ package recaf.async;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.core.cps.EvalJavaStmt;
-import recaf.core.cps.ED;
 import recaf.core.cps.SD;
 
 public class AsyncExtension<R> extends EvalJavaStmt<R> {
@@ -26,8 +26,8 @@ public class AsyncExtension<R> extends EvalJavaStmt<R> {
 		return promise;
 	}
 
-	public <T> SD<R> Await(ED<CompletableFuture<T>> e, Function<T, SD<R>> body) {
-		return (label, rho, sigma, brk, contin, err) -> e.accept(f -> {
+	public <T> SD<R> Await(Supplier<CompletableFuture<T>> e, Function<T, SD<R>> body) {
+		return (label, rho, sigma, brk, contin, err) -> get(e).accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {
 					err.accept(ex);
