@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import recaf.core.Ref;
 
-public interface JavaStmtAlg<R, S, C> {
+public interface JavaStmtAlg<R, E, S, C> {
 	<T> S Decl(Supplier<T> exp, Function<Ref<T>, S> body);
 	
 	<T> S ForEach(Supplier<Iterable<T>> exp, Function<Ref<T>, S> body);
@@ -57,4 +57,5 @@ public interface JavaStmtAlg<R, S, C> {
 	
 	S ExpStat(Supplier<Void> exp);
 	
+	<T> Supplier<T> Exp(E e);
 }

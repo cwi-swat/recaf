@@ -5,11 +5,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
 
-public class Maybe<R> extends EvalJavaStmt<R> {
+public class Maybe<R> implements StmtJava<R> {
 
 	public Optional<R> Method(SD<R> body) {
 		Ref<Optional<R>> ref = new Ref<Optional<R>>();

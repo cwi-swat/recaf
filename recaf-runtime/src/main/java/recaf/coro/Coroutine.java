@@ -4,11 +4,11 @@ import java.util.ArrayDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
-public class Coroutine<R, T> extends EvalJavaStmt<R> {
+public class Coroutine<R, T> implements StmtJava<R> {
 
 	private ArrayDeque<T> stack = new ArrayDeque<>();
 	

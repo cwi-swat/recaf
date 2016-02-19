@@ -1,9 +1,9 @@
 package recaf.delim;
 
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
-public class ResetExtension<R> extends EvalJavaStmt<R> {
+public class ResetExtension<R> implements StmtJava<R> {
 
 	public Shift<R, R, R> Method(SD<R> body) {
 		body.accept(null, v -> {}, ()-> {}, l -> {}, l -> {}, ex -> {});

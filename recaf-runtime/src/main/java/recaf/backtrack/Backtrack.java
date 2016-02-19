@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
-public class Backtrack<R> extends EvalJavaStmt<R> {
+public class Backtrack<R> implements StmtJava<R> {
 
 	public List<R> Method(SD<R> body) {
 		List<R> result = new ArrayList<>();

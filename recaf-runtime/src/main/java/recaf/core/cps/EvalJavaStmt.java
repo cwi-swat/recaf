@@ -11,10 +11,10 @@ import java.util.function.Supplier;
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
 
-public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
+public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	
 	// TODO: move elsewhere
-	protected R typePreserving(SD<R> body) {
+	default R typePreserving(SD<R> body) {
 		Ref<R> result = new Ref<>();
 		body.accept(null, r -> {
 			result.value = r;
@@ -29,8 +29,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 		return result.value;
 	}
 	
-	// TODO remove dependency on ED<>
-	public static <T> BiConsumer<K<T>, K<Throwable>> get(Supplier<T> exp) {
+	default <T> BiConsumer<K<T>, K<Throwable>> get(Supplier<T> exp) {
 		return (k, err) -> {
 			T t = null;
 			try {
@@ -44,17 +43,17 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 	
 	@Override
-	public SD<R> Empty() {
+	default SD<R> Empty() {
 		return (label, rho, sigma, brk, contin, err) -> sigma.call();
 	}
 
 	@Override
-	public SD<R> If(Supplier<Boolean> e, SD<R> s) {
+	default SD<R> If(Supplier<Boolean> e, SD<R> s) {
 		return If(e, s, Empty());
 	}
 
 	@Override
-	public SD<R> If(Supplier<Boolean> e, SD<R> s1, SD<R> s2) {
+	default SD<R> If(Supplier<Boolean> e, SD<R> s1, SD<R> s2) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(x -> {
 			if (x) {
 				s1.accept(label, rho, sigma, brk, contin, err);
@@ -65,12 +64,12 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public SD<R> Labeled(String label, SD<R> s) {
+	default SD<R> Labeled(String label, SD<R> s) {
 		return (label0, rho, sigma, brk, contin, err) -> s.accept(label, rho, sigma, brk, contin, err);
 	}
 
 	@Override
-	public SD<R> While(Supplier<Boolean> e, SD<R> s) {
+	default SD<R> While(Supplier<Boolean> e, SD<R> s) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 				@Override
@@ -104,7 +103,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public SD<R> DoWhile(SD<R> s, Supplier<Boolean> e) {
+	default SD<R> DoWhile(SD<R> s, Supplier<Boolean> e) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 
@@ -142,7 +141,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> SD<R> Switch(Supplier<T> expr, CD<R>... cases) {
+	default <T> SD<R> Switch(Supplier<T> expr, CD<R>... cases) {
 		final List<CD<R>> lst = Arrays.asList(cases);
 
 		return (label, rho, sigma, brk, contin, err) -> get(expr).accept(x -> {
@@ -163,7 +162,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public <T> CD<R> Case(T constant, SD<R> expStat) {
+	default <T> CD<R> Case(T constant, SD<R> expStat) {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			if (matched  /* fall through */ || v.equals(constant)) {
 				expStat.accept(null, rho, () -> {
@@ -177,7 +176,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 	
 	@Override
-	public CD<R> Default(SD<R> expStat) {
+	default CD<R> Default(SD<R> expStat) {
 		return (matched, v, rest, rho, sigma, brk, contin, err) -> {
 			if (rest.isEmpty()) {
 				// if there was no break, and default is at the end, it's always executed
@@ -208,50 +207,50 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public SD<R> Break() {
+	default SD<R> Break() {
 		return Break(null);
 	}
 
 	@Override
-	public SD<R> Break(String label) {
+	default SD<R> Break(String label) {
 		return (label0, rho, sigma, brk, contin, err) -> brk.accept(label);
 	}
 
 	@Override
-	public SD<R> Continue() {
+	default SD<R> Continue() {
 		return Continue(null);
 	}
 
 	@Override
-	public SD<R> Continue(String label) {
+	default SD<R> Continue(String label) {
 		return (label0, rho, sigma, brk, contin, err) -> contin.accept(label);
 	}
 
 	@Override
-	public SD<R> Return() {
+	default SD<R> Return() {
 		return (label, rho, sigma, brk, contin, err) -> rho.accept(null);
 	}
 
 	@Override
-	public SD<R> Return(Supplier<R> e) {
+	default SD<R> Return(Supplier<R> e) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(rho, err);
 	}
 
 	
 	@Override
-	public SD<R> Seq(SD<R> s1, SD<R> s2) {
+	default SD<R> Seq(SD<R> s1, SD<R> s2) {
 		return (label, rho, sigma, brk, contin, err) -> s1.accept(label, rho, () -> s2.accept(null, rho, sigma, brk, contin, err), brk, contin, err);
 	}
 
 	@Override
-	public <T extends Throwable> SD<R> Throw(Supplier<T> e) {
+	default <T extends Throwable> SD<R> Throw(Supplier<T> e) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(r -> err.accept(r), err);
 	}
 
 	// TODO: try catch finally.
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
+	default <T extends Throwable> SD<R> TryCatch(SD<R> body, Class<T> type, Function<T, SD<R>> handle) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			body.accept(null, rho, sigma, brk, contin, (Throwable exc) -> {
 				if (type.isInstance(exc)) {
@@ -264,7 +263,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public SD<R> TryFinally(SD<R> body, SD<R> fin) {
+	default SD<R> TryFinally(SD<R> body, SD<R> fin) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			body.accept(null, r -> {
 				fin.accept(null, rho, () -> rho.accept(r), brk, contin, err);
@@ -281,7 +280,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public SD<R> ExpStat(Supplier<Void> thunk) {
+	default SD<R> ExpStat(Supplier<Void> thunk) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			try {
 				thunk.get();
@@ -298,7 +297,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	 * exp, Function<E, S> body);
 	 */
 	@Override
-	public <U> SD<R> Decl(Supplier<U> exp, Function<Ref<U>, SD<R>> body) {
+	default <U> SD<R> Decl(Supplier<U> exp, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(exp).accept(r -> body.apply(new Ref<>(r)).accept(label, rho, sigma, brk, contin, err), err);
 	}
 	
@@ -307,7 +306,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	// todo multiple bindings may be introduced (BTW: we cannot do this, need heterogenoeous list).
 	// for (int x = 3; cond; update)
 	@Override
-	public <T> SD<R> ForDecl(Supplier<T> init, Function<Ref<T>, SD<R>> body) {
+	default <T> SD<R> ForDecl(Supplier<T> init, Function<Ref<T>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(init).accept(v -> {
 				// NB: we pass in the label of the for loop into the for body.
@@ -317,7 +316,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 	
 	@Override
-	public SD<R> ForBody(Supplier<Boolean> cond, SD<R> update, SD<R> body) {
+	default SD<R> ForBody(Supplier<Boolean> cond, SD<R> update, SD<R> body) {
 		return For(Empty(), cond, update, body);
 	}
 	
@@ -326,7 +325,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	// for (x = 3; cond; update)
 	
 	@Override
-	public SD<R> For(SD<R> init, Supplier<Boolean> cond, SD<R> update, SD<R> body) {
+	default SD<R> For(SD<R> init, Supplier<Boolean> cond, SD<R> update, SD<R> body) {
 		// incorrect with break and continue!
 		//return While(cond, Seq2(body, update));
 		
@@ -370,7 +369,7 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 	}
 
 	@Override
-	public <U> SD<R> ForEach(Supplier<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+	default <U> SD<R> ForEach(Supplier<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(coll).accept(i -> {
 				Iterator<U> iter = i.iterator(); 
@@ -405,7 +404,5 @@ public class EvalJavaStmt<R> implements JavaStmtAlg<R, SD<R>, CD<R>> {
 			}, err);
 		};
 	}
-
-	
 
 }

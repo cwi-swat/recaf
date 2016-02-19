@@ -4,10 +4,10 @@ import java.util.ArrayDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
-public class Propagate<R> extends EvalJavaStmt<R> {
+public class Propagate<R> implements StmtJava<R> {
 	// BAD!!!
 	// non reentrant, only single type...
 	// but works across ordinary methods...

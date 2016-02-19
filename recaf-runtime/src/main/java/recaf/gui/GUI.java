@@ -2,10 +2,10 @@ package recaf.gui;
 
 import java.util.function.Supplier;
 
-import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJava;
 
-public abstract class GUI extends EvalJavaStmt<Void> {
+public abstract class GUI implements StmtJava<Void> {
 	private int idCount = 0;
 	
 	protected String nextId() {
