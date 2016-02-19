@@ -12,7 +12,6 @@ import IO;
 //  | ArrayCreationExpr 
 // qNewInstance: Expr "." "new" TypeArgs? Id TypeArgs? "(" {Expr ","}* ")" ClassBody? 
 //   exprName: AmbName "." Id // statics 
-//  |  exprName: Id 
 //  ;
 
 // NB: cannot use expr2alg because of void expressions.
@@ -20,7 +19,6 @@ Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names)
   = (Expr)`<Id alg>.ExpStat(<Expr e2>)`
   when 
     Expr e2 := expr2alg(e, alg, names);
-
 
 
 Expr expr2alg((Expr)`(<{FormalParam ","}* fps>) -\> <Expr e>`, Id alg, Names names)
@@ -98,6 +96,8 @@ Expr expr2alg((Expr)`<AmbName x>.<Id m>(<{Expr ","}* es>)`, Id alg, Names names)
     Expr e2 := amb2alg(x, alg, names),
     {Expr ","}* es2 := args2alg(es, alg, names);
 
+// NB: we interpret ambnames as field access; 
+// so no package qualification as of now...
 Expr amb2alg((AmbName)`<Id x>`, Id alg, Names names)
   = expr2alg((Expr)`<Id x>`, alg, names);
 

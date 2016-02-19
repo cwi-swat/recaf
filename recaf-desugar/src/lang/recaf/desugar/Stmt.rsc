@@ -25,6 +25,11 @@ default Names declare(FormalParam f, Names names)
   = names;
 
 
+// this should ABSTRACT, to be provided by clients.
+default Expr expr2alg(Expr e, Id alg, Names names) {
+  throw "please implement this";
+}
+
 /// Extensions TODO: move to its own module.
 
 // return-like
