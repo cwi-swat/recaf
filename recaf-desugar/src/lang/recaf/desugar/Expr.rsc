@@ -175,30 +175,35 @@ Expr expr2alg((Expr)`(<RefType t>)<Expr e>`, Id alg, Names names)
   when 
     e2 := expr2alg(e, alg, names);
 
-default Expr expr2alg(Expr e, Id alg, Names names) {
-   if (isPrefix(e)) {
-     a = expr2alg(getPrefixArg(e), alg, names);
-     m = methodName(e);
-     return (Expr)`<Id alg>.<Id m>(<Expr a>)`;
-   }
-   if (isPostfix(e)) {
-     a = expr2alg(getPostfixArg(e), alg, names);
-     m = methodName(e);
-     return (Expr)`<Id alg>.<Id m>(<Expr a>)`;
-   }
-   if (isInfix(e)) {
-     l = expr2alg(getLhs(e), alg, names);
-     r = expr2alg(getRhs(e), alg, names);
-     m = methodName(e);
-     return (Expr)`<Id alg>.<Id m>(<Expr l>, <Expr r>)`;
-   }
-   if (isAssign(e)) {
-     l = lhs2alg(getLHS(e), alg, names);
-     r = expr2alg(getRhs(e), alg, names);
-     return (Expr)`<Id alg>.<Id m>(<Expr l>, <Expr r>)`; 
-   }
-   throw "Unsupported expression: <e> (<e.prod>)";
-}
+Expr expr2alg(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id m>(<Expr a>)`
+  when 
+    isPrefix(e),
+    a := expr2alg(getPrefixArg(e), alg, names),
+    m := methodName(e);
+
+Expr expr2alg(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id m>(<Expr a>)`
+  when
+    isPostfix(e),
+    a := expr2alg(getPostfixArg(e), alg, names),
+    m := methodName(e);
+
+Expr expr2alg(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id m>(<Expr l>, <Expr r>)`
+  when 
+    isInfix(e),
+    l := expr2alg(getLhs(e), alg, names),
+    r := expr2alg(getRhs(e), alg, names),
+    m := methodName(e);
+
+Expr expr2alg(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id m>(<Expr l>, <Expr r>)`
+  when
+    isAssign(e),
+    l := lhs2alg(getLHS(e), alg, names),
+    r := expr2alg(getRhs(e), alg, names),
+    m := methodName(e);
 
 Expr lhs2alg((LHS)`<ExprName x>`, Id alg, Names names) 
   = exp2alg((Expr)`<ExprName x>`, alg, names);
