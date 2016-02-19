@@ -1,4 +1,4 @@
-package recaf.demo.direct.cflow;
+package recaf.demo.generic;
 
 import java.util.function.Supplier;
 

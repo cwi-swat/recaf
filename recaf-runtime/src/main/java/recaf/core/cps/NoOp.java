@@ -3,6 +3,7 @@ package recaf.core.cps;
 import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 
+// alterantive names: DefaultMethod, TypePreserving
 public interface NoOp<R> extends StmtJava<R>, JavaMethodAlg<R, SD<R>> {
 	@Override
 	default R Method(SD<R> body) {
