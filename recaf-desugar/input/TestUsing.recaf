@@ -1,6 +1,6 @@
 package generated;
 
-import recaf.demo.direct.using.Using;
+import recaf.demo.direct.Using;
 
 public class TestUsing {
 

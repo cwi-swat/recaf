@@ -1,6 +1,6 @@
 package generated;
 
-import recaf.iter.Iter;
+import recaf.demo.cps.Iter;
 
 public class TestFibIter {
   private static recaf Iter<Integer> alg = new Iter<Integer>();

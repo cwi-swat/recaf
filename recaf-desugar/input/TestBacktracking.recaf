@@ -1,7 +1,7 @@
 package generated;
 
 import java.util.List;
-import recaf.backtrack.Backtrack;
+import recaf.demo.cps.Backtrack;
 import static java.util.Arrays.asList;
 import java.util.stream.IntStream;
 import java.util.Iterator;

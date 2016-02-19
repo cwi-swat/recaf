@@ -1,6 +1,6 @@
 package generated;
 
-import recaf.comefrom.ComeFrom;
+import recaf.demo.cps.ComeFrom;
 import java.util.Scanner;
 
 public class TestComeFrom {

@@ -1,5 +1,5 @@
 package generated;
-import recaf.propagate.Propagate;
+import recaf.demo.cps.Propagate;
 
  
 public class TestPropagate {

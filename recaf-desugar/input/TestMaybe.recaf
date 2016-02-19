@@ -1,5 +1,5 @@
 package generated;
-import recaf.maybe.Maybe;
+import recaf.demo.cps.Maybe;
 import java.util.Optional;
  
 public class TestMaybe {
