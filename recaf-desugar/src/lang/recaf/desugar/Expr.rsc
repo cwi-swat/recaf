@@ -20,6 +20,12 @@ Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names)
   when 
     Expr e2 := expr2alg(e, alg, names);
 
+Expr injectExpr(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.Exp(<Expr e2>)`
+  when
+    Expr e2 := expr2alg(e, alg, names);
+
+
 
 Expr expr2alg((Expr)`(<{FormalParam ","}* fps>) -\> <Expr e>`, Id alg, Names names)
   = (Expr)`<Id alg>.Closure((<{FormalParam ","}* fps>) -\> <Expr e2>)`

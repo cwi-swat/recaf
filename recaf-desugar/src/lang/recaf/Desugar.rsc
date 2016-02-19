@@ -112,8 +112,8 @@ Expr method2alg(Block b, Id alg, Names names)
     
 
 // provide the implementation for exp2alg    
-Expr expr2alg(Expr e, Id alg, Names names)
-  = (Expr)`() -\> <Expr e2>`
+Expr injectExpr(Expr e, Id alg, Names names)
+  = (Expr)`<Id alg>.Exp(() -\> <Expr e2>)`
   when
     Expr e2 := unwrapRefs(e, names);
 

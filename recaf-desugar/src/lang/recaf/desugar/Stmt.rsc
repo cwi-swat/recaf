@@ -26,7 +26,7 @@ default Names declare(FormalParam f, Names names)
 
 
 // this should ABSTRACT, to be provided by clients.
-default Expr expr2alg(Expr e, Id alg, Names names) {
+default Expr injectExpr(Expr e, Id alg, Names names) {
   throw "please implement this";
 }
 
@@ -36,14 +36,14 @@ default Expr expr2alg(Expr e, Id alg, Names names) {
 Expr stm2alg((Stm)`<KId ext>! <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>)`
   when
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // for like
 Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
   when 
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr scps := stm2alg(s, alg, declare(f, names)),
     Id method := [Id]capitalize("<ext>");
 
@@ -51,7 +51,7 @@ Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names
 Expr stm2alg((Stm)`<KId ext> (<Expr c>) <Block b>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr bcps>)`
   when 
-    Expr ecps := expr2alg(c, alg, names),
+    Expr ecps := injectExpr(c, alg, names),
     Expr bcps := block2alg(b, alg, names),
     Id method := [Id]capitalize("<ext>");
 
@@ -66,14 +66,14 @@ Expr stm2alg((Stm)`<KId ext> <Block b>`, Id alg, Names names)
 Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr itemscps>;})`
   when 
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr itemscps := items2alg([ i | i <- items ], alg, declare(f, names)),
     Id method := [Id]capitalize("<ext>");
 
 Expr stm2alg((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr itemscps>)`
   when 
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr itemscps := items2alg([ i | i <- items ], alg, names),
     Id method := [Id]capitalize("<ext>");
 
@@ -96,7 +96,7 @@ Expr item2alg((Item)`<KId kw> <Expr e>: <BlockStm+ stms>`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr stmscps>)`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, names);
   
 Expr item2alg((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg, Names names)
@@ -143,7 +143,7 @@ FormalParam fp2ref((FormalParam)`<Type t> <Id x>`)
 Expr stm2alg((Stm)`for (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.\<<Type t>\>ForEach(<Expr ecps>, (<FormalParam f2>) -\> <Expr scps>)`
   when 
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr scps := stm2alg(s, alg, declare(f, names)),
     FormalParam f2 := fp2ref(f),
     Type t := boxed(typeOf(f));
@@ -153,7 +153,7 @@ Expr stm2alg((Stm)`for (<{Expr ","}* init>; <Expr cond>; <{Expr ","}* update>) <
   = (Expr)`<Id alg>.For(<Expr initcps>, <Expr condcps>, <Expr updatecps>, <Expr bodycps>)`
   when
     Expr initcps := exps2alg(init, alg, names),
-    Expr condcps := expr2alg(cond, alg, names),
+    Expr condcps := injectExpr(cond, alg, names),
     Expr updatecps := exps2alg(update, alg, names),
     Expr bodycps := stm2alg(body, alg, names);
 
@@ -163,7 +163,7 @@ Expr stm2alg((Stm)`for (<Type t> <Id x>; <Expr cond>; <{Expr ","}* update>) <Stm
   =(Expr)`<Id alg>.\<<Type t2>\>ForDecl(null, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
   when
     Names names2 := declare(x, names),
-    Expr condcps := expr2alg(cond, alg, names2),
+    Expr condcps := injectExpr(cond, alg, names2),
     Expr updatecps := exps2alg(update, alg, names2),
     Expr bodycps := stm2alg(body, alg, names2),
     Type t2 := boxed(t);
@@ -171,9 +171,9 @@ Expr stm2alg((Stm)`for (<Type t> <Id x>; <Expr cond>; <{Expr ","}* update>) <Stm
 Expr stm2alg((Stm)`for (<Type t> <Id x> = <Expr init>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
   =(Expr)`<Id alg>.\<<Type t2>\>ForDecl(<Expr initcps>, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
   when
-    Expr initcps := expr2alg(init, alg, names),
+    Expr initcps := injectExpr(init, alg, names),
     Names names2 := declare(x, names),
-    Expr condcps := expr2alg(cond, alg, names2),
+    Expr condcps := injectExpr(cond, alg, names2),
     Expr updatecps := exps2alg(update, alg, names2),
     Expr bodycps := stm2alg(body, alg, names2),
     Type t2 := boxed(t);
@@ -191,12 +191,12 @@ Expr exps2alg({Expr ","}* exps, Id alg, Names names) {
 Expr stm2alg((Stm)`throw <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Throw(<Expr ecps>)`
   when
-    Expr ecps := expr2alg(e, alg, names);
+    Expr ecps := injectExpr(e, alg, names);
 
 Expr stm2alg((Stm)`return <Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Return(<Expr ecps>)`
   when
-    Expr ecps := expr2alg(e, alg, names);
+    Expr ecps := injectExpr(e, alg, names);
 
 Expr stm2alg((Stm)`return;`, Id alg, Names names) 
   = (Expr)`<Id alg>.Return()`;
@@ -233,14 +233,14 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, Names na
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
-    Expr ecps := expr2alg(e, alg, names);
+    Expr ecps := injectExpr(e, alg, names);
 
 Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>;}`, Id alg, Names names) 
   = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
-    Expr ecps := expr2alg(e, alg, names);
+    Expr ecps := injectExpr(e, alg, names);
 
 default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) 
   = stm2alg(s, alg, names);
@@ -268,7 +268,7 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, I
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
@@ -276,7 +276,7 @@ Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, 
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
-    Expr ecps := expr2alg(e, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 // TODO: final modifiers.... (we don't support it now)
@@ -293,7 +293,7 @@ Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, Names na
 
 // assumes t is already boxed.
 Expr varInit2alg(Type t, (VarInit)`<Expr e>`, Id alg, Names names)
-  = expr2alg(e, alg, names);
+  = injectExpr(e, alg, names);
   
 Expr varInit2alg(Type t, (VarInit)`{<{VarInit ","}* inits>,}`, Id alg, Names names)
   = TODO; 
@@ -312,27 +312,27 @@ default Expr stm2alg((Stm)`<Id l>: <Stm s>`, Id alg, Names names)
 Expr stm2alg((Stm)`if (<Expr c>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.If(<Expr ecps>, <Expr scps>)`
   when 
-    Expr ecps := expr2alg(c, alg, names),
+    Expr ecps := injectExpr(c, alg, names),
     Expr scps := stm2alg(s, alg, names);
 
 Expr stm2alg((Stm)`if (<Expr c>) <Stm s1> else <Stm s2>`, Id alg, Names names) 
   = (Expr)`<Id alg>.If(<Expr ecps>, <Expr s1cps>, <Expr s2cps>)`
   when 
-    Expr ecps := expr2alg(c, alg, names),
+    Expr ecps := injectExpr(c, alg, names),
     Expr s1cps := stm2alg(s1, alg, names),
     Expr s2cps := stm2alg(s2, alg, names);
   
 Expr stm2alg((Stm)`while (<Expr c>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.While(<Expr ecps>, <Expr scps>)`
   when 
-    Expr ecps := expr2alg(c, alg, names),
+    Expr ecps := injectExpr(c, alg, names),
     Expr scps := stm2alg(s, alg, names);
 
 Expr stm2alg((Stm)`do <Stm s> while (<Expr c>);`, Id alg, Names names) 
   = (Expr)`<Id alg>.Do(<Expr scps>, <Expr ecps>)`
   when 
     Expr scps := stm2alg(s, alg, names),
-    Expr ecps := expr2alg(c, alg, names);
+    Expr ecps := injectExpr(c, alg, names);
 
 Expr stm2alg((Stm)`try <Block body> <CatchClause* catches> finally <Block fin>`, Id alg, Names names)
   = (Expr)`<Id alg>.TryCatchFinally(<Expr bodycps>, <Expr catchescps>, <Expr fincps>)`
@@ -356,7 +356,7 @@ Expr catch2alg((CatchClause)`catch (<Type t> <Id x>) <Block b>`, Id alg, Names n
 Expr stm2alg((Stm)`switch (<Expr e>) { <SwitchGroup* groups> <SwitchLabel* labels>}`, Id alg, Names names)
   = (Expr)`<Id alg>.Switch(<Expr ecps>, <{Expr ","}* es>)`
   when
-    ecps := expr2alg(e, alg, names),
+    ecps := injectExpr(e, alg, names),
     exprs := ( [] | it + group2alg(g, alg, names) | g <- groups ) + labels2alg(labels, alg),
     es := lst2sepExps(exprs);
     
