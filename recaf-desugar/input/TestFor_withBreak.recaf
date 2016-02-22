@@ -10,8 +10,6 @@ public class TestFor_withBreak {
          
         List<Integer> list = Arrays.asList(1,2,3,4,5);
         
-        // TODO: For translates without the universal type of the generic method
-        // <Integer>For(... in this case
         bla: while(true) { 
 	        for(Integer i : list) {
 	            sum += (Integer)i;

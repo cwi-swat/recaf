@@ -5,11 +5,6 @@ import recaf.stream.Stream;
 import recaf.stream.StreamExtension;
 
 public class TestStream {
-
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
   
   private recaf StreamExtension<Integer> alg = new StreamExtension<Integer>();
    
@@ -19,7 +14,7 @@ public class TestStream {
     yield! 3;
     yield! 4;
     yield! 5;
-  } 
+  }  
   
 /*  recaf void consumeStream() {
      awaitFor (Integer x: asyncRange()) {
