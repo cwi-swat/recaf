@@ -10,9 +10,10 @@ syntax Stm
    // return -like
    = KId "!" Expr ";" // ! is needed, otherwise amb with local var dec.
    
-   // for, while and try like
+   // for, while and try like, and combinations
    | KId "(" FormalParam ":" Expr ")" Stm
    | KId "(" Expr ")" Block // block otherwise amb with method call and empty
+   | KId "(" {Expr ","}+ "," FormalParam ":" Expr ")" Stm
    | KId Block 
  
    // with continuation blocks (not implemented)
@@ -27,11 +28,14 @@ syntax Stm
    
    // decl like
    | KId FormalParam ";"
+   | KId {Expr ","}+ "," FormalParam ";"
    | KId FormalParam "=" Expr ";"
+   | KId {Expr ","}+ "," FormalParam "=" Expr ";"
    | FormalParam "=" KId "!" Expr ";"
    
    // new style
    | KId "(" {FormalParam ","}+ ")" Stm
+   // todo: KId "(" {Expr ","}+ "," {FormalParam ","}+ ")" Stm
    ;
    
 syntax Item
