@@ -6,6 +6,7 @@ import Set;
 import String;
 import IO;  
 import util::Maybe;
+import ParseTree;
 
 alias Names = tuple[set[Id] refs, map[Id, Id] renaming];
 
@@ -54,6 +55,31 @@ Expr stm2alg((Stm)`<KId ext> (<Expr c>) <Block b>`, Id alg, Names names)
     Expr ecps := injectExpr(c, alg, names),
     Expr bcps := block2alg(b, alg, names),
     Id method := [Id]capitalize("<ext>");
+
+// combinations of while/for.
+Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ es>, <FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
+  when 
+    {Expr ","}+ escps := injectExprs(es, alg, names),
+    Expr ecps := injectExpr(e, alg, names),
+    Expr scps := stm2alg(s, alg, declare(f, names)),
+    Id method := [Id]capitalize("<ext>");
+
+
+{Expr ","}+ injectExprs({Expr ","}+ es, Id alg, Names names) {
+  // hack
+  i = 0;
+  while (i < size(es.args)) {
+    if (Expr e := es.args[i]) {
+      es = appl(es.prod, es.args[0..i] + [injectExpr(e, alg, names)] + es.args[i+1..]);
+    } 
+    else {
+      throw "Non expression in expression list: <es.args[i]>";
+    }
+    i += 4;
+  }
+  return es;
+}
 
 // try-like
 Expr stm2alg((Stm)`<KId ext> <Block b>`, Id alg, Names names) 
@@ -226,7 +252,25 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f>;}`, Id alg, Names names)
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f));
-    
+
+// KId {Expr ","}+ "," FormalParam ";"    
+
+// TODO: fix the duplication with singletons blocks.
+Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f>;}`, Id alg, Names names) 
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  when
+    {Expr ","}+ escps := injectExprs(es, alg, names),
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f));
+
+Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f> = <Expr e>;}`, Id alg, Names names)
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    ecps := injectExpr(e, alg, names),
+    {Expr ","}+ escps := injectExprs(es, alg, names);
+
 
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, Names names) 
   = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
@@ -251,13 +295,31 @@ default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, Names names)
     Expr scps := stm2alg(s, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm* ss>}`, alg, names);
 
-// binding extensions (let/maybe etc.) introduce final variables
-// and get the reflective class of the declaration. 
+// binding extensions (let/maybe etc.) introduce final variables, so NO declare
 Expr block2alg((Block)`{<KId kw> <FormalParam f>; <BlockStm+ ss>}`, Id alg, Names names)
   = (Expr)`<Id alg>.\<<Type rt>\><Id method>((<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
+
+Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f>; <BlockStm+ ss>}`, Id alg, Names names)
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    {Expr ","}+ escps := injectExprs(es, alg, names),
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
+
+//   | KId {Expr ","}+ "," FormalParam "=" Expr ";"
+
+Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
+  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    ecps := injectExpr(e, alg, names),
+    {Expr ","}+ escps := injectExprs(es, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 Type typeOf((FormalParam)`final <Type t> <Id _>`) = t;
