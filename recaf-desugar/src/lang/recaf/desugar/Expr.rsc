@@ -18,13 +18,12 @@ import IO;
 Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names) 
   = (Expr)`<Id alg>.ExpStat(<Expr e2>)`
   when 
-    Expr e2 := expr2alg(e, alg, names);
-
+    Expr e2 := expr2alg(unwrapRefs(e, names), alg, names);
+ 
 Expr injectExpr(Expr e, Id alg, Names names)
   = (Expr)`<Id alg>.Exp(<Expr e2>)`
   when
-    Expr e2 := expr2alg(e, alg, names);
-
+    Expr e2 := expr2alg(unwrapRefs(e, names), alg, names);
 
 
 Expr expr2alg((Expr)`(<{FormalParam ","}* fps>) -\> <Expr e>`, Id alg, Names names)
@@ -108,7 +107,7 @@ Expr amb2alg((AmbName)`<Id x>`, Id alg, Names names)
   = expr2alg((Expr)`<Id x>`, alg, names);
 
 Expr amb2alg((AmbName)`<AmbName a>.<Id x>`, Id alg, Names names)
-  = expr2alg((FieldAccess)`<Expr a2>.<Id x>`, alg, names)
+  = expr2alg((Expr)`<Expr a2>.<Id x>`, alg, names)
   when
     a2 := amb2alg(a, alg, names);
 
@@ -129,12 +128,14 @@ Expr id2strExpr(Id x) = [Expr]"\"<x>\"";
   i = 0;
   while (i < size(es.args)) {
     if (Expr e := es.args[i]) {
-      es.args[i] = expr2alg(e, alg, names);
+      println(e);
+      es = appl(es.prod, es.args[0..i] + [expr2alg(e, alg, names)] + es.args[i+1..]);
+      //es.args[i] = expr2alg(e, alg, names);
     } 
     else {
       throw "Non expression in expression list: <es.args[i]>";
     }
-    i += 2;
+    i += 4;
   }
   return es;
 }
@@ -156,11 +157,10 @@ Expr expr2alg((Expr)`<TypeName tn>.super.<Id x>`, Id alg, Names names)
      Expr tname := id2strExpr(tn),
      Expr name := id2strExpr(x);
 
-
 Expr expr2alg((Expr)`(<Expr e>)`, Id alg, Names names)
   = expr2alg(e, alg, names);
-
-
+ 
+ 
 Expr expr2alg((Expr)`this`, Id alg, Names names)
   = (Expr)`<Id alg>.This(this)`;
 
@@ -271,7 +271,28 @@ str getLabel(prod(label(str l, _), _, _)) = l;
 default str getLabel(Production _) = "UNKNOWN";
 
 
+Expr unwrapRefs(Expr e, Names names) {
+  //println("Unwrapping for <e>");
+  //for (x <- names.refs) {
+  //  println("Ref: <x>");
+  //}
+  //for (k <- names.renaming) {
+  //  println("<k> -\> <names.renaming[k]>");
+  //}
+  // ugh this is ugly.
+  return visit (e) {
+             
+   case (LHS) `<Id x>` => (LHS) `<Id y>`
+     when x in names.renaming,
+          Id y := names.renaming[x]
+     
+   case (Expr) `<Id x>` => (Expr)`<Id y>` 
+     when x in names.renaming,
+          Id y := names.renaming[x]
 
+   case (AmbName) `<Id x>` => (AmbName)`<Id y>` 
+     when x in names.renaming,
+          Id y := names.renaming[x]
 
-
-
+  }    
+}
