@@ -2,7 +2,7 @@ package recaf.core.direct;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.commons.beanutils.MethodUtils;
 
 import recaf.core.Ref;
 
