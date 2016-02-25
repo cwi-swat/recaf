@@ -68,6 +68,15 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 			return ref.value;
 		};
 	}
+	
+	@Override
+	default IEval Assign(IEval lhs, IEval rhs) {
+		return () -> {
+			Object r = lhs.eval();
+			((Ref) r).value = toValue(rhs.eval());
+			return r;
+		};
+	}
 
 	@Override
 	default IEval Var(String name, Ref<?> val) {
@@ -162,7 +171,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval Gt(IEval l, IEval r) {
 		return () -> {
-			return Boolean.valueOf((Integer) l.eval() >= (Integer) r.eval());
+			return Boolean.valueOf((Integer) toValue(l.eval()) > (Integer) toValue(r.eval()));
 		};
 	}
 
@@ -175,7 +184,14 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval Plus(IEval l, IEval r) {
 		return () -> {
-			return Integer.valueOf((Integer) l.eval() + (Integer) r.eval());
+			return Integer.valueOf((Integer) toValue(l.eval()) + (Integer) toValue(r.eval()));
+		};
+	}
+	
+	@Override
+	default IEval Minus(IEval l, IEval r) {
+		return () -> {
+			return Integer.valueOf((Integer) toValue(l.eval()) - (Integer) toValue(r.eval()));
 		};
 	}
 

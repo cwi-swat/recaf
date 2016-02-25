@@ -18,6 +18,7 @@ public interface JavaExprAlg<E> {
 	E Var(String name, Ref<?> ref);
 	E AssignVar(String name, Ref<Object> ref, E value);
 	<T> E VarFinal(String name, T val);	
+	E Assign(E lhs, E rhs);
 	
 	// fields and methods
 	@SuppressWarnings("unchecked")
@@ -37,6 +38,7 @@ public interface JavaExprAlg<E> {
 	E Gt(E l, E r);
 	E Lt(E l, E r);
 	E Plus(E l, E r);
+	E Minus(E l, E r);
 	
 	<T> E New(Class<T> clazz, E...args);
 	
