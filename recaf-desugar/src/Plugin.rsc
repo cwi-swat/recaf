@@ -14,7 +14,7 @@ import AlternativeDesugaring;
 private str LANG_NAME = "Java Recaffeinated";
 
 // relative to HOME dir
-private str RECAF_RUNTIME_HOME = "/CWI/recaf/recaf-runtime";
+private str RECAF_RUNTIME_HOME = "Projects/recaf/recaf-runtime";
 
 void main() {
   registerLanguage(LANG_NAME, "recaf", start[CompilationUnit](str src, loc org) {

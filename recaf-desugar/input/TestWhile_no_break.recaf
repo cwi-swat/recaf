@@ -11,7 +11,7 @@ public class TestWhile_no_break {
 		Iterator<Integer> list = Arrays.asList(1,2,3,4,5).iterator();
 	 	
 		while(list.hasNext()) {
-			sum += (Integer)list.next();
+			sum += list.next();
 		}
 		
 		return sum;

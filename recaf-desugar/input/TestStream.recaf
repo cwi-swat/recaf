@@ -1,36 +1,43 @@
 package generated;
 import java.util.concurrent.ExecutionException;
 
-import recaf.stream.Stream;
-import recaf.stream.StreamExtension;
+import recaf.demo.cps.StreamExt;
+import recaf.demo.cps.stream.Stream;
 
 public class TestStream {
-
-  static Void println(Object o) {
-    System.out.println(o);
-    return null;
-  }
   
-  private recaf StreamExtension<Integer> alg = new StreamExtension<Integer>();
+  private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
+ 
+  /*
+  recaf Stream<Integer> scan(Stream<Integer> src, Integer state, Integer acc) {
+   yield! state;
+   awaitFor(Integer next : src) {
+     try {
+        yield! (await accumulateAsync(state, next));
+     } catch(e) {
+        return; 
+     }
+  }
+  */
    
-  recaf Stream<Integer> asyncRange() {
+  recaf Stream<Integer> simpleStream() {
     yield! 1;
     yield! 2;
     yield! 3;
     yield! 4;
     yield! 5;
-  } 
+  }  
   
-/*  recaf void consumeStream() {
+  /*  
+  recaf void consumeStream() {
      awaitFor (Integer x: asyncRange()) {
        System.out.println(x);
      }
   }
-*/
-  
+ */ 
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	new TestStream().asyncRange();
+	new TestStream().simpleStream();
   }
 
 }

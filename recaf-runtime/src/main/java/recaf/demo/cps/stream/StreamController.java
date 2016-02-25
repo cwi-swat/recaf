@@ -1,4 +1,4 @@
-package recaf.stream;
+package recaf.demo.cps.stream;
 
 import java.util.concurrent.Future;
 import java.util.function.Consumer;

@@ -2,7 +2,8 @@ package generated;
 import recaf.core.cps.NoOp;
 
 public class TestFor_ordinary {
-	    private recaf NoOp<Integer> alg = new NoOp<Integer>() {};
+
+    private recaf NoOp<Integer> alg = new NoOp<Integer>() {};
 	
     recaf Integer meth() {              
         int sum = 0;

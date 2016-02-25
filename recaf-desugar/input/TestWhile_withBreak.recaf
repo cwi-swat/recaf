@@ -11,7 +11,7 @@ public class TestWhile_withBreak {
         Iterator<Integer> list = Arrays.asList(1,2,3,4,5).iterator();
         
         while(list.hasNext()) {
-            sum += (Integer)list.next();
+            sum += list.next();
             if (sum > 5) {
               break;
             }
