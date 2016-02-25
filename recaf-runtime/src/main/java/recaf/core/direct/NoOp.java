@@ -2,6 +2,9 @@ package recaf.core.direct;
 
 import recaf.core.alg.JavaMethodAlg;
 
+import static recaf.core.direct.EvalJavaHelper.toValue;
+
+
 public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExec> {
 
 	@SuppressWarnings("unchecked")
@@ -11,7 +14,7 @@ public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExec> {
 			body.exec(null);
 		}
 		catch (Return r) {
-			return (R) r.getValue();
+			return (R) toValue(r.getValue());
 		} 
 		catch (Throwable e) {
 			throw new RuntimeException(e);

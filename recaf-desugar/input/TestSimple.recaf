@@ -6,19 +6,36 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.function.*;  
 
+class A{
+	int i = 0;
+	
+	int a(int x, int y){
+		return ++i;
+	}
+}
+
 public class TestSimple    {
   private static recaf NoOp<Object> alg = new NoOp<Object>() {};
   
   private recaf static Integer simple(){           
   	int a = 4; 
    	int b = a++;     
-   	int c = b++;    
    	int d = 0; 
    	while (d < 5     ){      
       		d++;
 	}
 	return d;
   } 
+  
+  private recaf static Integer access(){           
+  	int a = 4; 
+    return a;
+  } 
+  
+  private recaf static Integer methodCall(){           
+  	return  new A().a(1,2);
+  }  
+  
   
   public static void main(String args[]) {
     int n = simple();

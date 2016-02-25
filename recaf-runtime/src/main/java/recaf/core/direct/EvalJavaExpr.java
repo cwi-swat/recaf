@@ -1,5 +1,13 @@
 package recaf.core.direct;
 
+import static recaf.core.direct.EvalJavaHelper.toValue;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import recaf.core.Ref;
 import recaf.core.alg.JavaExprAlg;
 
@@ -62,9 +70,9 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	}
 
 	@Override
-	default IEval Var(String name, Ref<Object> val) {
+	default IEval Var(String name, Ref<?> val) {
 		return () -> {
-			return val.value;
+			return val;
 		};
 	}
 	
@@ -92,6 +100,15 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return null;
 	}
 
+	@Override
+	default IEval PostIncr(IEval expr) {
+		return () -> {
+			Object o = expr.eval();
+			((Ref) o).value = (Integer) ((Ref) o).value + 1; 
+			return o;
+		};
+	}
+	
 	@Override
 	default IEval PostIncr(String name, Ref<Object> ref) {
 		return () -> {
@@ -143,16 +160,15 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	}
 
 	@Override
-	default IEval GreaterThan(IEval l, IEval r) {
+	default IEval Gt(IEval l, IEval r) {
 		return () -> {
 			return Boolean.valueOf((Integer) l.eval() >= (Integer) r.eval());
 		};
 	}
 
-	@Override
-	default IEval LessThan(IEval l, IEval r) {
+	default IEval Lt(IEval l, IEval r) {
 		return () -> {
-			return Boolean.valueOf((Integer) l.eval() < (Integer) r.eval());
+			return (Integer) toValue(l.eval()) < (Integer) toValue(r.eval());
 		};
 	}
 
@@ -168,4 +184,49 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	default <T> IEval New(Class<T> clazz, IEval... args) {
+		return () -> {
+			try {
+				List<Object> evaluatedArgs = new ArrayList<Object>();
+				List<Class<?>> argClasses = new ArrayList<Class<?>>();
+				for (IEval a: args){
+					Object ea = toValue(a.eval());
+					evaluatedArgs.add(ea);
+					argClasses.add(ea.getClass());
+				}
+				Constructor<T> constructor = clazz.getConstructor(argClasses.toArray(new Class<?>[0]));
+				constructor.setAccessible(true);
+				return constructor.newInstance(evaluatedArgs.toArray(new Object[0]));
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+				return null;
+			}
+		};
+	}
+	
+	@Override
+	default IEval Invoke(IEval obj, String method, IEval... args) {
+		return () -> {
+			Object o = toValue(obj.eval());
+			List<Object> evaluatedArgs = new ArrayList<Object>();
+			List<Class<?>> argClasses = new ArrayList<Class<?>>();
+			for (IEval a: args){
+				Object ea = toValue(a.eval());
+				evaluatedArgs.add(ea);
+				argClasses.add(ea.getClass());
+			}
+			try {
+				Method m = o.getClass().getMethod(method, argClasses.toArray(new Class<?>[0]));
+				m.setAccessible(true);
+				return m.invoke(o, evaluatedArgs.toArray(new Object[0]));
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+				return null;
+			}
+		};
+	}
+	
 }

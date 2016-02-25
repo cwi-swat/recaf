@@ -1,7 +1,7 @@
 module AlternativeDesugaring
 
 import lang::recaf::Recaf;
-import lang::recaf::Desugar2;
+import lang::recaf::DesugarFull;
 import ParseTree;
 import IO;
 

@@ -1,0 +1,25 @@
+package generated;
+
+import recaf.demo.ql.QL;
+
+public class TestQL<T> {
+
+  private recaf QL<T> alg;
+  
+  public TestQL(QL<T> alg) {
+    this.alg = alg;
+  }
+
+  public recaf void taxOffice() {
+    // todo: fix boxing of formal params in binders.
+    question "Did you sell a house in 2010?", Boolean hasSoldHouse;
+    question "Did you buy a house in 2010?", Boolean hasBoughtHouse;
+    question "Did you enter a loan?", Boolean hasMaintLoan;
+    if (hasSoldHouse) { 
+      question "What was the selling price?", Integer sellingPrice;
+      question "Private debts for the sold house:", Integer privateDebt;
+      question "Value residue:", Integer valueResidue = sellingPrice - privateDebt;
+    }
+  }
+
+}
