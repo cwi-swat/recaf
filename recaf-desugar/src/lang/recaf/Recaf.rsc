@@ -20,6 +20,7 @@ syntax Stm
    | KId "(" FormalParam ":" Expr ")" Stm Rest+
    | KId "(" Expr ")" Block Rest+
    | KId Block Rest+
+   // TODO: augment with all the other forms
 
    // switch case like
    | KId "(" FormalParam ":" Expr ")" "{" Item+ "}"
