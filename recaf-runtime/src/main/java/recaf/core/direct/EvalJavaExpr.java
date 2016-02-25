@@ -199,7 +199,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 				Constructor<T> constructor = clazz.getConstructor(argClasses.toArray(new Class<?>[0]));
 				constructor.setAccessible(true);
 				return constructor.newInstance(evaluatedArgs.toArray(new Object[0]));
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchMethodException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -218,11 +218,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 				argClasses.add(ea.getClass());
 			}
 			try {
-				Method m = o.getClass().getMethod(method, argClasses.toArray(new Class<?>[0]));
+				Method m = EvalJavaHelper.findMethod(o, method, argClasses.toArray(new Class[0]));
 				m.setAccessible(true);
 				return m.invoke(o, evaluatedArgs.toArray(new Object[0]));
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e) {
+					| SecurityException e) {
 				e.printStackTrace();
 				return null;
 			}

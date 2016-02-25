@@ -12,6 +12,10 @@ class A{
 	int a(int x, int y){
 		return ++i;
 	}
+	
+	public A(){
+	
+	}
 }
 
 public class TestSimple    {
@@ -38,7 +42,7 @@ public class TestSimple    {
   
   
   public static void main(String args[]) {
-    int n = simple();
+    int n = methodCall();
     System.out.println(n);
     
   }
