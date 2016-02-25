@@ -212,16 +212,16 @@ Expr expr2alg(Expr e, Id alg, Names names)
     m := methodName(e);
 
 Expr lhs2alg((LHS)`<ExprName x>`, Id alg, Names names) 
-  = exp2alg((Expr)`<ExprName x>`, alg, names);
+  = expr2alg((Expr)`<ExprName x>`, alg, names);
 
 Expr lhs2alg((LHS)`(<LHS l>)`, Id alg, Names names) 
   = lhs2alg(l, alg, names);
 
 Expr lhs2alg((LHS)`<ArrayAccess x>`, Id alg, Names names) 
-  = exp2alg((Expr)`<ArrayAccess x>`, alg, names);
+  = expr2alg((Expr)`<ArrayAccess x>`, alg, names);
 
 Expr lhs2alg((LHS)`<FieldAccess x>`, Id alg, Names names) 
-  = exp2alg((Expr)`<FieldAccess x>`, alg, names);
+  = expr2alg((Expr)`<FieldAccess x>`, alg, names);
 
 
 Id methodName(Expr e) = [Id]"<capitalize(getLabel(e))>";
