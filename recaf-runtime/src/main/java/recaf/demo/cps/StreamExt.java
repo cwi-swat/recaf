@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
@@ -38,6 +39,10 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, S
 				}
 			});
 		} , err);
+	}
+	
+	public <T> SD<R> AwaitFor(Supplier<Observable<R>> coll, Function<Ref<R>, SD<R>> body){
+		return null;
 	}
 	
 	public <U> SD<R> Yield(Supplier<U> exp) {
