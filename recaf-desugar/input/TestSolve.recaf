@@ -1,0 +1,24 @@
+package generated;
+
+import recaf.demo.constraint.Solve;
+import java.util.Map;
+import org.chocosolver.solver.variables.IntVar;
+
+public class TestSolve {
+  
+  private static recaf Solve alg = new Solve();
+  
+  static recaf Iterable<Map<String,Integer>> example() {
+    var 0, 5, IntVar x;
+    var 0, 5, IntVar y;
+    solve! x + y < 5;
+  }
+
+  public static void main(String args[]) {
+    Iterable<Map<String,Integer>> solver = example();
+    for (Map<String,Integer> sol: solver) {
+      System.out.println(sol);
+    } 
+  }
+
+}
