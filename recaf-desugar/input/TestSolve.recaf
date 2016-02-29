@@ -12,6 +12,7 @@ public class TestSolve {
     var 0, 5, IntVar x;
     var 0, 5, IntVar y;
     solve! x + y < 5;
+    solve! x - y > 1;
   }
 
   public static void main(String args[]) {

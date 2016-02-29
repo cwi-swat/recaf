@@ -87,6 +87,13 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 		return l -> { solver.post(x.get()); };
 	}
 	
+	public IExec Seq(IExec s1, IExec s2) {
+		return l -> {
+			s1.exec(l);
+			s2.exec(null);
+		};
+	}
+	
 	public IntVar Var(String name, IntVar var) {
 		return var;
 	}
