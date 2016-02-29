@@ -8,7 +8,7 @@ Recaf is a source transformation system for Java that liberates the programmer f
 ```shell
 > git clone git@github.com:cwi-swat/recaf.git
 > cd recaf
-> mvn clean test
+> mvn clean dependency:copy-dependencies test
 ```
 
 ### Benchmarks
