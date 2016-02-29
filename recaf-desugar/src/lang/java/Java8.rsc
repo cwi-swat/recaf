@@ -269,7 +269,7 @@ syntax StaticInit =
 
 lexical DeciNumeral =
   [1-9] [0-9]* 
-  | "0" 
+  | [0] 
   ;
 
 syntax EnumConstArgs =
