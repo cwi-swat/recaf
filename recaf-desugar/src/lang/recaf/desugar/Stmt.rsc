@@ -8,6 +8,8 @@ import IO;
 import util::Maybe;
 import ParseTree;
 
+// TODO: factor out extension desugaring.
+
 alias Names = tuple[set[Id] refs, map[Id, Id] renaming];
 
 Names declare(Id x, Names names) 

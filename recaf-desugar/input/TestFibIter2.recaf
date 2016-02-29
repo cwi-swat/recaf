@@ -1,0 +1,28 @@
+package generated;
+
+import recaf.demo.cps.Iter2;
+
+public class TestFibIter2 {
+  private static recaf Iter2<Integer> alg = new Iter2<Integer>();
+
+  private recaf static Iterable<Integer> fib() {
+  	int a = 0;
+   	int b = 1; 
+  	 
+  	while(true) {
+  		yield! a;
+  		b = a + b; 
+  		a = b - a;
+  	}
+  } 
+  
+  public static void main(String args[]) {
+    int count = 10;
+    for (Integer n: fib()) {
+      if(count-- == 0) {
+        System.out.println(n);
+        break;
+      }
+    }
+  }
+}
