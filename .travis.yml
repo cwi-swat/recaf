@@ -9,7 +9,6 @@ addons:
             - oracle-java8-installer
 
 script: mvn clean dependency:copy-dependencies test
-
 notifications:
   slack: cwi-swat:mE7iJhJBjCpYUb86OmDz53Qf
   email: false

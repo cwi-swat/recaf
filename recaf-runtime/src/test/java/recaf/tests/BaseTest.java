@@ -41,7 +41,7 @@ public class BaseTest {
 	protected PrintWriter out;
 	protected PrintWriter err;
 
-	private static boolean generated_sources = true;
+	private static boolean generated_sources = false;
 
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
