@@ -14,6 +14,252 @@ import recaf.core.alg.JavaExprAlg;
 public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	
 	@Override
+	default IEval Closure(Object lambda) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Cond(IEval c, IEval t, IEval e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval ArrayAccess(IEval array, IEval index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval InvokeSuper(IEval self, String method, IEval... args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval InvokeSuper(IEval self, Class<?> clazz, String method, IEval... args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval SuperField(String name, Object self) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval SuperField(Class<?> clazz, String name, Object self) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval CastPrim(Class<?> clazz, IEval e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval PostDecr(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Plus(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Not(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Complement(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval PreIncr(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval PreDecr(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Minus(IEval arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Div(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Remain(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Mul(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval RightShift(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval URightShift(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval LeftShift(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval GtEq(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval InstanceOf(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval LtEq(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Eq(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval NotEq(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval And(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval ExcOr(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval Or(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval LazyAnd(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval LazyOr(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignLeftShift(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignOr(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignAnd(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignRightShift(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignRemain(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignPlus(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignExcOr(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignDiv(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignURightShift(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default IEval AssignMinus(IEval lhs, IEval rhs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	default IEval Lit(int n) {
 		return () -> n;
 	}
