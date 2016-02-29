@@ -1,5 +1,6 @@
 package recaf.demo.constraint;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	private Solver solver;
 	private int varCount = 0;
 	private List<IntVar> vars = new ArrayList<>();
+	private Map<IntVar, String> names = new HashMap<>();
 	
 	private String nextName() {
 		return "var" + varCount++;
@@ -61,7 +63,7 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 					public Map<String, Integer> next() {
 						Map<String, Integer> sol = new HashMap<>();
 						for (IntVar var: vars) {
-							sol.put(var.getName(), var.getValue());
+							sol.put(names.get(var), var.getValue());
 						}
 						return sol;
 					}
@@ -95,6 +97,8 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	}
 	
 	public IntVar Var(String name, IntVar var) {
+		// hack to get nice names
+		names.put(var, name);
 		return var;
 	}
 
