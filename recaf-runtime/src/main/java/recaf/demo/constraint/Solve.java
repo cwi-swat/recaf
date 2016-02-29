@@ -1,6 +1,6 @@
 package recaf.demo.constraint;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +33,9 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	@Override
 	public Iterable<Map<String,Integer>> Method(IExec body) {
 		this.solver = new Solver();
+		this.vars.clear();
+		this.names.clear();
+		
 		try {
 			body.exec(null);
 		}
@@ -103,7 +106,11 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	}
 
 	public int Lit(int n) {
-		return n; //VariableFactory.bounded(nextName(), n, n, solver);
+		return n; 
+	}
+	
+	public int Minus(int n) {
+		return -n;
 	}
 	
 	private static abstract class LinExp {
@@ -140,7 +147,6 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 		}
 		
 	}
-
 
 	public Sub Minus(IntVar lhs, IntVar rhs) {
 		return new Sub(lhs, rhs);
@@ -225,5 +231,16 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 		return IntConstraintFactory.arithm(lhs, "!=", rhs);
 	}
 	
+	public Constraint Invoke(Object ignored, String method, IntVar...args) {
+		try {
+			Class<?> types[] = new Class<?>[1];
+			types[0] = IntVar[].class;
+			java.lang.reflect.Method m = IntConstraintFactory.class.getDeclaredMethod(method, types);
+			return (Constraint) m.invoke(null, new Object[] {args});
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	
 }

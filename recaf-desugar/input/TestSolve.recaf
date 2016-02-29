@@ -8,16 +8,27 @@ public class TestSolve {
   
   private static recaf Solve alg = new Solve();
   
-  static recaf Iterable<Map<String,Integer>> example() {
+  recaf Iterable<Map<String,Integer>> example() {
     var 0, 5, IntVar x;
     var 0, 5, IntVar y;
     solve! x + y < 5;
     solve! x - y > 1;
   }
+  
+  recaf Iterable<Map<String,Integer>> example2() {
+    var 0, 1, IntVar w;
+    var -1, 2, IntVar x;
+    var 2, 4, IntVar y;
+    var 5, 7, IntVar z;
+    solve! alldifferent(w, x, y, z);
+  }
 
   public static void main(String args[]) {
-    Iterable<Map<String,Integer>> solver = example();
-    for (Map<String,Integer> sol: solver) {
+    for (Map<String,Integer> sol: new TestSolve().example()) {
+      System.out.println(sol);
+    } 
+    
+    for (Map<String,Integer> sol: new TestSolve().example2()) {
       System.out.println(sol);
     } 
   }
