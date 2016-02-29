@@ -8,9 +8,7 @@ import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
-import recaf.demo.cps.stream.Stream;
 import rx.Observable;
-import rx.Subscriber;
 
 public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, SD<R>> {
 	

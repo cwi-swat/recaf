@@ -10,7 +10,8 @@ public class TestUsing {
        System.out.println("Closing: " + this);
      }
   }
-  
+ 
+ /* 
   private static recaf Using<Void> alg = new Using<Void>() {};
   
   static recaf Void usingExample() {
@@ -22,5 +23,6 @@ public class TestUsing {
   public static void main(String args[]) {
      usingExample();
   }
+  */
   
 }

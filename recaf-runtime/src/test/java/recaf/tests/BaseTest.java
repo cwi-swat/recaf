@@ -30,7 +30,7 @@ import org.rascalmpl.values.ValueFactoryFactory;
 public class BaseTest {
 
 	private static final String COMPILE_OUTPUT_DIR = "target/test-classes/";
-	private static final String COMPILETIME_CP = "src/main/java/:src/test-generated/";
+	private static final String COMPILETIME_CP = "src/main/java/:src/test-generated/:target/dependency/*";
 	private static final String RUNTIME_CP = "target/classes/:target/test-classes/";
 	private static final String PACKAGE_NAME = "generated.";
 	private static final String GENERATED_DIR = "src/test-generated/generated/";
@@ -41,7 +41,7 @@ public class BaseTest {
 	protected PrintWriter out;
 	protected PrintWriter err;
 
-	private static boolean generated_sources = false;
+	private static boolean generated_sources = true;
 
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
