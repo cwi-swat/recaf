@@ -24,15 +24,16 @@ public class PEGwithLayout<R> implements PEG<R> {
 		};
 	}
 	
-	<T, U> Function<T, Parser<U>> withLayout(Function<T, Parser<U>> parser) {
+	<T, U> Function<T, Parser<? extends U>> withLayout(Function<T, Parser<? extends U>> parser) {
 		return it -> (s, p) -> {
 			Result<Void> r = layout.parse(s, p);
-			return parser.apply(it).parse(s, r.getPos());
+			Result<? extends U> r2 = parser.apply(it).parse(s, r.getPos());
+			return new Result<U>(r2.getValue(), r2.getPos());
 		};
 	}
 	
 	@Override
-	public <T> Parser<T> Regexp(Supplier<String> x, Function<String, Parser<T>> body) {
+	public <T> Parser<T> Regexp(Supplier<String> x, Function<String, Parser<? extends T>> body) {
 		return PEG.super.Regexp(x, withLayout(body));
 	}
 

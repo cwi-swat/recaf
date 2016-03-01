@@ -102,6 +102,16 @@ public class TestPEG {
     }
   }
   
+  public static String genExp(int n)  {
+    if (n == 0) {
+      return "1";
+    }
+    if (n % 2 == 0) {
+	    return genExp(n - 1) + "+" + genExp(n - 1);
+	}
+	return genExp(n - 1) + "*" + genExp(n - 1);
+  }
+  
   public static void main(String args[]) {
     Parser<Exp> p = new TestPEG(new PEG<Exp>() {}).exp();
     System.out.println(p.parse("<xml>(1+2)*(3+4)</xml>", 0).getValue());
@@ -114,6 +124,21 @@ public class TestPEG {
     
     p = new TestPEG(new PEGwithLayout<Exp>("[\\ \\t\\n]*")).exp();
     System.out.println(p.parse("(1 + 2) * (3 + 4)", 0).getValue());
+    
+    
+    System.out.println("Generating genExp(20)");
+    String big = genExp(5);
+    System.out.println(big);
+    
+    System.out.println("NO memo");
+    p = new TestPEG(new PEG<Exp>() {}).exp();
+    //System.out.println(p.parse(big, 0).getValue());
+    
+    System.out.println("WITH memo");
+    p = new TestPEG(new MemoPEG<Exp>()).exp();
+    //System.out.println(p.parse(big, 0).getValue());
+    System.out.println("done");
+    
   }
   
 }
