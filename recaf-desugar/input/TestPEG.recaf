@@ -1,6 +1,7 @@
 package generated;
 
 import recaf.demo.pegs.MemoPEG;
+import recaf.demo.pegs.PEG;
 import recaf.demo.pegs.PEGwithLayout;
 import recaf.demo.pegs.Parser;
 
@@ -32,7 +33,11 @@ public class TestPEG {
     }
   }
   
-  private final recaf PEGwithLayout<Exp> alg = new PEGwithLayout<Exp>("[\\ \\t\\n]*");
+  private final recaf PEG<Exp> alg;
+  
+  TestPEG(PEG<Exp> alg) {
+    this.alg = alg;
+  }
   
   recaf Parser<Exp> exp() {
     let Exp e = sum();
@@ -74,7 +79,11 @@ public class TestPEG {
   }
   
   public static void main(String args[]) {
-    Parser<Exp> p = new TestPEG().exp();
+    Parser<Exp> p = new TestPEG(new PEG<Exp>() {}).exp();
+    System.out.println(p.parse("(1 + 2) * (3 + 4)", 0).getValue());
+    p = new TestPEG(new MemoPEG<Exp>()).exp();
+    System.out.println(p.parse("(1 + 2) * (3 + 4)", 0).getValue());
+    p = new TestPEG(new PEGwithLayout<Exp>("[\\ \\t\\n]*")).exp();
     System.out.println(p.parse("(1 + 2) * (3 + 4)", 0).getValue());
   }
   
