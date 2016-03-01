@@ -7,6 +7,10 @@ import java.util.regex.Pattern;
 
 public class PEGwithLayout<R> implements PEG<R> {
 
+	/*
+	 * Puts layout before tokens (regexp/lit) and inbetween sequences.
+	 */
+	
 	private Parser<Void> layout;
 
 	public PEGwithLayout(String regexp) {
@@ -14,7 +18,7 @@ public class PEGwithLayout<R> implements PEG<R> {
 		this.layout = (s, p) -> {
 			Matcher m = pat.matcher(s.substring(p));
 			if (m.find() && m.start() == 0) {
-				return new Result<Void>(null, m.group().length());
+				return new Result<Void>(null, p + m.group().length());
 			}
 			throw new Fail();
 		};
@@ -31,10 +35,10 @@ public class PEGwithLayout<R> implements PEG<R> {
 	public <T> Parser<T> Regexp(Supplier<String> x, Function<String, Parser<T>> body) {
 		return PEG.super.Regexp(x, withLayout(body));
 	}
-	
+
 	@Override
-	public <T, U> Parser<U> Let(Supplier<Parser<T>> parser, Function<T, Parser<U>> body) {
-		return PEG.super.Let(parser, withLayout(body));
+	public Parser<Void> Lit(Supplier<String> x) {
+		return Seq(layout, PEG.super.Lit(x));
 	}
 	
 	@Override
@@ -42,8 +46,4 @@ public class PEGwithLayout<R> implements PEG<R> {
 		return PEG.super.Seq(p1, PEG.super.Seq(layout, p2));
 	}
 	
-	@Override
-	public <T, U> Parser<U> Star(Supplier<T> t, Function<T, Parser<T>> parser, Function<T, Parser<U>> next) {
-		return PEG.super.Star(t, x -> PEG.super.Seq(layout, parser.apply(x)), next);
-	}
 }

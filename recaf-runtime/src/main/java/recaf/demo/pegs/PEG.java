@@ -24,12 +24,12 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 	default Parser<Void> Lit(Supplier<String> x)  {
 		return (s, p) -> {
 			String lit = x.get();
-//			System.out.println("parsing lit: " + lit + " on " + s + " at " + p);
+			System.out.println("parsing lit: " + lit + " on " + s + " at " + p);
 			if (s.startsWith(lit, p)) {
-//				System.out.println("success: parsing lit: " + lit);
+				System.out.println("success: parsing lit: " + lit);
 				return new Result<>(null, p + lit.length());
 			}
-//			System.out.println("fail lit");
+			System.out.println("fail lit");
 			throw new Fail();
 		};
 	}
@@ -41,11 +41,11 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 			if (m.find()) {
 				if (m.start() == 0) {
 					String g = m.group();
-//					System.out.println("SUCCESS");
+					System.out.println("SUCCESS regex");
 					return body.apply(g).parse(s, p + g.length());
 				}
 			}
-//			System.out.println("FAIL regexp");
+			System.out.println("FAIL regexp");
 			throw new Fail();
 		};
 	}
