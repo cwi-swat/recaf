@@ -102,19 +102,23 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Div(IEval lhs, IEval rhs) {
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) / (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval Remain(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) % (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval Mul(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) * (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
