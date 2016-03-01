@@ -1,0 +1,112 @@
+package generated;
+
+import recaf.demo.pegs.PEG;
+import recaf.demo.pegs.Parser;
+
+import java.util.List;
+import java.util.ArrayList;
+
+
+public class TestPEG {
+
+  abstract class Exp { }
+  
+  class BinOp extends Exp {
+    String op; Exp lhs, rhs;
+    BinOp(String op, Exp lhs, Exp rhs) {
+      this.op = op;
+      this.lhs = lhs;
+      this.rhs = rhs;
+    }
+    @Override
+    public String toString() {
+        return "(" + lhs + op + rhs + ")";
+    }
+  }
+  
+  class Int extends Exp {
+    int value;
+    Int(int n) {
+      this.value = n;
+    }
+    @Override
+    public String toString() {
+        return "" + value;
+    }
+  }
+  
+  class Lst extends Exp {
+    List<Exp> elts;
+    Lst(List<Exp> elts) {
+      this.elts = elts;
+    }
+    @Override
+    public String toString() {
+        return elts.toString();
+    }
+  }
+  
+  private final recaf PEG<Exp> alg = new PEG<Exp>();
+  
+  /*
+ 
+  Expr    ← Sum
+Sum     ← Product (('+' / '-') Product)*
+Product ← Value (('*' / '/') Value)*
+Value   ← [0-9]+ / '(' Expr ')'
+  */
+  
+  recaf Parser<Exp> exp() {
+    let Exp e = sum();
+    return e;
+  }
+
+  recaf Parser<Exp> sum() {
+    let Exp v1 = product();
+    star Exp exp = (v1) {
+      regexp String op = "[+\\-]";
+      let Exp v2 = product();
+      return new BinOp(op, exp, v2);
+    }
+    return exp;
+  }
+  
+  recaf Parser<Exp> product() {
+    let Exp v1 = value();
+    star Exp exp = (v1) {
+      regexp String op = "[*/]";
+      let Exp v2 = value();
+      return new BinOp(op, exp, v2);
+    }
+    return exp;
+  }
+  
+  recaf Parser<Exp> value() {
+    choice {
+     alt "value":
+      regexp String n = "[0-9]+";
+      return new Int(Integer.parseInt(n));
+      
+     alt "list":
+       lit! "[";
+       star List<Exp> exps = (new ArrayList<Exp>()) {
+         let Exp e = exp();
+         exps.add(e);
+       }
+       return new Lst(exps);
+      
+     alt "bracket":
+      lit! "(";
+      let Exp e = exp();
+      lit! ")";
+      return e;
+    }
+    
+  }
+  
+  public static void main(String args[]) {
+    Parser<Exp> p = new TestPEG().exp();
+    System.out.println(p.parse("1+2*3", 0).getValue());
+  }
+  
+}

@@ -5,7 +5,7 @@ import java.util.Map;
 import org.chocosolver.solver.variables.IntVar;
 
 public class TestSolve {
-  
+  // requires expression desugaring
   private static recaf Solve alg = new Solve();
   
   recaf Iterable<Map<String,Integer>> example() {

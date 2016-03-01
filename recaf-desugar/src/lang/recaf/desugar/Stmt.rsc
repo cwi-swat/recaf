@@ -47,7 +47,7 @@ Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
   when 
     Expr ecps := injectExpr(e, alg, names),
-    Expr scps := stm2alg(s, alg, declare(f, names)),
+    Expr scps := stm2alg(s, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // while like
@@ -64,7 +64,7 @@ Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ es>, <FormalParam f>: <Expr e>) <Stm 
   when 
     {Expr ","}+ escps := injectExprs(es, alg, names),
     Expr ecps := injectExpr(e, alg, names),
-    Expr scps := stm2alg(s, alg, declare(f, names)),
+    Expr scps := stm2alg(s, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 
@@ -95,7 +95,7 @@ Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`, Id al
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr itemscps>;})`
   when 
     Expr ecps := injectExpr(e, alg, names),
-    Expr itemscps := items2alg([ i | i <- items ], alg, declare(f, names)),
+    Expr itemscps := items2alg([ i | i <- items ], alg, names),
     Id method := [Id]capitalize("<ext>");
 
 Expr stm2alg((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`, Id alg, Names names) 
@@ -131,7 +131,7 @@ Expr item2alg((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg, Names 
   = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr stmscps>; })`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, declare(f, names));
+    Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, names);
 
 
 // new style (only final vars).
@@ -188,7 +188,7 @@ Expr stm2alg((Stm)`for (<{Expr ","}* init>; <Expr cond>; <{Expr ","}* update>) <
 // For loops with decls (unlabeled and labeled)
 // NB multiple vardecs cannot be supported
 Expr stm2alg((Stm)`for (<Type t> <Id x>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  =(Expr)`<Id alg>.\<<Type t2>\>ForDecl(null, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
+  =(Expr)`<Id alg>.ForDecl(null, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
   when
     Names names2 := declare(x, names),
     Expr condcps := injectExpr(cond, alg, names2),
@@ -197,7 +197,7 @@ Expr stm2alg((Stm)`for (<Type t> <Id x>; <Expr cond>; <{Expr ","}* update>) <Stm
     Type t2 := boxed(t);
 
 Expr stm2alg((Stm)`for (<Type t> <Id x> = <Expr init>; <Expr cond>; <{Expr ","}* update>) <Stm body>`, Id alg, Names names)
-  =(Expr)`<Id alg>.\<<Type t2>\>ForDecl(<Expr initcps>, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
+  =(Expr)`<Id alg>.ForDecl(<Expr initcps>, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> <Id alg>.ForBody(<Expr condcps>, <Expr updatecps>, <Expr bodycps>))`
   when
     Expr initcps := injectExpr(init, alg, names),
     Names names2 := declare(x, names),
@@ -250,7 +250,7 @@ Expr block2alg((Block)`{<Type t> <VarDec vd>; <BlockStm+ ss>}`, Id alg, Names na
 
 // binding extensions (let/maybe etc.) introduce final variables. 
 Expr block2alg((Block)`{<KId kw> <FormalParam f>;}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>((<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f));
@@ -259,14 +259,14 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f>;}`, Id alg, Names names)
 
 // TODO: fix the duplication with singletons blocks.
 Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f>;}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ escps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     {Expr ","}+ escps := injectExprs(es, alg, names),
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f));
 
 Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f> = <Expr e>;}`, Id alg, Names names)
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
@@ -275,18 +275,27 @@ Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f> = <Expr e>;}`
 
 
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>;}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names);
 
 Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>;}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> <Id alg>.Empty())`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names);
+
+Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Block b>}`, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr bcps>; }, (<FormalParam f>) -\> { return <Id alg>.Empty(); })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    Expr ecps := injectExpr(e, alg, names),
+    Expr bcps := block2alg(b, alg, names);
+
 
 default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) 
   = stm2alg(s, alg, names);
@@ -299,14 +308,14 @@ default Expr block2alg((Block)`{<Stm s> <BlockStm+ ss>}`, Id alg, Names names)
 
 // binding extensions (let/maybe etc.) introduce final variables, so NO declare
 Expr block2alg((Block)`{<KId kw> <FormalParam f>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>((<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.<Id method>((<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ escps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
@@ -316,7 +325,7 @@ Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f>; <BlockStm+ s
 //   | KId {Expr ","}+ "," FormalParam "=" Expr ";"
 
 Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ escps>, <Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
@@ -328,7 +337,7 @@ Type typeOf((FormalParam)`final <Type t> <Id _>`) = t;
 Type typeOf((FormalParam)`<Type t> <Id _>`) = t;
 
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
@@ -336,21 +345,31 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, I
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.\<<Type rt>\><Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
+//KId FormalParam "=" "(" Expr ")" Block
+Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Block b> <BlockStm+ ss>}`, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr bcps>; }, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  when
+    Id method := [Id]capitalize("<kw>"),
+    Type rt := boxed(typeOf(f)),
+    Expr ecps := injectExpr(e, alg, names),
+    Expr bcps := block2alg(b, alg, names),
+    Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
+
 // TODO: final modifiers.... (we don't support it now)
 Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type t2>\>Decl(null, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.Decl(null, <Id x> -\> {return <Expr k>;})`
   when 
     Type t2 := boxed(t);
   
 Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.\<<Type t2>\>Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
   when
     Type t2 := boxed(t),
     Expr ecps := varInit2alg(t2, e, alg, names);
