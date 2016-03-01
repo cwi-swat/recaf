@@ -1,0 +1,57 @@
+package generated;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import recaf.demo.cps.Async2;
+ 
+class MyPrinter{
+	public MyPrinter(){}
+
+	public Void print(String msg) {
+		System.out.println(msg);		
+		return null;
+	}	
+} 
+ 
+public class TestAsyncComplex2 {
+
+    private static recaf Async2<Integer> alg = new Async2<Integer>();
+
+	public Void pause(Integer sleeptime) {
+	    try {   
+    	    new Thread().sleep(sleeptime);
+    	    return null;
+    	} catch (InterruptedException ex) {
+    		return null;
+    	}
+	}
+	
+
+	recaf CompletableFuture<Integer> op() {
+    	if (1 < 2) {	
+    		pause(2500);
+    		print("delayed op");
+       		return 42; 
+     	}
+     	return 41;
+  	}
+
+	recaf CompletableFuture<Integer> op2() {
+    	if (1 < 2) {
+       		await Integer x = op();
+    		await Integer y = op();
+    		return x + y;
+     	}
+     	pause(5000);
+     	return 41;
+  	}
+  	
+  	public static void main(String[] args) throws InterruptedException, ExecutionException{
+  		CompletableFuture<Integer> answer;
+  				
+  		answer = new TestAsyncComplex().op2();
+			
+		new MyPrinter().print("main");
+		
+  		System.out.println(answer.get());
+  	}
+}
