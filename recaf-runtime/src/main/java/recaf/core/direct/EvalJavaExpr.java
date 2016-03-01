@@ -7,11 +7,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import recaf.core.EvalJavaHelper;
 import recaf.core.IRef;
-import recaf.core.Ref;
 import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
 
@@ -297,7 +297,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	}
 
 	@Override
-	default IEval Var(String name, Ref<?> val) {
+	default IEval Var(String name, IRef<?> val) {
 		return () -> val;
 	}
 	
@@ -380,17 +380,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval Invoke(IEval obj, String method, IEval... args) {
 		return () -> {
 			Object o = toValue(obj.eval());
-			List<Object> evaluatedArgs = new ArrayList<Object>();
-			List<Class<?>> argClasses = new ArrayList<Class<?>>();
-			for (IEval a: args){
-				Object ea = toValue(a.eval());
-				evaluatedArgs.add(ea);
-				argClasses.add(ea.getClass());
-			}
 			try {
-				Method m = EvalJavaHelper.findMethod(o, method, argClasses.toArray(new Class[0]));
+				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
 				m.setAccessible(true);
-				return m.invoke(o, evaluatedArgs.toArray(new Object[0]));
+				return m.invoke(o, evaluatedArgs);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 					| SecurityException e) {
 				e.printStackTrace();

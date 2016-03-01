@@ -15,7 +15,7 @@ public class EvalJavaHelper {
 	// TODO implement proper overloading methods resolution
 	public static Method findMethod(Object o, String methodName, Object[] args){
 		Class<?> clazz = o.getClass();
-		for (Method m : clazz.getMethods()){
+		for (Method m : clazz.getDeclaredMethods()){
 			if (m.getName() == methodName){
 				if (m.getParameterCount() == args.length){
 					if (areAssignable(m.getParameterTypes(), args))

@@ -1,7 +1,6 @@
 package recaf.core.alg;
 
-import recaf.core.Ref;
-import recaf.core.direct.IEval;
+import recaf.core.IRef;
 
 public interface JavaExprAlg<E> {
 
@@ -70,7 +69,7 @@ public interface JavaExprAlg<E> {
 	
 	// the ref and val things are the real bindings themselves
 	// because of HOAS encoding of binders.
-	E Var(String name, Ref<?> ref);
+	E Var(String name, IRef<?> ref);
 	
 	
 }
