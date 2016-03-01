@@ -2,7 +2,9 @@ package recaf.core.direct;
 
 import static recaf.core.direct.EvalJavaHelper.toValue;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,14 +23,12 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Cond(IEval c, IEval t, IEval e) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> (Boolean) c.eval()?t.eval():e.eval();
 	}
 
 	@Override
 	default IEval ArrayAccess(IEval array, IEval index) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> Array.get(array.eval(), (Integer) index.eval());
 	}
 
 	@Override
@@ -69,14 +69,12 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Plus(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> + (Integer) toValue(arg.eval());
 	}
 
 	@Override
 	default IEval Not(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> !((Boolean) arg.eval());
 	}
 
 	@Override
@@ -99,13 +97,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Minus(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> - (Integer) toValue(arg.eval());
 	}
 
 	@Override
 	default IEval Div(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -141,8 +137,9 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval GtEq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Boolean.valueOf((Integer) toValue(lhs.eval()) >= (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
@@ -153,38 +150,34 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval LtEq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Boolean.valueOf((Integer) toValue(lhs.eval()) <= (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval Eq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> toValue(lhs.eval()).equals(toValue(rhs.eval()));
 	}
 
 	@Override
 	default IEval NotEq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> !toValue(lhs.eval()).equals(toValue(rhs.eval()));
 	}
 
 	@Override
 	default IEval And(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Boolean) lhs.eval()) && ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval ExcOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Boolean) lhs.eval()) ^ ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval Or(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Boolean) lhs.eval()) || ((Boolean) rhs.eval());
 	}
 
 	@Override
@@ -305,8 +298,18 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	
 	@Override
 	default IEval Field(IEval recv, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			Object o = toValue(recv.eval());
+			try {
+				Class<?> c = o.getClass();
+				Field f = o.getClass().getDeclaredField(name);
+				f.setAccessible(true);
+				return f.get(o);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+				return null;
+			}
+		};
 	}
 
 	@Override
@@ -335,8 +338,8 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 			return (Integer) toValue(l.eval()) < (Integer) toValue(r.eval());
 		};
 	}
-
-	@Override
+	
+		@Override
 	default IEval Plus(IEval l, IEval r) {
 		return () -> {
 			return Integer.valueOf((Integer) toValue(l.eval()) + (Integer) toValue(r.eval()));

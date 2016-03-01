@@ -40,9 +40,13 @@ public class TestSimple    {
   	return  new A().a(1,2);
   }  
   
+  private recaf static Integer fieldAccess(){           
+  	return  new A().i;
+  }  
+  
   
   public static void main(String args[]) {
-    int n = methodCall();
+    int n = fieldAccess();
     System.out.println(n);
     
   }
