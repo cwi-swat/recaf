@@ -251,6 +251,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval AssignMinus(IEval lhs, IEval rhs) {
 		return Assign(lhs, Minus(lhs, rhs));
 	}
+	
+	@Override
+	default IEval AssignAdd(IEval lhs, IEval rhs) {
+		return Assign(lhs, Plus(lhs, rhs));
+	}
 
 	@Override
 	default IEval Lit(int n) {

@@ -1,6 +1,7 @@
 package recaf.core.alg;
 
 import recaf.core.Ref;
+import recaf.core.direct.IEval;
 
 public interface JavaExprAlg<E> {
 
@@ -62,6 +63,7 @@ public interface JavaExprAlg<E> {
     E AssignDiv(E lhs, E rhs); 
     E AssignURightShift(E lhs, E rhs); 
     E AssignMinus(E lhs, E rhs); 
+    E AssignAdd(E lhs, E rhs); 
 
     E New(Class<?> clazz, E...args);
 	E Invoke(E obj, String method, E... args);
