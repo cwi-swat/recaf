@@ -19,7 +19,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	
 	@Override
 	default IEval Closure(Object lambda) {
-		throw new UnsupportedOperationException();
+		return () -> lambda;
 	}
 
 	@Override

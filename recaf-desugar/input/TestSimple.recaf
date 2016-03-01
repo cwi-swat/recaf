@@ -45,7 +45,9 @@ public class TestSimple    {
   }  
   
   private recaf static Integer many(){
-  	return (new A()).i; 
+  	A a = new A();
+  	a.i = 3;
+  	return a.i; 
   
   }
   
