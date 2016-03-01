@@ -1,24 +1,25 @@
 package recaf.core.direct;
 
-import static recaf.core.direct.EvalJavaHelper.toValue;
+import static recaf.core.EvalJavaHelper.toValue;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import recaf.core.EvalJavaHelper;
+import recaf.core.IRef;
 import recaf.core.Ref;
+import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
 
 public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	
 	@Override
 	default IEval Closure(Object lambda) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -33,38 +34,36 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval InvokeSuper(IEval self, String method, IEval... args) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval InvokeSuper(IEval self, Class<?> clazz, String method, IEval... args) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval SuperField(String name, Object self) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval SuperField(Class<?> clazz, String name, Object self) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval CastPrim(Class<?> clazz, IEval e) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> clazz.cast(e.eval());
 	}
 
 	@Override
 	default IEval PostDecr(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			r.setValue(r.value() - 1);
+			return r.value();
+		};
 	}
 
 	@Override
@@ -79,20 +78,27 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Complement(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ~ ((Integer) arg.eval());
 	}
 
 	@Override
 	default IEval PreIncr(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			Integer saved = r.value();
+			r.setValue(saved + 1);
+			return saved;
+		};
 	}
 
 	@Override
 	default IEval PreDecr(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			Integer saved = r.value();
+			r.setValue(saved - 1);
+			return saved;
+		};
 	}
 
 	@Override
@@ -123,20 +129,23 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval RightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) >> (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval URightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) >>> (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval LeftShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) << (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
@@ -148,8 +157,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval InstanceOf(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Class<?>) rhs.eval()).isInstance(lhs.eval());		
 	}
 
 	@Override
@@ -186,74 +194,62 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval LazyAnd(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval LazyOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval AssignLeftShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, LeftShift(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Or(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignAnd(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, And(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignRightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, RightShift(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignRemain(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Remain(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignPlus(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Plus(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignExcOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, ExcOr(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignDiv(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Div(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignURightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, URightShift(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignMinus(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Minus(lhs, rhs));
 	}
 
 	@Override
@@ -289,8 +285,8 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval Assign(IEval lhs, IEval rhs) {
 		return () -> {
-			Object r = lhs.eval();
-			((Ref) r).value = toValue(rhs.eval());
+			IRef r = (IRef<?>) lhs.eval();
+			r.setValue(toValue(rhs.eval()));
 			return r;
 		};
 	}
@@ -305,11 +301,8 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> {
 			Object o = toValue(recv.eval());
 			try {
-				Class<?> c = o.getClass();
-				Field f = o.getClass().getDeclaredField(name);
-				f.setAccessible(true);
-				return f.get(o);
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				return new ReflectRef(o, name); 
+			} catch (IllegalArgumentException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -322,11 +315,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	}
 
 	@Override
-	default IEval PostIncr(IEval expr) {
+	default IEval PostIncr(IEval arg) {
 		return () -> {
-			Object o = expr.eval();
-			((Ref) o).value = (Integer) ((Ref) o).value + 1; 
-			return o;
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			r.setValue(r.value() + 1);
+			return r.value();
 		};
 	}
 	
