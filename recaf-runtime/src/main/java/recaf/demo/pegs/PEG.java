@@ -56,7 +56,7 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 	
 	default <T, U> Parser<U> Seq(Parser<T> p1, Parser<U> p2) {
 		return (s, p) -> {
-			Result<? super T> r1 = p1.parse(s, p);
+			Result<T> r1 = p1.parse(s, p);
 			return p2.parse(s, r1.getPos());
 		};
 	}
@@ -130,7 +130,7 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 		return body;
 	}
 	
-	default <T> Parser<T> Return(Supplier<? extends T> x) {
+	default <T> Parser<T> Return(Supplier<T> x) {
 		return (s, p) -> new Result<T>(x.get(), p);
 	}
 	
