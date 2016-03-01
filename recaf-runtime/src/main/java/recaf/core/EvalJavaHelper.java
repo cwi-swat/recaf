@@ -1,14 +1,13 @@
-package recaf.core.direct;
+package recaf.core;
 
 import java.lang.reflect.Method;
 import org.apache.commons.beanutils.MethodUtils;
-import recaf.core.Ref;
 
 public class EvalJavaHelper {
 	public static Object toValue(Object o){
-		// TODO Add case for true objct references
-		if (o instanceof Ref)
-			return ((Ref) o).value;
+		// TODO Add case for true objcet references
+		if (o instanceof IRef)
+			return ((IRef) o).value();
 		else
 			return o;
 	}
