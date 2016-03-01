@@ -10,8 +10,6 @@ import recaf.core.alg.JavaMethodAlg;
 
 public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 
-	// TODO: Aspects: memoization -> packrat, layout interleaving.
-	
 	@Override
 	default Parser<R> Method(Parser<R> body) {
 		return body;
@@ -31,30 +29,34 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 		};
 	}
 	
-	default <T> Parser<T> Regexp(Supplier<String> x, Function<String, Parser<T>> body) {
+	default <T> Parser<T> Regexp(Supplier<String> x, Function<String, Parser<? extends T>> body) {
 		return (s, p) -> {
 			Pattern pat = Pattern.compile(x.get());
 			Matcher m = pat.matcher(s.substring(p));
 			if (m.find()) {
 				if (m.start() == 0) {
 					String g = m.group();
-					return body.apply(g).parse(s, p + g.length());
+					// this unwrapping has to with contra variance 
+					Result<? extends T> r = body.apply(g).parse(s, p + g.length());
+					return new Result<T>(r.getValue(), r.getPos());
 				}
 			}
 			throw new Fail();
 		};
 	}
 	
-	default <T, U> Parser<U> Let(Supplier<Parser<T>> parser, Function<T, Parser<U>> body) {
+	default <T, U> Parser<U> Let(Supplier<Parser<T>> parser, Function<T, Parser<? extends U>> body) {
 		return (s, p) -> {
 			Result<T> r = parser.get().parse(s, p);
-			return body.apply(r.getValue()).parse(s, r.getPos());
+			// this unwrapping has to with contra variance 
+			Result<? extends U> r2 = body.apply(r.getValue()).parse(s, r.getPos()); 
+			return new Result<U>(r2.getValue(), r2.getPos());
 		};
 	}
 	
 	default <T, U> Parser<U> Seq(Parser<T> p1, Parser<U> p2) {
 		return (s, p) -> {
-			Result<T> r1 = p1.parse(s, p);
+			Result<? super T> r1 = p1.parse(s, p);
 			return p2.parse(s, r1.getPos());
 		};
 	}
@@ -63,7 +65,7 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 		return (s, p) -> {
 			T init = otherwise.get();
 			try {
-				Result<T> t = parser.apply(otherwise.get()).parse(s, p);
+				Result<? extends T> t = parser.apply(otherwise.get()).parse(s, p);
 				return next.apply(t.getValue()).parse(s, t.getPos());
 			}
 			catch (Fail f) {
