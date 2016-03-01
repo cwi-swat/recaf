@@ -101,6 +101,7 @@ Expr expr2alg((Expr)`<AmbName x>.<Id m>(<{Expr ","}* es>)`, Id alg, Names names)
     Expr e2 := amb2alg(x, alg, names),
     {Expr ","}* es2 := args2alg(es, alg, names);
 
+
 // NB: we interpret ambnames as field access; 
 // so no package qualification as of now...
 Expr amb2alg((AmbName)`<Id x>`, Id alg, Names names)
@@ -139,6 +140,12 @@ Expr id2strExpr(Id x) = [Expr]"\"<x>\"";
   }
   return es;
 }
+
+Expr expr2alg((Expr)`<AmbName a>.<Id f>`, Id alg, Names names)
+  = (Expr)`<Id alg>.Field(<Expr x2>, <Expr name>)`
+  when
+    Expr x2 := amb2alg(a, alg, names),
+    Expr name := id2strExpr(f);
 
 Expr expr2alg((Expr)`<Expr x>.<Id f>`, Id alg, Names names)
   = (Expr)`<Id alg>.Field(<Expr x2>, <Expr name>)`
