@@ -6,7 +6,7 @@ import recaf.demo.cps.Async;
 public class TestAsyncComplex {
 
     private static recaf Async<Integer> alg = new Async<Integer>();
-
+    
 	public static void pause(long sleeptime) {
 	    try { 
     	    Thread.sleep(sleeptime);

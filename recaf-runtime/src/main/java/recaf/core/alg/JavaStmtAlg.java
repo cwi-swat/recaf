@@ -57,5 +57,5 @@ public interface JavaStmtAlg<R, E, S, C> {
 	
 	S ExpStat(E e);
 	
-	<T> Supplier<T> Exp(E e);
+	<T> Supplier<T> Exp(E e) throws Exception;
 }

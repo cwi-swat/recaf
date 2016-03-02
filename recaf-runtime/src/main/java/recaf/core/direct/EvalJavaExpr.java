@@ -381,7 +381,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> {
 			Object o = toValue(obj.eval());
 			try {
-				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg) -> arg.eval()).toArray();
 				Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
 				m.setAccessible(true);
 				return m.invoke(o, evaluatedArgs);
