@@ -33,39 +33,18 @@ public class BaseTest {
 	private static final String COMPILETIME_CP = "src/main/java/:src/test-generated/:target/dependency/*";
 	private static final String RUNTIME_CP = "target/classes/:target/test-classes/";
 	private static final String PACKAGE_NAME = "generated.";
-	private static final String GENERATED_DIR = "src/test-generated/generated/";
-	private static final String RECAF_SRC = "/../recaf-desugar/src/";
-	private static final String RECAF_GENERATED_DIR = "cwd:///" + GENERATED_DIR;
-	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
+	protected static final String GENERATED_DIR = "src/test-generated/generated/";
+
 
 	protected PrintWriter out;
 	protected PrintWriter err;
 
-	private static boolean generated_sources = false;
+
 
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
 
-	@BeforeClass
-	public static void init() {
-		if (!generated_sources) {
-			LogManager.getLogger().info("Generating source files with rascal...");
 
-			RascalModuleRunner runner = new RascalModuleRunner(new PrintWriter(System.out, false),
-					new PrintWriter(System.err, false));
-
-			try {
-				runner.addRascalSearchPathContributor(
-						ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", RECAF_SRC));
-				runner.run("lang::recaf::DesugarMain", new String[] { RECAF_INPUT, RECAF_GENERATED_DIR });
-			} catch (Exception e) {
-				LogManager.getLogger().error("Generation failed", e);
-				LogManager.getLogger().info("Exiting...");
-				System.exit(-1);
-			}
-			generated_sources = true;
-		}
-	}
 
 	@Before
 	public void setUp() throws Exception {
