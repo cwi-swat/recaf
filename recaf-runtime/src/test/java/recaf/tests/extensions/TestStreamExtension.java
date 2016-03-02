@@ -2,10 +2,10 @@
 //
 //import org.junit.Test;
 //
-//import recaf.tests.BaseTest;
+//import recaf.tests.BaseTestPartial;
 //import recaf.tests.CompiletimeException;
 //
-//public class TestStreamExtension extends BaseTest {
+//public class TestStreamExtension extends BaseTestPartial {
 //
 //	@Test
 //	public void TestStreamCompilation() throws CompiletimeException {
