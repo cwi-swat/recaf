@@ -5,11 +5,11 @@ import static recaf.core.EvalJavaHelper.toValue;
 import recaf.core.alg.JavaMethodAlg;
 
 
-public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExec> {
+public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExecEx<?>> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	default R Method(IExec body) {
+	default R Method(IExecEx<?> body) {
 		try {
 			body.exec(null);
 		}
