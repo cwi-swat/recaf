@@ -1,262 +1,260 @@
 package recaf.core.direct;
 
-import static recaf.core.direct.EvalJavaHelper.toValue;
+import static recaf.core.EvalJavaHelper.toValue;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import recaf.core.Ref;
+import recaf.core.EvalJavaHelper;
+import recaf.core.IRef;
+import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
 
 public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	
 	@Override
 	default IEval Closure(Object lambda) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> lambda;
 	}
 
 	@Override
 	default IEval Cond(IEval c, IEval t, IEval e) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> (Boolean) c.eval()?t.eval():e.eval();
 	}
 
 	@Override
 	default IEval ArrayAccess(IEval array, IEval index) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> Array.get(array.eval(), (Integer) index.eval());
 	}
 
 	@Override
 	default IEval InvokeSuper(IEval self, String method, IEval... args) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval InvokeSuper(IEval self, Class<?> clazz, String method, IEval... args) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval SuperField(String name, Object self) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval SuperField(Class<?> clazz, String name, Object self) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval CastPrim(Class<?> clazz, IEval e) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> clazz.cast(e.eval());
 	}
 
 	@Override
 	default IEval PostDecr(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			r.setValue(r.value() - 1);
+			return r.value();
+		};
 	}
 
 	@Override
 	default IEval Plus(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> + (Integer) toValue(arg.eval());
 	}
 
 	@Override
 	default IEval Not(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> !((Boolean) arg.eval());
 	}
 
 	@Override
 	default IEval Complement(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ~ ((Integer) arg.eval());
 	}
 
 	@Override
 	default IEval PreIncr(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			Integer saved = r.value();
+			r.setValue(saved + 1);
+			return saved;
+		};
 	}
 
 	@Override
 	default IEval PreDecr(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			Integer saved = r.value();
+			r.setValue(saved - 1);
+			return saved;
+		};
 	}
 
 	@Override
 	default IEval Minus(IEval arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> - (Integer) toValue(arg.eval());
 	}
 
 	@Override
 	default IEval Div(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) / (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval Remain(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) % (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval Mul(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) * (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval RightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) >> (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval URightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) >>> (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval LeftShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Integer.valueOf((Integer) toValue(lhs.eval()) << (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval GtEq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Boolean.valueOf((Integer) toValue(lhs.eval()) >= (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval InstanceOf(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Class<?>) rhs.eval()).isInstance(lhs.eval());		
 	}
 
 	@Override
 	default IEval LtEq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			return Boolean.valueOf((Integer) toValue(lhs.eval()) <= (Integer) toValue(rhs.eval()));
+		};
 	}
 
 	@Override
 	default IEval Eq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> toValue(lhs.eval()).equals(toValue(rhs.eval()));
 	}
 
 	@Override
 	default IEval NotEq(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> !toValue(lhs.eval()).equals(toValue(rhs.eval()));
 	}
 
 	@Override
 	default IEval And(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Boolean) lhs.eval()) && ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval ExcOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Boolean) lhs.eval()) ^ ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval Or(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> ((Boolean) lhs.eval()) || ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval LazyAnd(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval LazyOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	default IEval AssignLeftShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, LeftShift(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Or(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignAnd(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, And(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignRightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, RightShift(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignRemain(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Remain(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignPlus(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Plus(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignExcOr(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, ExcOr(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignDiv(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Div(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignURightShift(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, URightShift(lhs, rhs));
 	}
 
 	@Override
 	default IEval AssignMinus(IEval lhs, IEval rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return Assign(lhs, Minus(lhs, rhs));
+	}
+	
+	@Override
+	default IEval AssignAdd(IEval lhs, IEval rhs) {
+		return Assign(lhs, Plus(lhs, rhs));
 	}
 
 	@Override
@@ -292,21 +290,28 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval Assign(IEval lhs, IEval rhs) {
 		return () -> {
-			Object r = lhs.eval();
-			((Ref) r).value = toValue(rhs.eval());
+			IRef r = (IRef<?>) lhs.eval();
+			r.setValue(toValue(rhs.eval()));
 			return r;
 		};
 	}
 
 	@Override
-	default IEval Var(String name, Ref<?> val) {
+	default IEval Var(String name, IRef<?> val) {
 		return () -> val;
 	}
 	
 	@Override
 	default IEval Field(IEval recv, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return () -> {
+			Object o = toValue(recv.eval());
+			try {
+				return new ReflectRef(o, name); 
+			} catch (IllegalArgumentException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+				return null;
+			}
+		};
 	}
 
 	@Override
@@ -315,11 +320,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	}
 
 	@Override
-	default IEval PostIncr(IEval expr) {
+	default IEval PostIncr(IEval arg) {
 		return () -> {
-			Object o = expr.eval();
-			((Ref) o).value = (Integer) ((Ref) o).value + 1; 
-			return o;
+			IRef<Integer> r = (IRef<Integer>) arg.eval();
+			r.setValue(r.value() + 1);
+			return r.value();
 		};
 	}
 	
@@ -335,8 +340,8 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 			return (Integer) toValue(l.eval()) < (Integer) toValue(r.eval());
 		};
 	}
-
-	@Override
+	
+		@Override
 	default IEval Plus(IEval l, IEval r) {
 		return () -> {
 			return Integer.valueOf((Integer) toValue(l.eval()) + (Integer) toValue(r.eval()));
@@ -375,17 +380,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval Invoke(IEval obj, String method, IEval... args) {
 		return () -> {
 			Object o = toValue(obj.eval());
-			List<Object> evaluatedArgs = new ArrayList<Object>();
-			List<Class<?>> argClasses = new ArrayList<Class<?>>();
-			for (IEval a: args){
-				Object ea = toValue(a.eval());
-				evaluatedArgs.add(ea);
-				argClasses.add(ea.getClass());
-			}
 			try {
-				Method m = EvalJavaHelper.findMethod(o, method, argClasses.toArray(new Class[0]));
+				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
 				m.setAccessible(true);
-				return m.invoke(o, evaluatedArgs.toArray(new Object[0]));
+				return m.invoke(o, evaluatedArgs);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 					| SecurityException e) {
 				e.printStackTrace();

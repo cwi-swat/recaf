@@ -336,10 +336,14 @@ Expr block2alg((Block)`{<KId kw> <{Expr ","}+ es>, <FormalParam f> = <Expr e>; <
 Type typeOf((FormalParam)`final <Type t> <Id _>`) = t;
 Type typeOf((FormalParam)`<Type t> <Id _>`) = t;
 
+Id removeType((FormalParam) `<Type t> <Id id>`)   
+  = (Id) `<Id id>`;
+
 Expr block2alg((Block)`{<KId kw> <FormalParam f> = <Expr e>; <BlockStm+ ss>}`, Id alg, Names names)
-  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr sscps>; })`
+  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<Id fp>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
+    Id fp := removeType((FormalParam) `<FormalParam f>`),
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);

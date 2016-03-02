@@ -1,11 +1,9 @@
 package generated;
 
+import recaf.demo.pegs.MemoPEG;
 import recaf.demo.pegs.PEG;
+import recaf.demo.pegs.PEGwithLayout;
 import recaf.demo.pegs.Parser;
-
-import java.util.List;
-import java.util.ArrayList;
-
 
 public class TestPEG {
 
@@ -35,26 +33,23 @@ public class TestPEG {
     }
   }
   
-  class Lst extends Exp {
-    List<Exp> elts;
-    Lst(List<Exp> elts) {
-      this.elts = elts;
+  class XML extends Exp {
+    Exp exp;
+    XML(Exp exp) {
+      this.exp = exp;
     }
+    
     @Override
     public String toString() {
-        return elts.toString();
+      return "<xml>" + exp + "</xml>";
     }
   }
   
-  private final recaf PEG<Exp> alg = new PEG<Exp>();
+  private final recaf PEG<Exp> alg;
   
-  /*
- 
-  Expr    ← Sum
-Sum     ← Product (('+' / '-') Product)*
-Product ← Value (('*' / '/') Value)*
-Value   ← [0-9]+ / '(' Expr ')'
-  */
+  TestPEG(PEG<Exp> alg) {
+    this.alg = alg;
+  }
   
   recaf Parser<Exp> exp() {
     let Exp e = sum();
@@ -69,6 +64,14 @@ Value   ← [0-9]+ / '(' Expr ')'
       return new BinOp(op, exp, v2);
     }
     return exp;
+  }
+  
+  
+  recaf Parser<Exp> xml(String tag) {
+    lit! "<" + tag + ">";
+    let Exp e = exp();
+    lit! "</" + tag + ">";
+    return new XML(e); 
   }
   
   recaf Parser<Exp> product() {
@@ -87,13 +90,9 @@ Value   ← [0-9]+ / '(' Expr ')'
       regexp String n = "[0-9]+";
       return new Int(Integer.parseInt(n));
       
-     alt "list":
-       lit! "[";
-       star List<Exp> exps = (new ArrayList<Exp>()) {
-         let Exp e = exp();
-         exps.add(e);
-       }
-       return new Lst(exps);
+     alt "xml":
+       let Exp e = xml("xml");
+       return e;
       
      alt "bracket":
       lit! "(";
@@ -101,12 +100,45 @@ Value   ← [0-9]+ / '(' Expr ')'
       lit! ")";
       return e;
     }
-    
+  }
+  
+  public static String genExp(int n)  {
+    if (n == 0) {
+      return "1";
+    }
+    if (n % 2 == 0) {
+	    return genExp(n - 1) + "+" + genExp(n - 1);
+	}
+	return genExp(n - 1) + "*" + genExp(n - 1);
   }
   
   public static void main(String args[]) {
-    Parser<Exp> p = new TestPEG().exp();
-    System.out.println(p.parse("1+2*3", 0).getValue());
+    Parser<Exp> p = new TestPEG(new PEG<Exp>() {}).exp();
+    System.out.println(p.parse("<xml>(1+2)*(3+4)</xml>", 0).getValue());
+    
+    p = new TestPEG(new PEG<Exp>() {}).exp();
+    System.out.println(p.parse("(1+2)*(3+4)", 0).getValue());
+    
+    p = new TestPEG(new MemoPEG<Exp>()).exp();
+    System.out.println(p.parse("(1+2)*(3+4)", 0).getValue());
+    
+    p = new TestPEG(new PEGwithLayout<Exp>("[\\ \\t\\n]*")).exp();
+    System.out.println(p.parse("(1 + 2) * (3 + 4)", 0).getValue());
+    
+    
+    System.out.println("Generating genExp(20)");
+    String big = genExp(5);
+    System.out.println(big);
+    
+    System.out.println("NO memo");
+    p = new TestPEG(new PEG<Exp>() {}).exp();
+    //System.out.println(p.parse(big, 0).getValue());
+    
+    System.out.println("WITH memo");
+    p = new TestPEG(new MemoPEG<Exp>()).exp();
+    //System.out.println(p.parse(big, 0).getValue());
+    System.out.println("done");
+    
   }
   
 }

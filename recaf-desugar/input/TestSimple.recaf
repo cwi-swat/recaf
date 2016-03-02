@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import java.util.function.*;  
 
 class A{
-	int i = 0;
+	int i = 1;
 	
 	int a(int x, int y){
 		return ++i;
@@ -26,7 +26,7 @@ public class TestSimple    {
    	int b = a++;     
    	int d = 0; 
    	while (d < 5     ){      
-      		d++;
+      		++d;
 	}
 	return d;
   } 
@@ -40,9 +40,20 @@ public class TestSimple    {
   	return  new A().a(1,2);
   }  
   
+  private recaf static Integer fieldAccess(){           
+  	return  new A().i;
+  }  
+  
+  private recaf static Integer many(){
+  	A a = new A();
+  	a.i = 3;
+  	return a.i; 
+  
+  }
+  
   
   public static void main(String args[]) {
-    int n = methodCall();
+    int n = many();
     System.out.println(n);
     
   }

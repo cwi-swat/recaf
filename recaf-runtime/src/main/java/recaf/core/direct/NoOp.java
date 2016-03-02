@@ -1,8 +1,8 @@
 package recaf.core.direct;
 
-import recaf.core.alg.JavaMethodAlg;
+import static recaf.core.EvalJavaHelper.toValue;
 
-import static recaf.core.direct.EvalJavaHelper.toValue;
+import recaf.core.alg.JavaMethodAlg;
 
 
 public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExec> {
