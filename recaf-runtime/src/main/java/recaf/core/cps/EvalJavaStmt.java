@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
+import recaf.core.direct.SupplierEx;
 
 public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	
@@ -216,7 +217,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default SD<R> Return(Supplier<R> e) {
+	default SD<R> Return(SupplierEx<R, ?> e) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(rho, err);
 	}
 

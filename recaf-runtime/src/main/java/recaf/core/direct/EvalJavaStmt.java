@@ -165,7 +165,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExecEx<?>, ICase>
 	}
 
 	@Override
-	default IExecEx<?> Return(Supplier<R> e) {
+	default IExecEx<?> Return(SupplierEx<R, ?> e) {
 		return l -> { throw new Return(e.get()); };
 	}
 

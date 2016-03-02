@@ -6,10 +6,11 @@ import java.util.function.Supplier;
 import recaf.core.direct.IExec;
 import recaf.core.direct.IExecEx;
 import recaf.core.direct.NoOp;
+import recaf.core.direct.SupplierEx;
 
 public interface Using<R> extends NoOp<R> {
 
-	default <U extends AutoCloseable> IExecEx<?> Using(Supplier<U> resource, Function<U, IExecEx<?>> body) {
+	default <U extends AutoCloseable> IExecEx<?> Using(SupplierEx<U, ?> resource, Function<U, IExecEx<?>> body) {
 		return l -> {
 			U u = null;
 			try {

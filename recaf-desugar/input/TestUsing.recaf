@@ -19,5 +19,4 @@ public class TestUsing {
   public static void main(String args[]) {
      new TestUsing().usingExample("/etc/aliases");
   }
-
 }

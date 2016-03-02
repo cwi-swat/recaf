@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.Ref;
+import recaf.core.direct.SupplierEx;
 
 public interface JavaStmtAlg<R, E, S, C> {
 	<T> S Decl(Supplier<T> exp, Function<Ref<T>, S> body);
@@ -13,8 +14,6 @@ public interface JavaStmtAlg<R, E, S, C> {
 	<T> S ForDecl(Supplier<T> init, Function<Ref<T>, S> body);
 
 	S ForBody(Supplier<Boolean> cond, S update, S body);
-
-	S Return(Supplier<R> e);
 	
 	<T extends Throwable> S Throw(Supplier<T> e);
 
@@ -47,6 +46,8 @@ public interface JavaStmtAlg<R, E, S, C> {
 	
 	S Continue();
 
+	S Return(SupplierEx<R,?> supplier);
+	
 	S Return();
 
 	S Empty();

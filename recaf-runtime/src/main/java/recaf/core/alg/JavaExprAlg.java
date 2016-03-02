@@ -70,6 +70,4 @@ public interface JavaExprAlg<E> {
 	// the ref and val things are the real bindings themselves
 	// because of HOAS encoding of binders.
 	E Var(String name, IRef<?> ref);
-	
-	
 }
