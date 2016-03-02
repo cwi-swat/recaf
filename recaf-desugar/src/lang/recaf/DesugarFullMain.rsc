@@ -1,7 +1,7 @@
-module lang::recaf::DesugarMain
+module lang::recaf::DesugarFullMain
 
 import lang::recaf::Recaf;
-import lang::recaf::desugar::Recaffeinate;
+import lang::recaf::DesugarFull;
 import ParseTree;
 import IO;
 import String;
@@ -17,7 +17,7 @@ void main(list[str] args) {
 		if (start[CompilationUnit] cu := tree) {
         	println(src);
         	newLoc = toLocation(tgt+"/<src[extension = "java"].file>");
-        	writeFile(newLoc, recaffeinate(cu));
+        	writeFile(newLoc, desugar(cu));
       	}
     }
 }

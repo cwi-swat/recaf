@@ -9,7 +9,7 @@ import org.rascalmpl.values.ValueFactoryFactory;
 public class BaseTestFull extends BaseTest{
 	private static final String RECAF_SRC = "/../recaf-desugar/src/";
 	private static final String RECAF_GENERATED_DIR = "cwd:///" + GENERATED_DIR;
-	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input/expr/";
+	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/exprinput";
 	private static final String RECAF_FULL_DESUGARING = "lang::recaf::DesugarFullMain";
 	
 	private static boolean generated_sources = true;
