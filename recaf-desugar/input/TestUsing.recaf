@@ -10,13 +10,13 @@ public class TestUsing {
  
   private static recaf Using<String> alg = new Using<String>() {};
    
-  static recaf String usingExample(String path) {
+  static recaf String usingExample(String path)  {
      using (BufferedReader br : new BufferedReader(new FileReader(path))){
         return br.readLine();
      }
   }
   
-  public static void main(String args[]) {
-     new TestUsing().usingExample("/etc/aliases");
+  public static void main(String args[])  {
+     System.out.println(new TestUsing().usingExample("/etc/aliases"));
   }
 }
