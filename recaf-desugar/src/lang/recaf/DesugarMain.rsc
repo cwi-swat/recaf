@@ -1,5 +1,6 @@
 module lang::recaf::DesugarMain
 
+import lang::recaf::Recaf;
 import lang::recaf::desugar::Recaffeinate;
 import ParseTree;
 import IO;
