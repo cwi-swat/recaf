@@ -1,7 +1,6 @@
 module lang::recaf::TypeCheck
 
 import lang::recaf::Recaf;
-import lang::recaf::Desugar;
 
 import Message;
 import ParseTree;

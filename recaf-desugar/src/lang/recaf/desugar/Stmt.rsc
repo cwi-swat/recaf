@@ -1,6 +1,7 @@
 module lang::recaf::desugar::Stmt
 
 import lang::recaf::Recaf;
+import lang::recaf::desugar::Util;
 import List;
 import Set;
 import String;
@@ -10,28 +11,18 @@ import ParseTree;
 
 // TODO: factor out extension desugaring.
 
-alias Names = tuple[set[Id] refs, map[Id, Id] renaming];
-
-Names declare(Id x, Names names) 
-  = <names.refs + {x}, names.renaming>;
-
-Names declare((VarDec)`<Id x>`, Names names) 
-  = <names.refs + {x}, names.renaming>;
-
-Names declare((VarDec)`<Id x> = <Expr _>`, Names names) 
-  = <names.refs + {x}, names.renaming>;
-
-Names declare((FormalParam)`<Type t> <Id x>`, Names names) 
-  = <names.refs + {x}, names.renaming>;
-
-default Names declare(FormalParam f, Names names) 
-  = names;
-
-
 // this should ABSTRACT, to be provided by clients.
 default Expr injectExpr(Expr e, Id alg, Names names) {
   throw "please implement this";
 }
+
+
+Expr method2alg(Block b, Id alg, Names names) 
+  = (Expr)`<Id alg>.Method(<Expr bcps>)`
+  when
+    bcps := block2alg(b, alg, names);
+
+
 
 /// Extensions TODO: move to its own module.
 
@@ -479,11 +470,3 @@ Expr case2alg((SwitchLabel)`default:`, BlockStm+ stms, Id alg, Names names)
     Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, names);
 
 
-Type boxed((Type)`int`) = (Type) `Integer`;
-Type boxed((Type)`long`) = (Type)`Long`;
-Type boxed((Type)`boolean`) = (Type)`Boolean`;
-Type boxed((Type)`double`) = (Type)`Double`;
-Type boxed((Type)`float`) = (Type)`Float`;
-Type boxed((Type)`char`) = (Type)`Character`;
-
-default Type boxed(Type t) = t;

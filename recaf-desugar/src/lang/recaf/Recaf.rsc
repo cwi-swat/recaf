@@ -51,7 +51,8 @@ syntax Anno
   ;
 
 syntax VarMod
-  = "recaf"
+  = "recaf" !>> "f"
+  | "recaff"
   ;
 
 syntax FieldMod
@@ -60,9 +61,10 @@ syntax FieldMod
    
 
 syntax MethodMod
-  = "recaf"
+  = "recaf" !>> "f"
+  | "recaff"
   ;   
-   
+
 syntax Modifier
   = "default"
   ;

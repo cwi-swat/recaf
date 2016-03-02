@@ -8,14 +8,14 @@ public class TestSolve {
   // requires expression desugaring
   private static recaf Solve alg = new Solve();
   
-  recaf Iterable<Map<String,Integer>> example() {
+  recaff Iterable<Map<String,Integer>> example() {
     var 0, 5, IntVar x;
     var 0, 5, IntVar y;
     solve! x + y < 5;
     solve! x - y > 1;
   }
   
-  recaf Iterable<Map<String,Integer>> example2() {
+  recaff Iterable<Map<String,Integer>> example2() {
     var 0, 1, IntVar w;
     var -1, 2, IntVar x;
     var 2, 4, IntVar y;

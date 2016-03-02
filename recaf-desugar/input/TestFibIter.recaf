@@ -8,7 +8,7 @@ public class TestFibIter {
   private recaf static Iterable<Integer> fib() {
   	int a = 0;
    	int b = 1; 
-  	 
+  
   	while(true) {
   		yield! a;
   		b = a + b; 
