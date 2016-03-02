@@ -18,7 +18,7 @@ class AC{
 public class TestExprMethodLookup3   {
   private static recaf NoOp<Object> alg = new NoOp<Object>() {};
   
-  private recaf static int simple(){           
+  private recaff static int simple(){           
   	AC a = new AC();
   	a.setA(4);
   	return a.getA();
