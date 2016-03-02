@@ -10,7 +10,7 @@ public interface StmtJava<R> extends EvalJavaStmt<R, Supplier<?>> {
 	}
 	
 	@Override
-	default IExec ExpStat(Supplier<?> thunk) {
+	default IExecEx<?> ExpStat(Supplier<?> thunk) {
 		return l -> { thunk.get(); };
 	}
 }

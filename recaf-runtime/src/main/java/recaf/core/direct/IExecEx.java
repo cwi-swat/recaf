@@ -6,7 +6,7 @@ public interface IExecEx <E extends Throwable> extends IExec {
 	void execWithEx(String label) throws Throwable;
 	
     @Override
-    default void exec(String label) throws Jump {
+    default void exec(String label) throws Exception {
     	try {
     		execWithEx(label);
 		} catch (final Throwable exception) {
