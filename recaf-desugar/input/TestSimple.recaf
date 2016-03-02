@@ -21,7 +21,7 @@ class A{
 public class TestSimple    {
   private static recaf NoOp<Object> alg = new NoOp<Object>() {};
   
-  private recaf static Integer simple(){           
+  private recaff static Integer simple(){           
   	int a = 4; 
    	int b = a++;     
    	int d = 0; 
@@ -31,20 +31,20 @@ public class TestSimple    {
 	return d;
   } 
   
-  private recaf static Integer access(){           
+  private recaff static Integer access(){           
   	int a = 4; 
     return a;
   } 
   
-  private recaf static Integer methodCall(){           
+  private recaff static Integer methodCall(){           
   	return  new A().a(1,2);
   }  
   
-  private recaf static Integer fieldAccess(){           
+  private recaff static Integer fieldAccess(){           
   	return  new A().i;
   }  
   
-  private recaf static Integer many(){
+  private recaff static Integer many(){
   	A a = new A();
   	a.i = 3;
   	return a.i; 
