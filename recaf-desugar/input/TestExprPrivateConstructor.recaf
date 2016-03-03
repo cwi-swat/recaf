@@ -3,33 +3,30 @@ package generated;
 import recaf.core.direct.NoOp;
 
 class AA{
-	private int a;
+	private int a = 0;
 	
-	AA(){
+	private AA(){
+
 	}
 	
-	public void setA(int a){
-		this.a = a;
-	}
-	
-	public int getA(){
-		return a;
-	}
+	@Override
+	public String toString(){
+		return "AA("+a+")";
+	} 
 }
 
 
-public class TestExprMethodLookup1   {
+public class TestExprPrivateConstructor   {
   private static recaf NoOp<Object> alg = new NoOp<Object>() {};
   
-  private recaff static int simple(){           
+  private recaff static AA simple(){           
   	AA a = new AA();
-  	a.setA(4);
-  	return a.getA();
+  	return a;
   } 
 
   public static void main(String args[]) {
-    int n = simple();
-    System.out.println(n);
+    AA aa = simple();
+    System.out.println(aa);
     
   }
 }

@@ -4,29 +4,25 @@ import recaf.core.direct.NoOp;
 
 class AB{
 	private int a;
-
-	public void setA(int a){
-		this.a = a;
-	}
 	
-	public int getA(){
-		return a;
-	}
+	@Override
+	public String toString(){
+		return "AB("+a+")";
+	} 
 }
 
 
-public class TestExprMethodLookup2  {
+public class TestExprNoConstructor  {
   private static recaf NoOp<Object> alg = new NoOp<Object>() {};
   
-  private recaff static int simple(){           
+  private recaff static AB simple(){           
   	AB a = new AB();
-  	a.setA(4);
-  	return a.getA();
+  	return a;
   } 
 
   public static void main(String args[]) {
-    int n = simple();
-    System.out.println(n);
+    AB a = simple();
+    System.out.println(a);
     
   }
 }
