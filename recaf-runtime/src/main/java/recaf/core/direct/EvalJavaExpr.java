@@ -361,7 +361,10 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval New(Class<?> clazz, IEval... args) {
 		return () -> {
 			try {
-				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Object[] evaluatedArgs = new Object[args.length];
+				for (int i = 0; i < args.length; i++) {
+					evaluatedArgs[i] = args[i].eval();
+				}
 				Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz,evaluatedArgs);
 				constructor.setAccessible(true);
 				return constructor.newInstance(evaluatedArgs);
