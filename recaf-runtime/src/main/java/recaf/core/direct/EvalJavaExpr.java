@@ -6,10 +6,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import recaf.core.EvalJavaHelper;
 import recaf.core.IRef;
+import recaf.core.PlusHelper;
 import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
 
@@ -343,10 +343,84 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		};
 	}
 	
-		@Override
+	@Override
 	default IEval Plus(IEval l, IEval r) {
 		return () -> {
-			return Integer.valueOf((Integer) toValue(l.eval()) + (Integer) toValue(r.eval()));
+			Object lo = toValue(l.eval());
+			Object ro = toValue(r.eval());
+			String lc = lo.getClass().getName();
+			String rc = ro.getClass().getName();
+			Object res = null;
+			switch (lc){
+			case "java.lang.Integer":
+				switch (rc){
+				case "java.lang.Integer":
+					res = (Integer) lo + (Integer) ro;
+					break;
+				case "java.lang.String":
+					res = (Integer) lo + (String) ro;
+					break;
+				case "java.lang.Double":
+					res = (Integer) lo + (Double) ro;
+					break;	
+				case "java.lang.Float":
+					res = (Integer) lo + (Float) ro;
+					break;	
+				}
+				break;
+			case "java.lang.String":
+				switch (rc){
+				case "java.lang.Integer":
+					res = (String) lo + (Integer) ro;
+					break;
+				case "java.lang.String":
+					res = (String) lo + (String) ro;
+					break;
+				case "java.lang.Double":
+					res = (String) lo + (Double) ro;
+					break;	
+				case "java.lang.Float":
+					res = (String) lo + (Float) ro;
+					break;	
+				}
+				break;
+			case "java.lang.Double":
+				switch (rc){
+				case "java.lang.Integer":
+					res = (Double) lo + (Integer) ro;
+					break;
+				case "java.lang.String":
+					res = (Double) lo + (String) ro;
+					break;
+				case "java.lang.Double":
+					res = (Double) lo + (Double) ro;
+					break;	
+				case "java.lang.Float":
+					res = (Double) lo + (Float) ro;
+					break;	
+				}
+				break;
+			case "java.lang.Float":
+				switch (rc){
+				case "java.lang.Integer":
+					res = (Float) lo + (Integer) ro;
+					break;
+				case "java.lang.String":
+					res = (Float) lo + (String) ro;
+					break;
+				case "java.lang.Double":
+					res = (Float) lo + (Double) ro;
+					break;	
+				case "java.lang.Float":
+					res = (Float) lo + (Float) ro;
+					break;	
+				}
+				break;
+			}
+			if (res != null)
+				return res;
+			else 
+				throw new RuntimeException("Wrong arguments to +.");
 		};
 	}
 	
