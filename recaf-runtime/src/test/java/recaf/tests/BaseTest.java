@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -48,7 +49,7 @@ public class BaseTest {
 	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
 	private static final String RECAF_FULL_DESUGARING = "lang::recaf::DesugarMain";
 	
-	private static boolean generated_sources = false;
+	private static boolean generated_sources = true;
 	
 	@BeforeClass
 	public static void init() {
@@ -95,9 +96,8 @@ public class BaseTest {
 		pathname = GENERATED_DIR + pathname;
 
 		Iterable<String> compilationOptions = asList(compileOptions);
-
-//		 LogManager.getLogger().info("Running the compiler with the following command: " + 
-//				 Stream.of(compileOptions).reduce("", (String s, String a) -> s + " " + a));
+		
+		//LogManager.getLogger().info("Running the compiler with the following command: " + Stream.of(compileOptions).reduce("", (String s, String a) -> s + " " + a));
 
 		JavaCompiler compiler = getSystemJavaCompiler();
 
@@ -126,17 +126,31 @@ public class BaseTest {
 		Runtime r = Runtime.getRuntime();
 		Process p = null;
 
+
 		try {
 			List<String> listArgs = new ArrayList<String>();
+			String dependenciesString = "";
 
 			String jdk = discoverJDK();
 
+			try {
+				dependenciesString = Files
+						.walk(Paths.get("target/dependency/"))
+						.filter(Files::isRegularFile)
+						.map(path -> path.toString())
+						.reduce("", (String s, String a) -> s + ":" + a);
+			} catch (IOException e1) {
+				throw new RuntimeException("Cannot read directory with dependencies");
+			}
+			
 			listArgs.add(jdk);
 			listArgs.add("-cp");
-			listArgs.add(RUNTIME_CP);
+			listArgs.add(RUNTIME_CP + dependenciesString);
 			listArgs.add(PACKAGE_NAME + test);
 
 			String[] res = new String[listArgs.size()];
+
+			//LogManager.getLogger().debug("Running JVM: " + listArgs.stream().reduce("", (String s, String a) -> s + " " + a));
 
 			// Execute java runtime.
 			p = r.exec(listArgs.toArray(res));
