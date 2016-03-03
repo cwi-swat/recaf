@@ -3,14 +3,10 @@
 ## Recaf
 Recaf is a source transformation system for Java that liberates the programmer from fixed semantics. 
 
-### Tests*
+### Tests
 
 ```shell
 > git clone git@github.com:cwi-swat/recaf.git
 > cd recaf
 > mvn clean dependency:copy-dependencies test
 ```
-
-\* Currently the first test that is executed generates the files. This is obviously wrong, maven should handle this. An   
-   artifact of that is that we cannot execute benchmarks as part of the build process. The quick and dirty way is to move the
-   generated package to the recaf-runtie project and then execute the command.

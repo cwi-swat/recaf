@@ -20,9 +20,8 @@ public class TestMaybe {
   }
   
   public static void main(String args[]) {
-     Object x;
-     x  = new TestMaybe().readOptional();
-     System.out.println(x);
+	 Optional<Integer> x = new TestMaybe().readOptional();
+	 System.out.println(x.get());
   }
   
 }
