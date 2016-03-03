@@ -3,10 +3,10 @@ package recaf.tests.extensions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import recaf.tests.BaseTestPartial;
+import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
-public class TestAsyncExtension extends BaseTestPartial {
+public class TestAsyncExtension extends BaseTest {
 
 	@Test
 	public void TestAsyncNoAwait() throws CompiletimeException, RuntimeException {

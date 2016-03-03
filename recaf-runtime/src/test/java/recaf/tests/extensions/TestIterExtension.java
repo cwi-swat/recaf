@@ -3,10 +3,10 @@ package recaf.tests.extensions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import recaf.tests.BaseTestPartial;
+import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
-public class TestIterExtension extends BaseTestPartial {
+public class TestIterExtension extends BaseTest {
 
 	@Test
 	public void TestIterStreamLibrary() throws CompiletimeException, RuntimeException {
