@@ -1,12 +1,11 @@
 package recaf.core.cps;
 
-import java.util.function.Supplier;
-
 import recaf.core.ISupply;
 import recaf.core.direct.EvalJavaExpr;
 import recaf.core.direct.IEval;
 
-public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {  
+public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	default <T> ISupply<T> Exp(IEval exp) {
@@ -25,4 +24,5 @@ public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {
 			sigma.call();
 		};
 	}
+	
 }

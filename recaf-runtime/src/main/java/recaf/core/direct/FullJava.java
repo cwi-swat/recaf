@@ -7,14 +7,7 @@ public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {
 	@SuppressWarnings("unchecked")
 	@Override
 	default <T> ISupply<T> Exp(IEval exp) {
-		return () -> {
-			try {
-				return (T) exp.eval();
-			}
-			catch (Throwable e) {
-				throw new RuntimeException(e);
-			}
-		};
+		return () -> (T)exp.eval();
 	}
 	
 	@Override

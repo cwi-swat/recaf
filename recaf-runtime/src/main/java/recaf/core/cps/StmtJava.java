@@ -3,10 +3,10 @@ package recaf.core.cps;
 import recaf.core.ISupply;
 
 public interface StmtJava<R> extends EvalJavaStmt<R, ISupply<?>> {
-	@SuppressWarnings("unchecked")
+	
 	@Override
-	default <T> ISupply<T> Exp(ISupply<?> e) {
-		return (ISupply<T>) e;
+	default <T> ISupply<T> Exp(ISupply<?> exp) {
+		return (ISupply<T>) exp;
 	}
 	
 	@Override

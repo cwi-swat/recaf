@@ -2,7 +2,6 @@ package recaf.demo.cps;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.cps.K0;
@@ -32,11 +31,4 @@ public class ComeFrom<R> implements NoOp<R> {
 			s.accept(label, rho, sigma, brk, contin, err);
 		};
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> ISupply<T> Exp(ISupply<?> e) {
-		return (ISupply<T>) e;
-	}
-	
 }

@@ -7,7 +7,7 @@ import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
 
 public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
-	
+
 	@Override
 	default <T> IExec Decl(ISupply<T> exp, Function<Ref<T>, IExec> body) {
 		return l -> body.apply(new Ref<T>(exp.get())).exec(null);

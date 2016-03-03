@@ -6,6 +6,9 @@ import recaf.core.ISupply;
 import recaf.core.Ref;
 
 public interface JavaStmtAlg<R, E, S, C> {
+	
+	<T> ISupply<T> Exp(E exp);
+	
 	<T> S Decl(ISupply<T> exp, Function<Ref<T>, S> body);
 	
 	<T> S ForEach(ISupply<Iterable<T>> exp, Function<Ref<T>, S> body);
@@ -56,6 +59,4 @@ public interface JavaStmtAlg<R, E, S, C> {
 	S TryFinally(S body, S fin);
 	
 	S ExpStat(E e);
-	
-	<T> ISupply<T> Exp(E e) throws Exception;
 }
