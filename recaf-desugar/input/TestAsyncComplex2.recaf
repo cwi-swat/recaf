@@ -26,7 +26,7 @@ public class TestAsyncComplex2 {
 	}
 	
 
-	recaf CompletableFuture<Integer> op() {
+	recaff CompletableFuture<Integer> op() {
     	if (1 < 2) {	
     		pause(2500);
     		print("delayed op");
@@ -35,7 +35,7 @@ public class TestAsyncComplex2 {
      	return 41;
   	}
 
-	recaf CompletableFuture<Integer> op2() {
+	recaff CompletableFuture<Integer> op2() {
     	if (1 < 2) {
        		await Integer x = op();
     		await Integer y = op();

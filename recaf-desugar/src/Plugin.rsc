@@ -20,13 +20,6 @@ void main() {
   });
   
   registerContributions(LANG_NAME, {
-    //annotator(Tree (Tree tree) {
-    //  if (start[CompilationUnit] cu := tree) {
-    //    return tree[@messages=typeCheck(cu)];
-    //  }
-    //  return tree[@messages={error("Not a <LANG_NAME> program", tree@\loc)}];
-    //}),
-    
     builder(set[Message] (Tree tree) {
       if (start[CompilationUnit] cu := tree) {
         loc l = cu@\loc.top;
