@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 
 import recaf.core.EvalJavaHelper;
 import recaf.core.IRef;
-import recaf.core.PlusHelper;
 import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
 
