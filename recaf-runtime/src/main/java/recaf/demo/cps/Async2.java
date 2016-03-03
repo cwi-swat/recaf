@@ -9,6 +9,7 @@ import recaf.core.IRef;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.FullJava;
 import recaf.core.cps.SD;
+import recaf.core.direct.ISupply;
 
 public class Async2<R> implements FullJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
 
@@ -28,7 +29,7 @@ public class Async2<R> implements FullJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
 		return promise;
 	}
 
-	public <T> SD<R> Await(Supplier<CompletableFuture<IRef<T>>> e, Function<IRef<T>, SD<R>> body) {
+	public <T> SD<R> Await(ISupply<CompletableFuture<IRef<T>>> e, Function<IRef<T>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {

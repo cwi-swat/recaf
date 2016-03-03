@@ -4,11 +4,12 @@ import java.util.function.Supplier;
 
 import recaf.core.direct.EvalJavaExpr;
 import recaf.core.direct.IEval;
+import recaf.core.direct.ISupply;
 
 public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {  
 	@SuppressWarnings("unchecked")
 	@Override
-	default <T> Supplier<T> Exp(IEval exp) {
+	default <T> ISupply<T> Exp(IEval exp) {
 		return () -> (T)exp.eval();
 	}
 	

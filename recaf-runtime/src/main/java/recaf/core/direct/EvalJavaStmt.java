@@ -1,7 +1,6 @@
 package recaf.core.direct;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
@@ -9,12 +8,12 @@ import recaf.core.alg.JavaStmtAlg;
 public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	
 	@Override
-	default <T> IExec Decl(Supplier<T> exp, Function<Ref<T>, IExec> body) {
+	default <T> IExec Decl(ISupply<T> exp, Function<Ref<T>, IExec> body) {
 		return l -> body.apply(new Ref<T>(exp.get())).exec(null);
 	}
 
 	@Override
-	default <T> IExec ForEach(Supplier<Iterable<T>> coll, Function<Ref<T>, IExec> body) {
+	default <T> IExec ForEach(ISupply<Iterable<T>> coll, Function<Ref<T>, IExec> body) {
 		return l -> {
 			for (T x: coll.get()) {
 				try {
@@ -38,7 +37,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 
 	
 	@Override
-	default IExec For(IExec init, Supplier<Boolean> cond, IExec update, IExec body) {
+	default IExec For(IExec init, ISupply<Boolean> cond, IExec update, IExec body) {
 		return l -> {
 			init.exec(null);
 			ForBody(cond, update, body).exec(l);
@@ -46,12 +45,12 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	}
 
 	@Override
-	default <T> IExec ForDecl(Supplier<T> init, Function<Ref<T>, IExec> body) {
+	default <T> IExec ForDecl(ISupply<T> init, Function<Ref<T>, IExec> body) {
 		return l -> body.apply(new Ref<>(init.get())).exec(l);
 	}
 	
 	@Override
-	default IExec ForBody(Supplier<Boolean> cond, IExec update, IExec body) {
+	default IExec ForBody(ISupply<Boolean> cond, IExec update, IExec body) {
 		return l -> {
 			while (true) {
 				if (cond.get()) {
@@ -81,12 +80,12 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	}
 
 	@Override
-	default IExec If(Supplier<Boolean> e, IExec s) {
+	default IExec If(ISupply<Boolean> e, IExec s) {
 		return If(e, s, l -> {});
 	}
 
 	@Override
-	default IExec If(Supplier<Boolean> e, IExec s1, IExec s2) {
+	default IExec If(ISupply<Boolean> e, IExec s1, IExec s2) {
 		return l -> {
 			if (e.get()) {
 				s1.exec(null);
@@ -98,7 +97,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	}
 
 	@Override
-	default IExec While(Supplier<Boolean> e, IExec s) {
+	default IExec While(ISupply<Boolean> e, IExec s) {
 		return l -> {
 			while (e.get()) {
 				try {
@@ -115,7 +114,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	}
 
 	@Override
-	default IExec DoWhile(IExec s, Supplier<Boolean> e) {
+	default IExec DoWhile(IExec s, ISupply<Boolean> e) {
 		return l -> {
 			do {
 				try {
@@ -165,17 +164,17 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	}
 
 	@Override
-	default IExec Return(Supplier<R> e) {
+	default IExec Return(ISupply<R> e) {
 		return l -> { throw new Return(e.get()); };
 	}
 
 	@Override
 	default IExec Return() {
-		return Return(null);
+		return Return(() -> null);
 	}
 
 	@Override
-	default <T extends Throwable> IExec Throw(Supplier<T> e) {
+	default <T extends Throwable> IExec Throw(ISupply<T> e) {
 		return l -> { throw e.get(); };
 	}
 
@@ -223,7 +222,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 	}
 	
 	@Override
-	default <T> IExec Switch(Supplier<T> expr, ICase... cases) {
+	default <T> IExec Switch(ISupply<T> expr, ICase... cases) {
 		return l -> {
 			do {
 				T v = expr.get();

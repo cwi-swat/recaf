@@ -1,14 +1,14 @@
 package recaf.demo.direct;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.direct.IExec;
+import recaf.core.direct.ISupply;
 import recaf.core.direct.NoOp;
 
 public interface Using<R> extends NoOp<R> {
 
-	default <U extends AutoCloseable> IExec Using(Supplier<U> resource, Function<U, IExec> body) {
+	default <U extends AutoCloseable> IExec Using(ISupply<U> resource, Function<U, IExec> body) {
 		return l -> {
 			U u = null;
 			try {

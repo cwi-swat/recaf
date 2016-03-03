@@ -1,5 +1,6 @@
 package recaf.core.direct;
 
+@FunctionalInterface
 public interface IEval {
-	Object eval();
+	Object eval() throws Throwable;
 }

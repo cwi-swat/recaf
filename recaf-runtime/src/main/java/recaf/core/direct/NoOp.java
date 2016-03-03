@@ -21,5 +21,4 @@ public interface NoOp<R> extends FullJava<R>, JavaMethodAlg<R, IExec> {
 		}
 		return null;
 	}
-	
 }

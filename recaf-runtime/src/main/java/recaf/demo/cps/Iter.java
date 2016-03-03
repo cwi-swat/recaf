@@ -7,6 +7,7 @@ import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
+import recaf.core.direct.ISupply;
 
 public class Iter<R> implements StmtJava<R>, JavaMethodAlg<Iterable<R>, SD<R>> {
 
@@ -74,11 +75,11 @@ public class Iter<R> implements StmtJava<R>, JavaMethodAlg<Iterable<R>, SD<R>> {
 	}
 
 	@Override
-	public SD<R> Return(Supplier<R> e) {
+	public SD<R> Return(ISupply<R> e) {
 		throw new AssertionError("Cannot return value from iterator.");
 	}
 
-	public <U> SD<R> Yield(Supplier<U> exp) {
+	public <U> SD<R> Yield(ISupply<U> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> {
 				YIELD.value = v;
@@ -88,7 +89,7 @@ public class Iter<R> implements StmtJava<R>, JavaMethodAlg<Iterable<R>, SD<R>> {
 		};
 	}
 
-	public <U> SD<R> YieldFrom(Supplier<Iterable<U>> exp) {
+	public <U> SD<R> YieldFrom(ISupply<Iterable<U>> exp) {
 		return ForEach(exp, e -> Yield(() -> e));
 	}
 }

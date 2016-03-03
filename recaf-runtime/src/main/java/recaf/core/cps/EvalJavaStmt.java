@@ -6,14 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
+import recaf.core.direct.ISupply;
 
 public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	
-	default <T> BiConsumer<K<T>, K<Throwable>> get(Supplier<T> exp) {
+	default <T> BiConsumer<K<T>, K<Throwable>> get(ISupply<T> exp) {
 		return (k, err) -> {
 			T t = null;
 			try {
@@ -32,12 +32,12 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default SD<R> If(Supplier<Boolean> e, SD<R> s) {
+	default SD<R> If(ISupply<Boolean> e, SD<R> s) {
 		return If(e, s, Empty());
 	}
 
 	@Override
-	default SD<R> If(Supplier<Boolean> e, SD<R> s1, SD<R> s2) {
+	default SD<R> If(ISupply<Boolean> e, SD<R> s1, SD<R> s2) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(x -> {
 			if (x) {
 				s1.accept(label, rho, sigma, brk, contin, err);
@@ -53,7 +53,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default SD<R> While(Supplier<Boolean> e, SD<R> s) {
+	default SD<R> While(ISupply<Boolean> e, SD<R> s) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 				@Override
@@ -87,7 +87,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default SD<R> DoWhile(SD<R> s, Supplier<Boolean> e) {
+	default SD<R> DoWhile(SD<R> s, ISupply<Boolean> e) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			new K0() {
 
@@ -125,7 +125,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	default <T> SD<R> Switch(Supplier<T> expr, CD<R>... cases) {
+	default <T> SD<R> Switch(ISupply<T> expr, CD<R>... cases) {
 		final List<CD<R>> lst = Arrays.asList(cases);
 
 		return (label, rho, sigma, brk, contin, err) -> get(expr).accept(x -> {
@@ -216,7 +216,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default SD<R> Return(Supplier<R> e) {
+	default SD<R> Return(ISupply<R> e) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(rho, err);
 	}
 
@@ -227,7 +227,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default <T extends Throwable> SD<R> Throw(Supplier<T> e) {
+	default <T extends Throwable> SD<R> Throw(ISupply<T> e) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(r -> err.accept(r), err);
 	}
 
@@ -269,7 +269,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	 * exp, Function<E, S> body);
 	 */
 	@Override
-	default <U> SD<R> Decl(Supplier<U> exp, Function<Ref<U>, SD<R>> body) {
+	default <U> SD<R> Decl(ISupply<U> exp, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(exp).accept(r -> body.apply(new Ref<>(r)).accept(label, rho, sigma, brk, contin, err), err);
 	}
 	
@@ -278,7 +278,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	// todo multiple bindings may be introduced (BTW: we cannot do this, need heterogenoeous list).
 	// for (int x = 3; cond; update)
 	@Override
-	default <T> SD<R> ForDecl(Supplier<T> init, Function<Ref<T>, SD<R>> body) {
+	default <T> SD<R> ForDecl(ISupply<T> init, Function<Ref<T>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(init).accept(v -> {
 				// NB: we pass in the label of the for loop into the for body.
@@ -288,7 +288,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 	
 	@Override
-	default SD<R> ForBody(Supplier<Boolean> cond, SD<R> update, SD<R> body) {
+	default SD<R> ForBody(ISupply<Boolean> cond, SD<R> update, SD<R> body) {
 		return For(Empty(), cond, update, body);
 	}
 	
@@ -297,7 +297,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	// for (x = 3; cond; update)
 	
 	@Override
-	default SD<R> For(SD<R> init, Supplier<Boolean> cond, SD<R> update, SD<R> body) {
+	default SD<R> For(SD<R> init, ISupply<Boolean> cond, SD<R> update, SD<R> body) {
 		// incorrect with break and continue!
 		//return While(cond, Seq2(body, update));
 		
@@ -341,7 +341,7 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	}
 
 	@Override
-	default <U> SD<R> ForEach(Supplier<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
+	default <U> SD<R> ForEach(ISupply<Iterable<U>> coll, Function<Ref<U>, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(coll).accept(i -> {
 				Iterator<U> iter = i.iterator(); 

@@ -8,6 +8,7 @@ import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
+import recaf.core.direct.ISupply;
 import rx.Observable;
 
 public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, SD<R>> {
@@ -27,7 +28,7 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, S
 		return result;
 	}
 	
-	public <T> SD<R> Await(Supplier<CompletableFuture<T>> e, Function<T, SD<R>> body) {
+	public <T> SD<R> Await(ISupply<CompletableFuture<T>> e, Function<T, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {
@@ -43,7 +44,7 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, S
 		return null;
 	}
 	
-	public <U> SD<R> Yield(Supplier<U> exp) {
+	public <U> SD<R> Yield(ISupply<U> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> {
 				// result.doOnNext(v);
@@ -51,7 +52,7 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, S
 		};
 	}
 
-	public <U> SD<R> YieldFrom(Supplier<Observable<U>> exp) {
+	public <U> SD<R> YieldFrom(ISupply<Observable<U>> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> {
 				// result.mergeWith(v);

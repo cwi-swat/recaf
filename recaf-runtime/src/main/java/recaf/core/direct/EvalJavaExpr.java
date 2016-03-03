@@ -361,7 +361,10 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval New(Class<?> clazz, IEval... args) {
 		return () -> {
 			try {
-				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Object[] evaluatedArgs = new Object[args.length];
+				for (int i = 0; i < args.length; i++) {
+					evaluatedArgs[i] = args[i].eval();
+				}
 				Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz,evaluatedArgs);
 				constructor.setAccessible(true);
 				return constructor.newInstance(evaluatedArgs);
@@ -377,14 +380,15 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> {
 			Object o = toValue(obj.eval());
 			try {
-				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Object[] evaluatedArgs = new Object[args.length];
+				for (int i = 0; i < args.length; i++) {
+					evaluatedArgs[i] = args[i].eval();
+				}
 				Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
 				m.setAccessible(true);
 				return m.invoke(o, evaluatedArgs);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| SecurityException e) {
-				e.printStackTrace();
-				return null;
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
 			}
 		};
 	}
