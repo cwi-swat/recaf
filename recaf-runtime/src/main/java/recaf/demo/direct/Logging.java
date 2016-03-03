@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import recaf.core.IRef;
-import recaf.core.Ref;
 import recaf.core.direct.FullJava;
 import recaf.core.direct.IEval;
 import recaf.core.direct.NoOp;
