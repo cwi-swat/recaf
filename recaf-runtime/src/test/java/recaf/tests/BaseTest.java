@@ -49,7 +49,7 @@ public class BaseTest {
 	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
 	private static final String RECAF_FULL_DESUGARING = "lang::recaf::DesugarMain";
 	
-	private static boolean generated_sources = true;
+	private static boolean generated_sources = false;
 	
 	@BeforeClass
 	public static void init() {
