@@ -42,14 +42,13 @@ public class BaseTest {
 
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
-
 	
 	private static final String RECAF_SRC = "/../recaf-desugar/src/";
 	private static final String RECAF_GENERATED_DIR = "cwd:///" + GENERATED_DIR;
-	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/exprinput";
+	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
 	private static final String RECAF_FULL_DESUGARING = "lang::recaf::DesugarMain";
 	
-	private static boolean generated_sources = true;
+	private static boolean generated_sources = false;
 	
 	@BeforeClass
 	public static void init() {
@@ -83,7 +82,7 @@ public class BaseTest {
 		
 		try {
 			dependenciesString = Files
-					.walk(Paths.get("/Users/tvdstorm/.m2/repository/"))
+					.walk(Paths.get("target/dependency/"))
 					.filter(Files::isRegularFile)
 					.map(p -> p.toString())
 					.reduce("", (String s, String a) -> s + ":" + a);
