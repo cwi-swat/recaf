@@ -32,7 +32,7 @@ public class CompiletimeException extends Exception {
 	public String toString() {
 		StringBuilder errorMessage = new StringBuilder();
 		errorMessage.append(super.getMessage());	
-		if (!diagnostics.isEmpty()) {
+		if (diagnostics != null && !diagnostics.isEmpty()) {
 	        for (Diagnostic<?> diagnostic : diagnostics) {
 	        	errorMessage.append("Code: ")
 	        				.append(diagnostic.getCode())

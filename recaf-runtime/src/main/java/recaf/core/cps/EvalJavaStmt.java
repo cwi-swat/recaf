@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import recaf.core.ISupply;
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
-import recaf.core.direct.ISupply;
 
 public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	

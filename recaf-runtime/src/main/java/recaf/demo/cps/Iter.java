@@ -3,11 +3,11 @@ package recaf.demo.cps;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
+import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
-import recaf.core.direct.ISupply;
 
 public class Iter<R> implements StmtJava<R>, JavaMethodAlg<Iterable<R>, SD<R>> {
 

@@ -4,11 +4,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.ISupply;
 import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
-import recaf.core.direct.ISupply;
 import rx.Observable;
 
 public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, SD<R>> {

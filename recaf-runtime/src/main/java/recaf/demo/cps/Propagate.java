@@ -4,9 +4,9 @@ import java.util.ArrayDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.ISupply;
 import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
-import recaf.core.direct.ISupply;
 
 public class Propagate<R> implements NoOp<R> {
 	// BAD!!!

@@ -79,11 +79,11 @@ public class BaseTest {
 	}
 
 	protected void runCompiler(String pathname) throws CompiletimeException {
-		String dependenciesString;
+		String dependenciesString = "";
 		
 		try {
 			dependenciesString = Files
-					.walk(Paths.get("target/dependency/"))
+					.walk(Paths.get("/Users/tvdstorm/.m2/repository/"))
 					.filter(Files::isRegularFile)
 					.map(p -> p.toString())
 					.reduce("", (String s, String a) -> s + ":" + a);

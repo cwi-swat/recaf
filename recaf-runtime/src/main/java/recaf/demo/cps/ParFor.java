@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import recaf.core.ISupply;
 import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
-import recaf.core.direct.ISupply;
 
 public class ParFor<R> implements NoOp<R> {
 	public <U> SD<R> Parfor(ISupply<Collection<U>> coll, Function<U, SD<R>> body) {

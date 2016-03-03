@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import recaf.core.ISupply;
 import recaf.core.cps.K0;
 import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
-import recaf.core.direct.ISupply;
 
 public class ComeFrom<R> implements NoOp<R> {
 

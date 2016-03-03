@@ -6,10 +6,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.IRef;
+import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.FullJava;
 import recaf.core.cps.SD;
-import recaf.core.direct.ISupply;
 
 public class Async2<R> implements FullJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
 

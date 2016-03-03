@@ -1,5 +1,7 @@
 package recaf.core.direct;
 
+import recaf.core.ISupply;
+
 public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {  
 	
 	@SuppressWarnings("unchecked")

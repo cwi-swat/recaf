@@ -2,8 +2,8 @@ package recaf.demo.direct;
 
 import java.util.function.Function;
 
+import recaf.core.ISupply;
 import recaf.core.direct.IExec;
-import recaf.core.direct.ISupply;
 import recaf.core.direct.NoOp;
 
 public interface Using<R> extends NoOp<R> {

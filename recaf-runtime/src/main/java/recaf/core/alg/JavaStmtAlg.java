@@ -2,8 +2,8 @@ package recaf.core.alg;
 
 import java.util.function.Function;
 
+import recaf.core.ISupply;
 import recaf.core.Ref;
-import recaf.core.direct.ISupply;
 
 public interface JavaStmtAlg<R, E, S, C> {
 	<T> S Decl(ISupply<T> exp, Function<Ref<T>, S> body);

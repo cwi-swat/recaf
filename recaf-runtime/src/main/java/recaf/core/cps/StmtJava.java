@@ -1,6 +1,6 @@
 package recaf.core.cps;
 
-import recaf.core.direct.ISupply;
+import recaf.core.ISupply;
 
 public interface StmtJava<R> extends EvalJavaStmt<R, ISupply<?>> {
 	@SuppressWarnings("unchecked")

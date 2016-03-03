@@ -2,6 +2,7 @@ package recaf.core.direct;
 
 import java.util.function.Function;
 
+import recaf.core.ISupply;
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
 
