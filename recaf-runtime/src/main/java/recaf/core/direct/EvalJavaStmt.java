@@ -35,7 +35,6 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 			}
 		};
 	}
-
 	
 	@Override
 	default IExec For(IExec init, ISupply<Boolean> cond, IExec update, IExec body) {
@@ -330,6 +329,5 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, IExec, ICase> {
 			return value;
 		}
 	}
-
 }
 

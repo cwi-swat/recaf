@@ -17,6 +17,7 @@ import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VariableFactory;
 
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.direct.IEval;
 import recaf.core.direct.IExec;
 
 public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec>  {
@@ -229,6 +230,10 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	
 	public Constraint NotEq(IntVar lhs, IntVar rhs) {
 		return IntConstraintFactory.arithm(lhs, "!=", rhs);
+	}
+	
+	public IEval This(Object self) {
+		return () -> self;
 	}
 	
 	public Constraint Invoke(Object ignored, String method, IntVar...args) {
