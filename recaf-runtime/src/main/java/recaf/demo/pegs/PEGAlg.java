@@ -3,43 +3,14 @@ package recaf.demo.pegs;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import recaf.core.alg.JavaMethodAlg;
-
-public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
-
-	@Override
-	default Parser<R> Method(Parser<R> body) {
-		return body;
-	}
+public interface PEGAlg<S, X extends PEGAlg.F<S>> {
+	interface F<S> { }
 	
-	default Parser<Void> Lit(Supplier<String> x)  {
-		return (s, p) -> {
-			String lit = x.get();
-			if (s.startsWith(lit, p)) {
-				return new Result<>(null, p + lit.length());
-			}
-			throw new Fail();
-		};
-	}
 	
-	default <T> Parser<T> Regexp(Supplier<String> x, Function<String, Parser<? extends T>> body) {
-		return (s, p) -> {
-			Pattern pat = Pattern.compile(x.get());
-			Matcher m = pat.matcher(s.substring(p));
-			if (m.find()) {
-				if (m.start() == 0) {
-					String g = m.group();
-					// this unwrapping has to with contra variance 
-					Result<? extends T> r = body.apply(g).parse(s, p + g.length());
-					return new Result<T>(r.getValue(), r.getPos());
-				}
-			}
-			throw new Fail();
-		};
-	}
+	F<S> Lit(Supplier<String> x); 
+	
+	<T, U> F<U> Regexp(Supplier<String> x, Function<String, F<U>> body);
 	
 	default <T, U> Parser<U> Let(Supplier<Parser<T>> parser, Function<T, Parser<? extends U>> body) {
 		return (s, p) -> {
@@ -140,6 +111,4 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 			return new Result<>(null, p);
 		};
 	}
-
-
 }

@@ -3,10 +3,10 @@ package recaf.tests.virtualization;
 import org.junit.Assert;
 import org.junit.Test;
 
-import recaf.tests.BaseTestFull;
+import recaf.tests.BaseTest;
 import recaf.tests.CompiletimeException;
 
-public class TestVirtualizationExpressions extends BaseTestFull {
+public class TestVirtualizationExpressions extends BaseTest {
 	
 	@Test
 	public void TestMethodLookup1() throws CompiletimeException, RuntimeException {

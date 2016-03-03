@@ -12,13 +12,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -46,6 +43,35 @@ public class BaseTest {
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
 
+	
+	private static final String RECAF_SRC = "/../recaf-desugar/src/";
+	private static final String RECAF_GENERATED_DIR = "cwd:///" + GENERATED_DIR;
+	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/exprinput";
+	private static final String RECAF_FULL_DESUGARING = "lang::recaf::DesugarMain";
+	
+	private static boolean generated_sources = true;
+	
+	@BeforeClass
+	public static void init() {
+		if (!generated_sources) {
+			LogManager.getLogger().info("Generating source files with rascal...");
+
+			RascalModuleRunner runner = new RascalModuleRunner(new PrintWriter(System.out, false),
+					new PrintWriter(System.err, false));
+
+			try {
+				runner.addRascalSearchPathContributor(
+						ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", RECAF_SRC));
+				runner.run(RECAF_FULL_DESUGARING, new String[] { RECAF_INPUT, RECAF_GENERATED_DIR });
+			} catch (Exception e) {
+				LogManager.getLogger().error("Generation failed", e);
+				LogManager.getLogger().info("Exiting...");
+				System.exit(-1);
+			}
+			generated_sources = true;
+		}
+	}
+	
 	@Before
 	public void setUp() throws Exception {
 		out = new PrintWriter(System.out, false);
