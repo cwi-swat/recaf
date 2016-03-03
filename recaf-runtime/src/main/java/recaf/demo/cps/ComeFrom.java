@@ -7,12 +7,13 @@ import java.util.function.Supplier;
 import recaf.core.cps.K0;
 import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
+import recaf.core.direct.ISupply;
 
 public class ComeFrom<R> implements NoOp<R> {
 
 	private final static Map<String, K0> ks = new HashMap<>();
 	
-	public SD<R> ComeFrom(Supplier<String> label) {
+	public SD<R> ComeFrom(ISupply<String> label) {
 		return (label0, rho, sigma, brk, contin, err) -> {
 			get(label).accept(l -> {
 				ks.put(l, sigma);
@@ -34,8 +35,8 @@ public class ComeFrom<R> implements NoOp<R> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Supplier<T> Exp(Supplier<?> e) {
-		return (Supplier<T>) e;
+	public <T> ISupply<T> Exp(ISupply<?> e) {
+		return (ISupply<T>) e;
 	}
 	
 }

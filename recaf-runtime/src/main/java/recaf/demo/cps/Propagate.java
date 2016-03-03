@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
+import recaf.core.direct.ISupply;
 
 public class Propagate<R> implements NoOp<R> {
 	// BAD!!!
@@ -13,7 +14,7 @@ public class Propagate<R> implements NoOp<R> {
 	// but works across ordinary methods...
 	private static final ArrayDeque<Object> stack = new ArrayDeque<>();
 	
-	public <T> SD<R> Local(Supplier<T> exp, SD<R> body) {
+	public <T> SD<R> Local(ISupply<T> exp, SD<R> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(t -> {
 				stack.push(t);

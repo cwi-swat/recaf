@@ -1,17 +1,22 @@
 package recaf.core.direct;
 
-import java.util.function.Supplier;
-
-public interface FullJava<R> extends EvalJavaStmt<R, IEvalEx<?>>, EvalJavaExpr {  
+public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {  
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	default <T> Supplier<T> Exp(IEvalEx<?> exp) {
-		return () -> (T) exp.eval();
+	default <T> ISupply<T> Exp(IEval exp) {
+		return () -> {
+			try {
+				return (T) exp.eval();
+			}
+			catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		};
 	}
 	
 	@Override
-	default IExecEx<?> ExpStat(IEvalEx<?> e) {
+	default IExec ExpStat(IEval e) {
 		return l -> { e.eval(); };
 	}
 }

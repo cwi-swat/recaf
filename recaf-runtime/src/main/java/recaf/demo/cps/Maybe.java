@@ -8,6 +8,7 @@ import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
+import recaf.core.direct.ISupply;
 
 
 public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, SD<R>> {
@@ -23,7 +24,7 @@ public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, SD<R>> 
 		return ref.value;
 	}
 	
-	public <U> SD<R> Maybe(Supplier<Optional<U>> opt, Function<U, SD<R>> body) {
+	public <U> SD<R> Maybe(ISupply<Optional<U>> opt, Function<U, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(opt).accept(v -> {
 			if (v.isPresent()) {
 				body.apply(v.get()).accept(null, rho, sigma, brk, contin,err);

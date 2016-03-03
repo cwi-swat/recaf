@@ -6,14 +6,13 @@ import java.util.function.Supplier;
 
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.direct.IExec;
-import recaf.core.direct.IExecEx;
 import recaf.core.direct.StmtJava;
 
-public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, IExecEx<?>> {
+public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, IExec> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Optional<R> Method(IExecEx<?> body) {
+	public Optional<R> Method(IExec body) {
 		try {
 			body.exec(null);
 		}
@@ -26,7 +25,7 @@ public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, IExecEx
 		return Optional.empty();
 	}
 
-	public <U> IExecEx<?> Maybe(Supplier<Optional<U>> opt, Function<U, IExecEx<?>> body) {
+	public <U> IExec Maybe(Supplier<Optional<U>> opt, Function<U, IExec> body) {
 		return l -> {
 			Optional<U> v = opt.get();
 			if (v.isPresent()) {

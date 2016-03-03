@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
+import recaf.core.direct.ISupply;
 
 public class Async<R> implements StmtJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
 
@@ -27,7 +28,7 @@ public class Async<R> implements StmtJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
 		return promise;
 	}
 
-	public <T> SD<R> Await(Supplier<CompletableFuture<T>> e, Function<T, SD<R>> body) {
+	public <T> SD<R> Await(ISupply<CompletableFuture<T>> e, Function<T, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {

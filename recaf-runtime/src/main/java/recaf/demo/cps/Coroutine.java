@@ -8,6 +8,7 @@ import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
+import recaf.core.direct.ISupply;
 
 public class Coroutine<R, T> implements StmtJava<R>, JavaMethodAlg<Coroutine.Co<T,R>, SD<R>> {
 	public static interface Co<T, U> {
@@ -75,11 +76,11 @@ public class Coroutine<R, T> implements StmtJava<R>, JavaMethodAlg<Coroutine.Co<
 		}
 	}
 
-	public SD<R> Yield(Supplier<R> exp) {
+	public SD<R> Yield(ISupply<R> exp) {
 		return Yield(exp, t -> Empty());
 	}
 	
-	public SD<R> Yield(Supplier<R> exp, Function<T, SD<R>> body) {
+	public SD<R> Yield(ISupply<R> exp, Function<T, SD<R>> body) {
 		return (label, rho, sigma, contin, brk, err) -> {
 			get(exp).accept(v -> {
 				throw new Yield(v, () -> body.apply(stack.pop()).accept(null, rho, sigma, contin, brk, err));

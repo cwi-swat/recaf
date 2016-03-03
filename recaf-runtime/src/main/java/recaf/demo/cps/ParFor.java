@@ -6,9 +6,10 @@ import java.util.function.Supplier;
 
 import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
+import recaf.core.direct.ISupply;
 
 public class ParFor<R> implements NoOp<R> {
-	public <U> SD<R> Parfor(Supplier<Collection<U>> coll, Function<U, SD<R>> body) {
+	public <U> SD<R> Parfor(ISupply<Collection<U>> coll, Function<U, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(coll).accept(v -> {
 				v.parallelStream().forEach(u -> {

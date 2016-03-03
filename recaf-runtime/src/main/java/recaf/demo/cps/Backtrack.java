@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
+import recaf.core.direct.ISupply;
 
 public class Backtrack<R> implements StmtJava<R>, JavaMethodAlg<List<R>, SD<R>> {
 
@@ -29,7 +30,7 @@ public class Backtrack<R> implements StmtJava<R>, JavaMethodAlg<List<R>, SD<R>> 
 		
 	}
 	
-	public <T> SD<R> Choose(Supplier<Iterable<T>> choices, Function<? super T, SD<R>> body) {
+	public <T> SD<R> Choose(ISupply<Iterable<T>> choices, Function<? super T, SD<R>> body) {
 		return (label, rho, sigma, contin, brk, err) -> {
 			get(choices).accept(iter -> {
 				for (T t: iter) {
@@ -44,7 +45,7 @@ public class Backtrack<R> implements StmtJava<R>, JavaMethodAlg<List<R>, SD<R>> 
 		};
 	}
 	
-	public SD<R> Guard(Supplier<Boolean> cond) {
+	public SD<R> Guard(ISupply<Boolean> cond) {
 		return (label, rho, sigma, contin, brk, err) -> {
 			get(cond).accept(b -> {
 				if (!b) {

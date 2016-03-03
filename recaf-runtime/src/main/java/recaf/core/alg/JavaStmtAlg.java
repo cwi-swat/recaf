@@ -1,40 +1,39 @@
 package recaf.core.alg;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.Ref;
-import recaf.core.direct.SupplierEx;
+import recaf.core.direct.ISupply;
 
 public interface JavaStmtAlg<R, E, S, C> {
-	<T> S Decl(Supplier<T> exp, Function<Ref<T>, S> body);
+	<T> S Decl(ISupply<T> exp, Function<Ref<T>, S> body);
 	
-	<T> S ForEach(Supplier<Iterable<T>> exp, Function<Ref<T>, S> body);
+	<T> S ForEach(ISupply<Iterable<T>> exp, Function<Ref<T>, S> body);
 	
-	<T> S ForDecl(Supplier<T> init, Function<Ref<T>, S> body);
+	<T> S ForDecl(ISupply<T> init, Function<Ref<T>, S> body);
 
-	S ForBody(Supplier<Boolean> cond, S update, S body);
+	S ForBody(ISupply<Boolean> cond, S update, S body);
 	
-	<T extends Throwable> S Throw(Supplier<T> e);
+	<T extends Throwable> S Throw(ISupply<T> e);
 
 	<T extends Throwable> S TryCatch(S body, Class<T> type, Function<T, S> handle);
 	
 	@SuppressWarnings("unchecked")
-	<T> S Switch(Supplier<T> expr, C... cases);
+	<T> S Switch(ISupply<T> expr, C... cases);
 		
 	<T> C Case(T constant, S expStat);
 	
 	C Default(S expStat);
 
-	S For(S init, Supplier<Boolean> cond, S update, S body);
+	S For(S init, ISupply<Boolean> cond, S update, S body);
 
-	S If(Supplier<Boolean> cond, S s);
+	S If(ISupply<Boolean> cond, S s);
 	
-	S If(Supplier<Boolean> cond, S s1, S s2);
+	S If(ISupply<Boolean> cond, S s1, S s2);
 	
-	S While(Supplier<Boolean> cond, S s);
+	S While(ISupply<Boolean> cond, S s);
 	
-	S DoWhile(S s, Supplier<Boolean> cond);
+	S DoWhile(S s, ISupply<Boolean> cond);
 	
 	S Labeled(String label, S s);
 	
@@ -46,7 +45,7 @@ public interface JavaStmtAlg<R, E, S, C> {
 	
 	S Continue();
 
-	S Return(SupplierEx<R,?> supplier);
+	S Return(ISupply<R> supplier);
 	
 	S Return();
 
@@ -58,5 +57,5 @@ public interface JavaStmtAlg<R, E, S, C> {
 	
 	S ExpStat(E e);
 	
-	<T> Supplier<T> Exp(E e) throws Exception;
+	<T> ISupply<T> Exp(E e) throws Exception;
 }

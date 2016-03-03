@@ -1,16 +1,16 @@
 package recaf.core.cps;
 
-import java.util.function.Supplier;
+import recaf.core.direct.ISupply;
 
-public interface StmtJava<R> extends EvalJavaStmt<R, Supplier<?>> {
+public interface StmtJava<R> extends EvalJavaStmt<R, ISupply<?>> {
 	@SuppressWarnings("unchecked")
 	@Override
-	default <T> Supplier<T> Exp(Supplier<?> e) {
-		return (Supplier<T>) e;
+	default <T> ISupply<T> Exp(ISupply<?> e) {
+		return (ISupply<T>) e;
 	}
 	
 	@Override
-	default SD<R> ExpStat(Supplier<?> thunk) {
+	default SD<R> ExpStat(ISupply<?> thunk) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			try {
 				thunk.get();
