@@ -3,10 +3,10 @@ package recaf.tests.virtualization;
 import org.junit.Assert;
 import org.junit.Test;
 
-import recaf.tests.BaseTest;
+import recaf.tests.BaseTestPartial;
 import recaf.tests.CompiletimeException;
 
-public class TestVirtualization extends BaseTest {
+public class TestVirtualization extends BaseTestPartial {
 
 	@Test
 	public void TestSwitch_break_default_beginning() throws CompiletimeException, RuntimeException {

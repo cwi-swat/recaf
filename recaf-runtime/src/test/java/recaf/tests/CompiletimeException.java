@@ -14,6 +14,7 @@ public class CompiletimeException extends Exception {
 	private static final long serialVersionUID = 1L;
 	List<Diagnostic<? extends JavaFileObject>> diagnostics;
 	Exception inner;
+	String message;
 	
 	public CompiletimeException(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
 		this.diagnostics = diagnostics;
@@ -23,22 +24,29 @@ public class CompiletimeException extends Exception {
 		this.inner = e;	
 	}
 
+	public CompiletimeException(String status) {
+		super(status);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder errorMessage = new StringBuilder();
-        for (Diagnostic<?> diagnostic : diagnostics) {
-        	errorMessage.append("Code: ")
-        				.append(diagnostic.getCode())
-        				.append("\nKind: ")
-        				.append(diagnostic.getKind())
-        				.append("\nPosition: ")
-			            .append(diagnostic.getPosition())
-        				.append("\nSource: ")
-			            .append(diagnostic.getSource())
-        				.append("\nInternal Message: ")
-			            .append(diagnostic.getMessage(null))
-        				.append("\n\t");
-        }
+		errorMessage.append(super.getMessage());	
+		if (!diagnostics.isEmpty()) {
+	        for (Diagnostic<?> diagnostic : diagnostics) {
+	        	errorMessage.append("Code: ")
+	        				.append(diagnostic.getCode())
+	        				.append("\nKind: ")
+	        				.append(diagnostic.getKind())
+	        				.append("\nPosition: ")
+				            .append(diagnostic.getPosition())
+	        				.append("\nSource: ")
+				            .append(diagnostic.getSource())
+	        				.append("\nInternal Message: ")
+				            .append(diagnostic.getMessage(null))
+	        				.append("\n\t");
+	        }
+		}
 		return errorMessage.toString();
 	}
 	

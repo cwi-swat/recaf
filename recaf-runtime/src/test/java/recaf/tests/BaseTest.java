@@ -11,9 +11,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -30,42 +35,16 @@ import org.rascalmpl.values.ValueFactoryFactory;
 public class BaseTest {
 
 	private static final String COMPILE_OUTPUT_DIR = "target/test-classes/";
-	private static final String COMPILETIME_CP = "src/main/java/:src/test-generated/:target/dependency/*";
+	private static final String COMPILETIME_CP = "src/main/java/:src/test-generated/"; // :";
 	private static final String RUNTIME_CP = "target/classes/:target/test-classes/";
 	private static final String PACKAGE_NAME = "generated.";
-	private static final String GENERATED_DIR = "src/test-generated/generated/";
-	private static final String RECAF_SRC = "/../recaf-desugar/src/";
-	private static final String RECAF_GENERATED_DIR = "cwd:///" + GENERATED_DIR;
-	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
+	protected static final String GENERATED_DIR = "src/test-generated/generated/";
 
 	protected PrintWriter out;
 	protected PrintWriter err;
 
-	private static boolean generated_sources = false;
-
 	@Rule
 	public TestWatcher watchman = new Log4jTestWatcher();
-
-	@BeforeClass
-	public static void init() {
-		if (!generated_sources) {
-			LogManager.getLogger().info("Generating source files with rascal...");
-
-			RascalModuleRunner runner = new RascalModuleRunner(new PrintWriter(System.out, false),
-					new PrintWriter(System.err, false));
-
-			try {
-				runner.addRascalSearchPathContributor(
-						ValueFactoryFactory.getValueFactory().sourceLocation("cwd", "", RECAF_SRC));
-				runner.run("lang::recaf::DesugarMain", new String[] { RECAF_INPUT, RECAF_GENERATED_DIR });
-			} catch (Exception e) {
-				LogManager.getLogger().error("Generation failed", e);
-				LogManager.getLogger().info("Exiting...");
-				System.exit(-1);
-			}
-			generated_sources = true;
-		}
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -74,11 +53,26 @@ public class BaseTest {
 	}
 
 	protected void runCompiler(String pathname) throws CompiletimeException {
-		String[] compileOptions = new String[] { "-cp", COMPILETIME_CP, "-d", COMPILE_OUTPUT_DIR };
+		String dependenciesString;
+		
+		try {
+			dependenciesString = Files
+					.walk(Paths.get("target/dependency/"))
+					.filter(Files::isRegularFile)
+					.map(p -> p.toString())
+					.reduce("", (String s, String a) -> s + ":" + a);
+		} catch (IOException e1) {
+			throw new CompiletimeException("Cannot read directory with dependencies");
+		}
+
+		String[] compileOptions = new String[] { "-cp", COMPILETIME_CP + dependenciesString, "-d", COMPILE_OUTPUT_DIR };
 
 		pathname = GENERATED_DIR + pathname;
 
 		Iterable<String> compilationOptions = asList(compileOptions);
+
+//		 LogManager.getLogger().info("Running the compiler with the following command: " + 
+//				 Stream.of(compileOptions).reduce("", (String s, String a) -> s + " " + a));
 
 		JavaCompiler compiler = getSystemJavaCompiler();
 
@@ -88,7 +82,8 @@ public class BaseTest {
 
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(new File(pathname));
 
-		Boolean result = compiler.getTask(null, fileManager, diagnostics, compilationOptions, null, compilationUnits).call();
+		Boolean result = compiler.getTask(null, fileManager, diagnostics, compilationOptions, null, compilationUnits)
+				.call();
 
 		if (!result)
 			throw new CompiletimeException(diagnostics.getDiagnostics());

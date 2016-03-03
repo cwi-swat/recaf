@@ -6,9 +6,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import recaf.core.EvalJavaHelper;
 import recaf.core.IRef;
@@ -301,6 +299,10 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> val;
 	}
 	
+	default IEval Var(String name, Object val) {
+		return () -> val;
+	}
+	
 	@Override
 	default IEval Field(IEval recv, String name) {
 		return () -> {
@@ -359,17 +361,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval New(Class<?> clazz, IEval... args) {
 		return () -> {
 			try {
-				List<Object> evaluatedArgs = new ArrayList<Object>();
-				List<Class<?>> argClasses = new ArrayList<Class<?>>();
-				for (IEval a: args){
-					Object ea = toValue(a.eval());
-					evaluatedArgs.add(ea);
-					argClasses.add(ea.getClass());
-				}
-				Constructor<?> constructor = clazz.getConstructor(argClasses.toArray(new Class<?>[0]));
+				Object[] evaluatedArgs = Arrays.asList(args).stream().map((IEval arg)->arg.eval()).toArray();
+				Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz,evaluatedArgs);
 				constructor.setAccessible(true);
-				return constructor.newInstance(evaluatedArgs.toArray(new Object[0]));
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchMethodException e) {
+				return constructor.newInstance(evaluatedArgs);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 				e.printStackTrace();
 				return null;
 			}

@@ -1,0 +1,32 @@
+package generated; 
+
+import recaf.core.direct.NoOp;
+
+class AB{
+	private int a;
+
+	public void setA(int a){
+		this.a = a;
+	}
+	
+	public int getA(){
+		return a;
+	}
+}
+
+
+public class TestExprMethodLookup2  {
+  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+  
+  private recaff static int simple(){           
+  	AB a = new AB();
+  	a.setA(4);
+  	return a.getA();
+  } 
+
+  public static void main(String args[]) {
+    int n = simple();
+    System.out.println(n);
+    
+  }
+}
