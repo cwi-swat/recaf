@@ -4,7 +4,6 @@ import static recaf.core.EvalJavaHelper.toValue;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import recaf.core.EvalJavaHelper;
@@ -13,7 +12,7 @@ import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
 
 public interface EvalJavaExpr extends JavaExprAlg<IEval> {
-	
+
 	@Override
 	default IEval Closure(Object lambda) {
 		return () -> lambda;
@@ -21,7 +20,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Cond(IEval c, IEval t, IEval e) {
-		return () -> (Boolean) c.eval()?t.eval():e.eval();
+		return () -> (Boolean) c.eval() ? t.eval() : e.eval();
 	}
 
 	@Override
@@ -58,14 +57,13 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval PostDecr(IEval arg) {
 		return () -> {
 			IRef<Integer> r = (IRef<Integer>) arg.eval();
-			r.setValue(r.value() - 1);
-			return r.value();
+			return r.setValue(r.value() - 1);
 		};
 	}
 
 	@Override
 	default IEval Plus(IEval arg) {
-		return () -> + (Integer) toValue(arg.eval());
+		return () -> +(Integer) toValue(arg.eval());
 	}
 
 	@Override
@@ -75,7 +73,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Complement(IEval arg) {
-		return () -> ~ ((Integer) arg.eval());
+		return () -> ~((Integer) arg.eval());
 	}
 
 	@Override
@@ -83,8 +81,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> {
 			IRef<Integer> r = (IRef<Integer>) arg.eval();
 			Integer saved = r.value();
-			r.setValue(saved + 1);
-			return saved;
+			return r.setValue(saved + 1);
 		};
 	}
 
@@ -93,14 +90,13 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> {
 			IRef<Integer> r = (IRef<Integer>) arg.eval();
 			Integer saved = r.value();
-			r.setValue(saved - 1);
-			return saved;
+			return r.setValue(saved - 1);
 		};
 	}
 
 	@Override
 	default IEval Minus(IEval arg) {
-		return () -> - (Integer) toValue(arg.eval());
+		return () -> -(Integer) toValue(arg.eval());
 	}
 
 	@Override
@@ -154,7 +150,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval InstanceOf(IEval lhs, IEval rhs) {
-		return () -> ((Class<?>) rhs.eval()).isInstance(lhs.eval());		
+		return () -> ((Class<?>) rhs.eval()).isInstance(lhs.eval());
 	}
 
 	@Override
@@ -248,7 +244,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval AssignMinus(IEval lhs, IEval rhs) {
 		return Assign(lhs, Minus(lhs, rhs));
 	}
-	
+
 	@Override
 	default IEval AssignAdd(IEval lhs, IEval rhs) {
 		return Assign(lhs, Plus(lhs, rhs));
@@ -288,8 +284,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval Assign(IEval lhs, IEval rhs) {
 		return () -> {
 			IRef r = (IRef<?>) lhs.eval();
-			r.setValue(toValue(rhs.eval()));
-			return r;
+			return r.setValue(toValue(rhs.eval()));
 		};
 	}
 
@@ -297,21 +292,16 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval Var(String name, IRef<?> val) {
 		return () -> val;
 	}
-	
+
 	default IEval Var(String name, Object val) {
 		return () -> val;
 	}
-	
+
 	@Override
 	default IEval Field(IEval recv, String name) {
 		return () -> {
 			Object o = toValue(recv.eval());
-			try {
-				return new ReflectRef(o, name); 
-			} catch (IllegalArgumentException | NoSuchFieldException | SecurityException e) {
-				e.printStackTrace();
-				return null;
-			}
+			return new ReflectRef(o, name);
 		};
 	}
 
@@ -324,11 +314,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval PostIncr(IEval arg) {
 		return () -> {
 			IRef<Integer> r = (IRef<Integer>) arg.eval();
-			r.setValue(r.value() + 1);
-			return r.value();
+			return r.setValue(r.value() + 1);
+
 		};
 	}
-	
+
 	@Override
 	default IEval Gt(IEval l, IEval r) {
 		return () -> {
@@ -341,7 +331,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 			return (Integer) toValue(l.eval()) < (Integer) toValue(r.eval());
 		};
 	}
-	
+
 	@Override
 	default IEval Plus(IEval l, IEval r) {
 		return () -> {
@@ -350,9 +340,9 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 			String lc = lo.getClass().getName();
 			String rc = ro.getClass().getName();
 			Object res = null;
-			switch (lc){
+			switch (lc) {
 			case "java.lang.Integer":
-				switch (rc){
+				switch (rc) {
 				case "java.lang.Integer":
 					res = (Integer) lo + (Integer) ro;
 					break;
@@ -361,14 +351,14 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 					break;
 				case "java.lang.Double":
 					res = (Integer) lo + (Double) ro;
-					break;	
+					break;
 				case "java.lang.Float":
 					res = (Integer) lo + (Float) ro;
-					break;	
+					break;
 				}
 				break;
 			case "java.lang.String":
-				switch (rc){
+				switch (rc) {
 				case "java.lang.Integer":
 					res = (String) lo + (Integer) ro;
 					break;
@@ -377,14 +367,14 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 					break;
 				case "java.lang.Double":
 					res = (String) lo + (Double) ro;
-					break;	
+					break;
 				case "java.lang.Float":
 					res = (String) lo + (Float) ro;
-					break;	
+					break;
 				}
 				break;
 			case "java.lang.Double":
-				switch (rc){
+				switch (rc) {
 				case "java.lang.Integer":
 					res = (Double) lo + (Integer) ro;
 					break;
@@ -393,14 +383,14 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 					break;
 				case "java.lang.Double":
 					res = (Double) lo + (Double) ro;
-					break;	
+					break;
 				case "java.lang.Float":
 					res = (Double) lo + (Float) ro;
-					break;	
+					break;
 				}
 				break;
 			case "java.lang.Float":
-				switch (rc){
+				switch (rc) {
 				case "java.lang.Integer":
 					res = (Float) lo + (Integer) ro;
 					break;
@@ -409,20 +399,20 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 					break;
 				case "java.lang.Double":
 					res = (Float) lo + (Double) ro;
-					break;	
+					break;
 				case "java.lang.Float":
 					res = (Float) lo + (Float) ro;
-					break;	
+					break;
 				}
 				break;
 			}
 			if (res != null)
 				return res;
-			else 
+			else
 				throw new RuntimeException("Wrong arguments to +.");
 		};
 	}
-	
+
 	@Override
 	default IEval Minus(IEval l, IEval r) {
 		return () -> {
@@ -433,37 +423,29 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval New(Class<?> clazz, IEval... args) {
 		return () -> {
-			try {
-				Object[] evaluatedArgs = new Object[args.length];
-				for (int i = 0; i < args.length; i++) {
-					evaluatedArgs[i] = args[i].eval();
-				}
-				Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz,evaluatedArgs);
-				constructor.setAccessible(true);
-				return constructor.newInstance(evaluatedArgs);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-				e.printStackTrace();
-				return null;
+			Object[] evaluatedArgs = new Object[args.length];
+			for (int i = 0; i < args.length; i++) {
+				evaluatedArgs[i] = args[i].eval();
 			}
+			Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz, evaluatedArgs);
+			constructor.setAccessible(true);
+			return constructor.newInstance(evaluatedArgs);
 		};
 	}
-	
+
 	@Override
 	default IEval Invoke(IEval obj, String method, IEval... args) {
 		return () -> {
 			Object o = toValue(obj.eval());
-			try {
-				Object[] evaluatedArgs = new Object[args.length];
-				for (int i = 0; i < args.length; i++) {
-					evaluatedArgs[i] = args[i].eval();
-				}
-				Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
-				m.setAccessible(true);
-				return m.invoke(o, evaluatedArgs);
-			} catch (Throwable e) {
-				throw new RuntimeException(e);
+
+			Object[] evaluatedArgs = new Object[args.length];
+			for (int i = 0; i < args.length; i++) {
+				evaluatedArgs[i] = args[i].eval();
 			}
+			Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
+			m.setAccessible(true);
+			return m.invoke(o, evaluatedArgs);
 		};
 	}
-	
+
 }
