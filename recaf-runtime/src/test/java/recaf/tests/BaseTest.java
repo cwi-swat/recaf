@@ -53,7 +53,8 @@ public class BaseTest {
 	
 	@BeforeClass
 	public static void init() {
-		if (!generated_sources) {
+		boolean userOptionGenerate = Boolean.parseBoolean(System.getProperty("generate"));
+		if (userOptionGenerate && !generated_sources) {
 			LogManager.getLogger().info("Generating source files with rascal...");
 
 			RascalModuleRunner runner = new RascalModuleRunner(new PrintWriter(System.out, false),
