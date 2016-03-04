@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.beanutils.MethodUtils;
 
+import recaf.core.direct.IEval;
+
 public class EvalJavaHelper {
 	public static Object toValue(Object o){
 		// TODO Add case for true objcet references
@@ -14,9 +16,7 @@ public class EvalJavaHelper {
 			return o;
 	}
 
-	// TODO implement proper overloading methods resolution
-	public static Method findMethod(Object o, String methodName, Object[] args){
-		Class<?> clazz = o.getClass();
+	public static Method findMethod(Class<?> clazz, String methodName, Object[] args){
 		while (clazz != null) {
 		    Method[] methods = clazz.getDeclaredMethods();
 		    for (Method m : methods){
@@ -58,6 +58,14 @@ public class EvalJavaHelper {
 		    clazz = clazz.getSuperclass();
 		}
 		return null;
+	}
+
+	public static Object[] evaluateArguments(IEval[] args) throws Throwable {
+		Object[] evaluatedArgs = new Object[args.length];
+		for (int i = 0; i < args.length; i++) {
+			evaluatedArgs[i] = args[i].eval();
+		}
+		return evaluatedArgs;
 	}
 	
 }

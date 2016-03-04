@@ -71,13 +71,13 @@ Expr expr2alg((Expr)`<Id m>(<{Expr ","}* es>)`, Id alg, Names names)
     {Expr ","}* es2 := args2alg(es, alg, names);
 
 Expr expr2alg((Expr)`super.<TypeArgs? _><Id m>(<{Expr ","}* es>)`, Id alg, Names names)
-  = (Expr)`<Id alg>.InvokeSuper(this, <Expr name>, <{Expr ","}* es2>)`
+  = (Expr)`<Id alg>.InvokeSuper(<Id alg>.This(this), <Expr name>, <{Expr ","}* es2>)`
   when 
     name := id2strExpr(m),
     {Expr ","}* es2 := args2alg(es, alg, names);
 
 Expr expr2alg((Expr)`<TypeName tn>.super.<TypeArgs? _><Id m>(<{Expr ","}* es>)`, Id alg, Names names)
-  = (Expr)`<Id alg>.InvokeSuper(this, <TypeName tn>.class, <Expr name>, <{Expr ","}* es2>)`
+  = (Expr)`<Id alg>.InvokeSuper(<Id alg>.This(this), <TypeName tn>.class, <Expr name>, <{Expr ","}* es2>)`
   when 
     name := id2strExp(m),
     {Expr ","}* es2 := args2alg(es, alg, names);

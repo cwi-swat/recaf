@@ -2,9 +2,13 @@ package recaf.core.direct;
 
 import static recaf.core.EvalJavaHelper.toValue;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import recaf.core.EvalJavaHelper;
 import recaf.core.IRef;
@@ -28,9 +32,35 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> Array.get(array.eval(), (Integer) index.eval());
 	}
 
+	// Invoking a superclass method using reflection
+	//   http://stackoverflow.com/questions/5411434/how-to-call-a-superclass-method-using-java-reflection
+	//
+	// Forcing private access 
+	//   https://rmannibucau.wordpress.com/2014/03/27/java-8-default-interface-methods-and-jdk-dynamic-proxies/
+	//
+	// TODO Investigate if is it possible to access the parent's method when
+	//      the parent is a non-public class
 	@Override
 	default IEval InvokeSuper(IEval self, String method, IEval... args) {
-		throw new UnsupportedOperationException();
+		return () -> {
+			Object o = self.eval();
+			Object[] evaluatedArgs = EvalJavaHelper.evaluateArguments(args);
+			Method m = EvalJavaHelper.findMethod(o.getClass().getSuperclass(), method, evaluatedArgs);
+			m.setAccessible(true);
+			final MethodHandles.Lookup lookup = MethodHandles.lookup().in(o.getClass().getSuperclass());
+			final Field f = MethodHandles.Lookup.class.getDeclaredField("allowedModes");
+	        final int modifiers = f.getModifiers();
+	        if (Modifier.isFinal(modifiers)) { // should be done a single time
+	            final Field modifiersField = Field.class.getDeclaredField("modifiers");
+	            modifiersField.setAccessible(true);
+	            modifiersField.setInt(f, modifiers & ~Modifier.FINAL);
+	            f.setAccessible(true);
+	            f.set(lookup, MethodHandles.Lookup.PRIVATE);
+	        }
+			MethodHandle mhh = lookup.
+					unreflectSpecial(m, o.getClass().getSuperclass());
+			return mhh.invoke(o);
+		};
 	}
 
 	@Override
@@ -423,10 +453,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval New(Class<?> clazz, IEval... args) {
 		return () -> {
-			Object[] evaluatedArgs = new Object[args.length];
-			for (int i = 0; i < args.length; i++) {
-				evaluatedArgs[i] = args[i].eval();
-			}
+			Object[] evaluatedArgs = EvalJavaHelper.evaluateArguments(args);
 			Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz, evaluatedArgs);
 			constructor.setAccessible(true);
 			return constructor.newInstance(evaluatedArgs);
@@ -437,12 +464,8 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	default IEval Invoke(IEval obj, String method, IEval... args) {
 		return () -> {
 			Object o = toValue(obj.eval());
-
-			Object[] evaluatedArgs = new Object[args.length];
-			for (int i = 0; i < args.length; i++) {
-				evaluatedArgs[i] = args[i].eval();
-			}
-			Method m = EvalJavaHelper.findMethod(o, method, evaluatedArgs);
+			Object[] evaluatedArgs = EvalJavaHelper.evaluateArguments(args);
+			Method m = EvalJavaHelper.findMethod(o.getClass(), method, evaluatedArgs);
 			m.setAccessible(true);
 			return m.invoke(o, evaluatedArgs);
 		};
