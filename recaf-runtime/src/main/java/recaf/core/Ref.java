@@ -17,8 +17,9 @@ public final class Ref<X> implements IRef<X>{
 	}
 
 	@Override
-	public void setValue(X val) {
+	public IRef<X> setValue(X val) {
 		value = val;
+		return this;
 	}
 
 }

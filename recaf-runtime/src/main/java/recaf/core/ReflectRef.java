@@ -1,7 +1,5 @@
 package recaf.core;
 
-import static recaf.core.EvalJavaHelper.toValue;
-
 import java.lang.reflect.Field;
 
 // todo: extract interface to make useable with fields in expression eval.
@@ -21,15 +19,16 @@ public final class ReflectRef<X> implements IRef<X>{
 		try {
 			return (X) field.get(obj);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 	
 	@Override
-	public void setValue(X val){
+	public IRef<X> setValue(X val){
 		field.setAccessible(true);
 		try {
 			field.set(obj, val);
+			return this;
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

@@ -2,5 +2,5 @@ package recaf.core;
 
 public interface IRef<T> {
 	T value();
-	void setValue(T val);
+	IRef<T> setValue(T val);
 }
