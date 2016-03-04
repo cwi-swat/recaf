@@ -12,7 +12,6 @@ import util::Maybe;
 MethodDec recafStms(MethodDec m, list[Id] algFields)
   = recafMethod(m, algFields);
 
-
 MethodDec recafMethod((MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(recaf <ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) <Block b>`, list[Id] algFields) 
   = (MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultType rt> <Id meth>(<ClassOrInterfaceType t> <Id alg>, <{FormalParam ","}* fs>) {
                '  <BlockStm* bs>
@@ -21,7 +20,6 @@ MethodDec recafMethod((MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultT
         when <bs, names> := fps2decls(fs, declaredNames(b) + { x | /Id x := fs }),
              cps := method2alg(b, alg, names),
              ret := makeReturn(rt, cps);
-
 
 MethodDec recafMethod((MethodDec)`<BeforeMethod* bm0> recaf <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>`, list[Id] algFields) 
    = (MethodDec)`<BeforeMethod* bm0> <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {

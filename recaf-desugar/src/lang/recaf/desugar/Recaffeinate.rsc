@@ -20,7 +20,6 @@ list[Id] collectAlgFields(start[CompilationUnit] cu) {
    return algFields;
 }
 
-
 start[CompilationUnit] recaffeinate(start[CompilationUnit] cu) {
    algFields = collectAlgFields(cu); 
 
