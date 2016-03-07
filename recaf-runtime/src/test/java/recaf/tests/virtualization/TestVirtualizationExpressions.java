@@ -52,5 +52,11 @@ public class TestVirtualizationExpressions extends BaseTest {
 		String output = compileAndRun("TestExprFieldSuper");
 		Assert.assertEquals("5\n3", output);
 	}
+	
+	@Test
+	public void TestAnd() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestExprAnd");
+		Assert.assertEquals("false\n0\nfalse\n1", output);
+	}
 
 }

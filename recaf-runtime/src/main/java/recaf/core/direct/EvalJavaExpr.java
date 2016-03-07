@@ -206,7 +206,7 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval And(IEval lhs, IEval rhs) {
-		return () -> ((Boolean) lhs.eval()) && ((Boolean) rhs.eval());
+		return () -> ((Boolean) lhs.eval()) & ((Boolean) rhs.eval());
 	}
 
 	@Override
@@ -216,17 +216,17 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval Or(IEval lhs, IEval rhs) {
-		return () -> ((Boolean) lhs.eval()) || ((Boolean) rhs.eval());
+		return () -> ((Boolean) lhs.eval()) | ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval LazyAnd(IEval lhs, IEval rhs) {
-		throw new UnsupportedOperationException();
+		return () -> ((Boolean) lhs.eval()) && ((Boolean) rhs.eval());
 	}
 
 	@Override
 	default IEval LazyOr(IEval lhs, IEval rhs) {
-		throw new UnsupportedOperationException();
+		return () -> ((Boolean) lhs.eval()) || ((Boolean) rhs.eval());
 	}
 
 	@Override
