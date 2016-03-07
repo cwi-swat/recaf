@@ -1,6 +1,7 @@
 package recaf.core;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.commons.beanutils.MethodUtils;
@@ -25,6 +26,20 @@ public class EvalJavaHelper {
 						if (areAssignable(m.getParameterTypes(), args))
 							return m;
 					}
+				}
+			}
+			
+		    clazz = clazz.getSuperclass();
+		}
+		return null;
+	}
+	
+	public static Field findField(Class<?> clazz, String fieldName){
+		while (clazz != null) {
+		    Field[] fields = clazz.getDeclaredFields();
+		    for (Field f : fields){
+				if (f.getName() == fieldName){
+					return f;
 				}
 			}
 			

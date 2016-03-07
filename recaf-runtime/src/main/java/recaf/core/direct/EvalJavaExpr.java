@@ -70,7 +70,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
 	@Override
 	default IEval SuperField(String name, Object self) {
-		throw new UnsupportedOperationException();
+		return () -> {
+			Field f = EvalJavaHelper.findField(self.getClass().getSuperclass(), name);
+			f.setAccessible(true);
+			return f.get(self);
+		};
 	}
 
 	@Override
