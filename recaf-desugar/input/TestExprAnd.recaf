@@ -1,0 +1,32 @@
+package generated;
+
+import recaf.core.direct.NoOp;
+
+public class TestExprAnd {
+
+	private int i = 0;
+
+	private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+
+	private boolean rhs(){
+		i++;
+		return true;
+	}
+
+	private recaff boolean lazyAnd(){           
+		return 1 < 0 && rhs();	
+	}
+	
+	private recaff boolean and(){           
+		return 1 < 0 & rhs();	
+	}
+	
+	public static void main(String args[]) {
+		TestExprAnd o = new TestExprAnd();
+		System.out.println(o.lazyAnd());
+		System.out.println(o.i);
+		System.out.println(o.and());
+		System.out.println(o.i);	
+	}
+
+}
