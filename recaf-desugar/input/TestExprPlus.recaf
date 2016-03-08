@@ -4,8 +4,6 @@ import recaf.core.direct.NoOp;
 
 public class TestExprPlus {
 
-	private static Float f = (float) 1.0; 
-
 	private static recaf NoOp<Object> alg = new NoOp<Object>() {};
 
 	private recaff static int plus1(){           
@@ -40,32 +38,32 @@ public class TestExprPlus {
 		return 1.0+"1";
 	}	
 	
-	private recaff static String plus9(){           
-		return f+"1";
+	private recaff static String plus9(){ 
+		return 1.0f+"1";
 	}
 	
-	private recaff static String plus10(){           
-		return "1"+f;
+	private recaff static String plus10(){ 
+		return "1"+1.0f;
 	}
 	
 	private recaff static float plus11(){           
-		return f+1;
+		return 1.0f+1;
 	}
 	
-	private recaff static float plus12(){           
-		return 1+f;
+	private recaff static float plus12(){
+		return 1+1.0f;
 	}
 	
 	private recaff static double plus13(){           
-		return f+1.0;
+		return 1.0f+1.0;
 	}
 	
 	private recaff static double plus14(){           
-		return 1.0+f;
+		return 1.0+1.0f;
 	}
 	
 	private recaff static float plus15(){           
-		return f+f;
+		return 1.0f+1.0f;
 	}
 	
 	private recaff static String plus16(){           
