@@ -1,0 +1,23 @@
+package generated; 
+
+import recaf.core.direct.NoOp;
+
+public class TestExprFieldSuper extends BaseTestExprFieldSuper {
+  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+  
+  private int x = 5;
+  
+  public recaff int getThisX(){           
+  	return this.x;
+  } 
+  
+   public recaff int getSuperX(){           
+  	return super.x;
+  } 
+
+  public static void main(String args[]) {
+    TestExprFieldSuper o = new TestExprFieldSuper();
+    System.out.println(o.getThisX());
+    System.out.println(o.getSuperX());
+  }
+}
