@@ -47,11 +47,11 @@ public class TestVirtualizationExpressions extends BaseTest {
 		Assert.assertEquals("son(BaseTestExprInvokeSuper)", output);
 	}
 	
-	@Test
-	public void TestFieldSuper() throws CompiletimeException, RuntimeException {
-		String output = compileAndRun("TestExprFieldSuper");
-		Assert.assertEquals("5\n3", output);
-	}
+//	@Test
+//	public void TestFieldSuper() throws CompiletimeException, RuntimeException {
+//		String output = compileAndRun("TestExprFieldSuper");
+//		Assert.assertEquals("5\n3", output);
+//	}
 	
 	@Test
 	public void TestAnd() throws CompiletimeException, RuntimeException {
