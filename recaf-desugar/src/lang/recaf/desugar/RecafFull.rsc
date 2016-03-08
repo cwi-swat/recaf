@@ -20,7 +20,6 @@ MethodDec recafMethod((MethodDec)`<BeforeMethod* bm1> <TypeParams? tp1> <ResultT
              cps := method2alg(b, alg, names),
              ret := makeReturn(rt, cps);
 
-
 MethodDec recafMethod((MethodDec)`<BeforeMethod* bm0> recaff <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) <Block b>`, list[Id] algFields) 
    = (MethodDec)`<BeforeMethod* bm0> <BeforeMethod* bm2> <TypeParams? tp> <ResultType rt> <Id meth>(<{FormalParam ","}* fs>) {
                 '  <BlockStm* bs>

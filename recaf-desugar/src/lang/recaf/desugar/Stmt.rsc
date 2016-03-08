@@ -16,13 +16,10 @@ default Expr injectExpr(Expr e, Id alg, Names names) {
   throw "please implement this";
 }
 
-
 Expr method2alg(Block b, Id alg, Names names) 
   = (Expr)`<Id alg>.Method(<Expr bcps>)`
   when
     bcps := block2alg(b, alg, names);
-
-
 
 /// Extensions TODO: move to its own module.
 
