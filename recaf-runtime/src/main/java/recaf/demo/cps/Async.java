@@ -3,14 +3,13 @@ package recaf.demo.cps;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
-public class Async<R> implements StmtJava<R>, JavaMethodAlg<Future<R>, SD<R>> {
+public abstract class Async<R,E> implements EvalJavaStmt<R, E>, JavaMethodAlg<Future<R>, SD<R>> {
 
 	public Future<R> Method(SD<R> body) {
 		CompletableFuture<R> promise = new CompletableFuture<R>();

@@ -1,10 +1,11 @@
 package recaf.core.cps;
 
 import recaf.core.ISupply;
+import recaf.core.alg.JavaStmtAlg;
 import recaf.core.direct.EvalJavaExpr;
 import recaf.core.direct.IEval;
 
-public interface FullJava<R> extends EvalJavaStmt<R, IEval>, EvalJavaExpr {
+public interface FullJava<R> extends JavaStmtAlg<R, IEval, SD<R>, CD<R>>, EvalJavaExpr {
 	
 	@SuppressWarnings("unchecked")
 	@Override
