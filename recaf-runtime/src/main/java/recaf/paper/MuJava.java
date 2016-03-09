@@ -4,7 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 //BEGIN_MUJAVA_ALG
-public interface MuJava<R, S> {
+interface MuJava<R, S> {
 	R Method(S s);
 	S Exp(Supplier<Void> e);
 	<T> S Decl(Supplier<T> e, Function<T, S> s);
