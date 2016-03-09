@@ -58,7 +58,7 @@ public class EvalJavaHelper {
 	}
 
 	private static boolean isAssignable(Class<?> methodParameter, Object o) {
-		return MethodUtils.isAssignmentCompatible(methodParameter, o.getClass());
+		return o==null || MethodUtils.isAssignmentCompatible(methodParameter, o.getClass());
 	}
 
 	public static Constructor<?> findConstructor(Class<?> clazz, Object[] args) {
@@ -78,7 +78,7 @@ public class EvalJavaHelper {
 	public static Object[] evaluateArguments(IEval[] args) throws Throwable {
 		Object[] evaluatedArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
-			evaluatedArgs[i] = args[i].eval();
+			evaluatedArgs[i] = toValue(args[i].eval());
 		}
 		return evaluatedArgs;
 	}
