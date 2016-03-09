@@ -10,7 +10,7 @@ interface MuJava<R, S> {
 	<T> S Decl(Supplier<T> e, Function<T, S> s);
 	<T> S For(Supplier<Iterable<T>> e, Function<T, S> s);
 	S If(Supplier<Boolean> c, S s1, S s2);
-	S Return(Supplier<R> e);
+	S Return(Supplier<? extends R> e);
 	S Seq(S s1, S s2);
 	S Empty();
 }

@@ -3,16 +3,12 @@ package recaf.paper;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-interface IExec {
-	void exec();
-}
+//BEGIN_MUJAVA_IMPL
+interface IExec { void exec(); }
 
 class Return extends RuntimeException { 
 	Object value;
-
-	Return(Object value) {
-		this.value = value;
-	}
+	Return(Object value) { this.value = value; }
 }
 
 public class MuJavaBase<R> implements MuJava<R, IExec> {
@@ -37,7 +33,7 @@ public class MuJavaBase<R> implements MuJava<R, IExec> {
 		return () -> { if (c.get()) s1.exec(); else  s2.exec(); };
 	}
 
-	public IExec Return(Supplier<R> e) {
+	public IExec Return(Supplier<? extends R> e) {
 		return () -> { throw new Return(e.get()); };
 	}
 
@@ -49,3 +45,8 @@ public class MuJavaBase<R> implements MuJava<R, IExec> {
 		return () -> {};
 	}
 }
+//END_MUJAVA_IMPL
+
+
+
+//
