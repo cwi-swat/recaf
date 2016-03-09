@@ -3,6 +3,7 @@ package recaf.paper;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+//BEGIN_USING_BASE
 public class UsingBase<R> extends MuJavaBase<R> implements Using<R, IExec> {
 
 	@Override
@@ -26,3 +27,4 @@ public class UsingBase<R> extends MuJavaBase<R> implements Using<R, IExec> {
 	}
 
 }
+//END_USING_BASE

@@ -46,7 +46,3 @@ public class MuJavaBase<R> implements MuJava<R, IExec> {
 	}
 }
 //END_MUJAVA_IMPL
-
-
-
-//
