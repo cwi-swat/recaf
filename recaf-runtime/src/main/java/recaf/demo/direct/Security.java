@@ -1,31 +1,30 @@
 package recaf.demo.direct;
 
-import java.util.function.Function;
+import static recaf.core.EvalJavaHelper.toValue;
 
 import recaf.core.direct.IEval;
 import recaf.core.direct.NoOp;
 
 public class Security<R> implements NoOp<R> {
 	
-	private Function<Object, Object> filter = null;
-	private String securedMethod = null;
-
+	private Policy policy;
 	
-	public Security(String method, Function<Object, Object> filter){
-		this.filter = filter;
-		this.securedMethod = method;
+	public Security(Policy policy) {
+		this.policy = policy;
 	}
 	
 	@Override
-	public IEval Invoke(IEval obj, String method, IEval... args) {
+	public IEval Field(IEval recv, String name) {
 		return () -> {
-			Object r = NoOp.super.Invoke(obj, method, args).eval();
-			if (method == securedMethod){
-				return filter.apply(r);
+			Object obj = recv.eval();
+			if (policy.check(SecurityOperation.READ, toValue(obj), name)){
+				return NoOp.super  .Field(() -> obj, name).eval();
 			}
 			else
-				return r;
+				return null;
 		};
 	}
+
+	
 
 }

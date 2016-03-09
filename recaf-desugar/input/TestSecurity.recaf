@@ -1,114 +1,40 @@
 package generated;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import recaf.demo.direct.Student;
+import recaf.demo.direct.StudentPolicy;
 import recaf.demo.direct.Security;
 
-class Grade {
-	private String studentId;
-	private int grade;
-
-	public Grade(String studentId, int grade) {
-		this.studentId = studentId;
-		this.grade = grade;
-	}
-
-	public String getStudentId() {
-		return this.studentId;
-	}
-
-	public Integer getGrade() {
-		return this.grade;
-	}
-
-	@Override
-	public String toString() {
-		return String.valueOf(grade);
-	}
-}
-
-class Grades {
-	private List<Grade> grades = null;
-
-	public Grades(List<Grade> grades) {
-		this.grades = grades;
-	}
-
-	public List<Grade> getGrades() {
-		return this.grades;
-	}
-}
-
-class Printer {
-	// Change parameter type to Object. Make dynamic dispatch to work correctly.
-	public Void print(Grade o) {
-		System.out.println(o);
+class Printer2 {
+	public Void print(Object o) {
+		System.out.print(o);
 		return null;
 	}
-
-	public Printer() {
-
-	}
 }
-
-class GradesSecurity extends Security<Object> {
-	public GradesSecurity(User user){
-		super("getGrades", 
-			(grades) -> {
-				if (user instanceof Student){
-					return filterByStudent((List<Grade>) grades, ((Student) user).getId());
-				}else if (user instanceof Teacher){
-					return grades;
-				}else{
-					return new ArrayList<Grade>();
-				}
-			});
-	}
-
-	private static List<Grade> filterByStudent(List<Grade> grades, String id) {
-		List<Grade> filtered = new ArrayList<Grade>();
-		for (Grade g : grades) {
-			if (g.getStudentId() == id) {
-				filtered.add(g);
-			}
-		}
-		return filtered;
-	}
-
-}
-
-interface User { 
-} 
-
-class Student implements User{
-	private String id;
- 
-	public Student(String id){
-		this.id = id;
-	}
-	
-	public String getId(){
-		return this.id;
-	}
-}
-
-class Teacher implements User{}
 
 public class TestSecurity{
 	
-	private static recaf Security<Object> alg = new GradesSecurity(new Student("2"));
+	private static recaf Security<Object> alg = new Security<Object>(new StudentPolicy());
 	
-	public recaf static Void printGrades(Grades grades){
-		Printer p = new Printer();
-		for (Grade grade : grades.getGrades()){
-			p.print(grade);
+	public recaff static Void printGrades(List<Student> students){
+		Printer2 p = new Printer2();
+		for (Student s : students){
+			p.print(s.name);
+			p.print(" -> "); 
+			p.print(s.grade);
+			p.print("\n");
 		}
 	}
 	
 	public static void main(String[] args){
-		Grades grades = new Grades(Arrays.asList(new Grade[]{new Grade("1", 50), new Grade("2", 65)}));
-		printGrades(grades);
+		List<Student> students =
+			Arrays.asList(new Student[]{
+				new Student("Alice", "A",1),
+				new Student("Bob","B", 2),
+				new Student("Cathy","F",1)});
+		printGrades(students);		
+		
 	}
 }
