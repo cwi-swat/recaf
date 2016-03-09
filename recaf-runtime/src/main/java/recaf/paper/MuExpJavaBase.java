@@ -7,8 +7,8 @@ interface IEval {
 	Object eval() throws Throwable;
 }
 
-class MuExpJavaBase implements MuExpJava<IEval> {
 
+class MuExpJavaBase implements MuExpJava<IEval> {
 	public IEval Lit(Object x) {
 		return () -> x;
 	}
