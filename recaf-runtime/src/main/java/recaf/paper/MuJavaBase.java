@@ -4,7 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 //BEGIN_MUJAVA_IMPL
-interface IExec { void exec(); }
+interface IExec { void exec() throws Throwable; }
 
 class Return extends RuntimeException { 
 	Object value;
@@ -13,7 +13,13 @@ class Return extends RuntimeException {
 
 public class MuJavaBase<R> implements MuJava<R, IExec> {
 	public R Method(IExec s) {
-		try { s.exec(); } catch (Return r) { return (R)r.value; }
+		try { 
+			s.exec(); 
+		} catch (Return r) { 
+			return (R)r.value; 
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
 		return null;
 	}
 
