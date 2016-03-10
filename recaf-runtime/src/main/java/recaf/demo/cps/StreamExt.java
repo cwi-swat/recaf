@@ -41,6 +41,8 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, S
 	}
 	
 	public SD<R> Yield(ISupply<R> exp) {
+		System.out.println("Yield");
+
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> { 
 				result.onNext(v);
