@@ -22,7 +22,7 @@ public class Memo<R> implements NoOp<R> {
 			Object[] evArgs = EvalJavaHelper.evaluateArguments(args);
 			MemoizableCall key = new MemoizableCall(evObj, method, evArgs);
 			if (!map.containsKey(key))
-				map.put(key, (R) NoOp.super.Invoke(EvalJavaHelper.delayArgument(evObj), method, EvalJavaHelper.delayArguments(evArgs)).eval());
+				map.put(key, (R) NoOp.super.Invoke(EvalJavaHelper.delayObject(evObj), method, EvalJavaHelper.delayObjects(evArgs)).eval());
 			return map.get(key);			
 		};
 	}

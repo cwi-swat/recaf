@@ -76,7 +76,7 @@ public class EvalJavaHelper {
 		return null;
 	}
 	
-	public static IEval delayArgument(Object obj){
+	public static IEval delayObject(Object obj){
 		return new IEval() {
 			
 			@Override
@@ -94,8 +94,8 @@ public class EvalJavaHelper {
 		return evaluatedArgs;
 	}
 	
-	public static IEval[] delayArguments(Object[] args) throws Throwable {
-		return Arrays.asList(args).stream().map(EvalJavaHelper::delayArgument).toArray(size -> new IEval[size]);
+	public static IEval[] delayObjects(Object[] args) throws Throwable {
+		return Arrays.asList(args).stream().map(EvalJavaHelper::delayObject).toArray(size -> new IEval[size]);
 	}
 	
 }
