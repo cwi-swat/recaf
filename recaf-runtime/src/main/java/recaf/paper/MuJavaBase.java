@@ -12,6 +12,13 @@ class Return extends RuntimeException {
 }
 
 interface MuJavaBase<R> extends MuJava<R, IExec> {
+	static <T> T run(IExec s) {
+		try { s.exec(); } 
+		catch (Return r) { return (T)r.value; }
+		catch (Throwable e) { throw new RuntimeException(e); }
+	    return null;
+	}
+	
 	default IExec Exp(Supplier<Void> e) {
 		return () -> { e.get(); };
 	}
