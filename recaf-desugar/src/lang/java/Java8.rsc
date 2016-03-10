@@ -23,12 +23,14 @@ keyword Keyword = "default";
 
 syntax Expr
   = right cond: Expr CondMid Expr 
-  > "(" {FormalParam ","}* ")" "-\>" Expr
+  > 
+  assoc ("(" {FormalParam ","}* ")" "-\>" Expr
   | "(" {FormalParam ","}* ")" "-\>" Block
   | "(" {Id ","}+ ")" "-\>" Expr
   | "(" {Id ","}+ ")" "-\>" Block
   | Id "-\>" Expr
   | Id "-\>" Block
+  )
   ;
 
 // Java 15 things

@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public interface Times<R, S> extends MuJava<R, S> {
-
 	static Iterable<Integer> range(Integer n) {
 		return new Iterable<Integer>() {
 			@Override
@@ -15,13 +14,16 @@ public interface Times<R, S> extends MuJava<R, S> {
 			}
 		};
 	}
-	
+
 	default S Times(Supplier<Integer> n, S s) {
 		return For(() -> range(n.get()), ignored -> s);
 	}
 	
-	default S Times(Supplier<Integer> n, Function<Integer, S> s) {
-		return For(() -> range(n.get()), s);
-	}
+default 
+//BEGIN_TIMES
+S Times(Supplier<Integer> n, Function<Integer, S> s) {
+  return For(() -> range(n.get()), s);
+}
+//END_TIMES
 	
 }
