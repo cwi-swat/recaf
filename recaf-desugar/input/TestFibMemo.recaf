@@ -1,0 +1,24 @@
+package generated;
+
+import recaf.demo.direct.Memo;
+
+public class TestFibMemo {
+  private static recaf Memo<Integer, Integer> alg = new Memo<Integer, Integer>("fib");
+
+  private recaff Integer fib(Integer x) {
+  	if(x < 2) {
+  		return x;
+  	} else {
+   		Integer x1 = fib(x-1);
+  		Integer x2 = fib(x-2);
+  		return x1 + x2;
+  	}
+  } 
+  
+  public static void main(String args[]) {
+    int count = 10;
+    TestFibMemo t = new TestFibMemo();
+   	System.out.println(t.fib(12));
+   	System.out.println(t.fib(12));
+  }
+}

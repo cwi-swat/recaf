@@ -77,4 +77,11 @@ public class TestVirtualization extends BaseTest {
 
 		Assert.assertEquals("6", output);
 	}
+	
+	
+	@Test
+	public void TestMemo() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestFibMemo");
+		Assert.assertEquals("144\n144", output);
+	}
 }
