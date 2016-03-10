@@ -40,7 +40,7 @@ public class Security<R> implements NoOp<R> {
 					return null;
 			}
 			else
-				return NoOp.super.Assign(() -> obj, rhs);
+				return NoOp.super.Assign(() -> obj, rhs).eval();
 		};
 	}
 
