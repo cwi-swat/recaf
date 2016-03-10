@@ -2,7 +2,7 @@ package generated;
 import java.util.concurrent.ExecutionException;
 
 import recaf.demo.cps.StreamExt;
-import recaf.demo.cps.stream.Stream;
+import rx.Observable;
 
 public class TestStream {
   
@@ -18,26 +18,17 @@ public class TestStream {
         return; 
      }
   }
-  */
+  */ 
    
-  recaf Stream<Integer> simpleStream() {
+  recaf Observable<Integer> simpleStream() {
     yield! 1;
     yield! 2;
     yield! 3;
     yield! 4;
     yield! 5;
-  }  
-  
-  /*  
-  recaf void consumeStream() {
-     awaitFor (Integer x: asyncRange()) {
-       System.out.println(x);
-     }
-  }
- */ 
+  }   
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	new TestStream().simpleStream();
+    new TestStream().simpleStream().subscribe(n -> System.out.println(n));
   }
-
 }

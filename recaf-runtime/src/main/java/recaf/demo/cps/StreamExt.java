@@ -10,20 +10,20 @@ import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
 import rx.Observable;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
-public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, SD<R>> {
+public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, SD<R>> {
 	
-	Observable<R> result;
-	public Observable<R> Method(SD<R> body) {
-		
-		result = Observable.create(subscriber -> {
-			body.accept(null,
-					r ->     { }, 
-					() ->    { },
-					label -> { },
-					label -> { },
-					ex ->    { subscriber.onError(ex); });
-		});
+	PublishSubject<R> result = PublishSubject.create();
+
+	public Subject<R, R> Method(SD<R> body) {
+		body.accept(null,
+				r ->     { result.onNext(r); }, 
+				() ->    { result.onCompleted(); },
+				label -> { },
+				label -> { },
+				ex ->    { result.onError(ex);});
 		
 		return result;
 	}
@@ -40,23 +40,19 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Observable<R>, S
 		} , err);
 	}
 	
-	public <T> SD<R> AwaitFor(Supplier<Observable<R>> coll, Function<Ref<R>, SD<R>> body){
-		return null;
-	}
-	
-	public <U> SD<R> Yield(ISupply<U> exp) {
+	public SD<R> Yield(ISupply<R> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
-			get(exp).accept(v -> {
-				// result.doOnNext(v);
+			get(exp).accept(v -> { 
+				result.onNext(v);
 			} , err);
 		};
+	}
+	
+	public <T> SD<R> AwaitFor(Supplier<Observable<R>> coll, Function<Ref<R>, SD<R>> body){
+		throw new UnsupportedOperationException();
 	}
 
 	public <U> SD<R> YieldFrom(ISupply<Observable<U>> exp) {
-		return (label, rho, sigma, brk, contin, err) -> {
-			get(exp).accept(v -> {
-				// result.mergeWith(v);
-			} , err);
-		};
+		throw new UnsupportedOperationException();
 	}
 }
