@@ -42,6 +42,13 @@ Expr expr2alg((Expr)`<Id x> -\> <Block b>`, Id alg, Names names)
 
 
 Expr expr2alg((Expr)`<Id x>`, Id alg, Names names)
+  = (Expr)`<Id alg>.Ref(<Expr name>, <Id x>)`
+  when
+    Expr name := id2strExpr(x),
+    name in names;
+
+
+default Expr expr2alg((Expr)`<Id x>`, Id alg, Names names)
   = (Expr)`<Id alg>.Var(<Expr name>, <Id x>)`
   when
     Expr name := id2strExpr(x);
