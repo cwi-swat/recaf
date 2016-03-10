@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 
 // todo: extract interface to make useable with fields in expression eval.
 public final class ReflectRef<X> implements IRef<X>{
-	private Object obj;
+	private Object object;
 	private Field field;
+	private String fieldName;
 	
 	public ReflectRef(Object obj, String fldName) throws NoSuchFieldException, SecurityException {
-		this.obj = obj;
+		this.object = obj;
 		field = obj.getClass().getDeclaredField(fldName);
+		fieldName = fldName;
 	}
 
 	
@@ -17,7 +19,7 @@ public final class ReflectRef<X> implements IRef<X>{
 	public X value(){
 		field.setAccessible(true);
 		try {
-			return (X) field.get(obj);
+			return (X) field.get(object);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
@@ -27,12 +29,22 @@ public final class ReflectRef<X> implements IRef<X>{
 	public IRef<X> setValue(X val){
 		field.setAccessible(true);
 		try {
-			field.set(obj, val);
+			field.set(object, val);
 			return this;
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+
+	public Object getObject() {
+		return object;
 	}
 
 }

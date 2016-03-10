@@ -28,13 +28,18 @@ public class TestSecurity{
 		}
 	}
 	
+	public recaff static Void failStudent(Student s){
+		s.grade = "F";
+	}
+	
 	public static void main(String[] args){
 		List<Student> students =
 			Arrays.asList(new Student[]{
 				new Student("Alice", "A",1),
 				new Student("Bob","B", 2),
 				new Student("Cathy","F",1)});
-		printGrades(students);		
-		
+		failStudent(students.get(0));
+		failStudent(students.get(1));	
+		printGrades(students);	
 	}
 }

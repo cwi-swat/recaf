@@ -6,12 +6,15 @@ public class StudentPolicy implements Policy{
 	public boolean check(SecurityOperation op, Object obj, String name) {
 		if (op.equals(SecurityOperation.READ)){
 			if (obj instanceof Student){
-				Student s = (Student) obj;
-				return (s.grade != "F");
+				return ((Student) obj).grade != "F";
 			}
-			return true;
 		}
-		else return true;
+		else if (op.equals(SecurityOperation.UPDATE)){
+			if (obj instanceof Student){
+				return ((Student) obj).section == 1;
+			}
+		}
+		return true;
 	}
 
 }
