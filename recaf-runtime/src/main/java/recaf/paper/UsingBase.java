@@ -4,8 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 //BEGIN_USING_BASE
-class UsingBase<R> extends MuJavaBase<R> 
-  implements Using<R, IExec> {
+class UsingBase<R> implements TypePreserving<R>, Using<R, IExec> {
 	public <T extends AutoCloseable> 
 	  IExec Using(Supplier<T> r, Function<T, IExec> s) {
 		return () -> {
