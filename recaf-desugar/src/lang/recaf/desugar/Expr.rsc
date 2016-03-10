@@ -45,7 +45,7 @@ Expr expr2alg((Expr)`<Id x>`, Id alg, Names names)
   = (Expr)`<Id alg>.Ref(<Expr name>, <Id x>)`
   when
     Expr name := id2strExpr(x),
-    name in names;
+    x in names.refs;
 
 
 default Expr expr2alg((Expr)`<Id x>`, Id alg, Names names)
