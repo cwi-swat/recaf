@@ -67,7 +67,8 @@ public interface JavaExprAlg<E> {
     E New(Class<?> clazz, E...args);
 	E Invoke(E obj, String method, E... args) throws Exception;
 	
+	E Var(String name, Object obj);
 	// the ref and val things are the real bindings themselves
 	// because of HOAS encoding of binders.
-	E Var(String name, IRef<?> ref);
+	E Ref(String name, IRef<?> ref);
 }

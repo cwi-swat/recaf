@@ -323,10 +323,11 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	}
 
 	@Override
-	default IEval Var(String name, IRef<?> val) {
+	default IEval Ref(String name, IRef<?> val) {
 		return () -> val;
 	}
 	
+	@Override
 	default IEval Var(String name, Object val) {
 		return () -> val;
 	}

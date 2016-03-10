@@ -12,7 +12,7 @@ public interface Logging<R> extends NoOp<R> {
 	static Logger logger = Logger.getLogger(FullJava.class.getCanonicalName());
 	
 	@Override
-	default IEval Var(String name, IRef<?> val){ 
+	default IEval Var(String name, Object val){ 
 		return () -> { 
 			Object r = NoOp.super.Var(name, val).eval();
 			logger.log(Level.INFO, "Accessing variable "+name+" => "+r);
