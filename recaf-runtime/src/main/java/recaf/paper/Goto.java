@@ -6,6 +6,8 @@ import java.util.function.Supplier;
 
 import recaf.core.cps.K0;
 
+// Only support jumping backwards. 
+
 //BEGIN_GOTO
 interface Goto<R> extends MuJavaCPS<R> {
 	static Map<String, K0> labeled = new HashMap<>();
