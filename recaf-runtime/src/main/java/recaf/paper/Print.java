@@ -24,7 +24,7 @@ interface Print extends MuExpJava<String>, MuStmJava<String, String, String> {
 		return getTypeAndName(s) + " = " + x + "; " + s.apply(null);
 	}
 
-	default String getTypeAndName(Function<?, String> s) {
+	static String getTypeAndName(Function<?, String> s) {
 		for (Method m: s.getClass().getMethods()) {
 			if (m.getName().equals("apply")) {
 				return m.getReturnType() + " " + m.getParameters()[0].getName();
@@ -88,7 +88,7 @@ interface Print extends MuExpJava<String>, MuStmJava<String, String, String> {
 		return "(" + getFormals(f) + ") -> " + callClosure(f);
 	}
 
-	default String callClosure(Object f) {
+	static String callClosure(Object f) {
 		for (Method m: f.getClass().getDeclaredMethods()) {
 			Object[] args = new Object[m.getParameterCount()];
 			Arrays.fill(args, null);
@@ -101,7 +101,7 @@ interface Print extends MuExpJava<String>, MuStmJava<String, String, String> {
 		return null;
 	}
 
-	default String getFormals(Object f) {
+	static String getFormals(Object f) {
 		String formals = "";
 		for (Method m: f.getClass().getDeclaredMethods()) {
 			for (Parameter p: m.getParameters()) {
