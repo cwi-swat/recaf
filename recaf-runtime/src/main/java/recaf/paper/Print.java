@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import java.lang.reflect.Method;
 
-interface Print extends MuExpJava<String>, MuJavaAlg<String, String, String> {
+interface Print extends MuExpJava<String>, MuJavaStm<String, String, String> {
 
 	@Override
 	default String Method(String s) {
@@ -20,11 +20,11 @@ interface Print extends MuExpJava<String>, MuJavaAlg<String, String, String> {
 	}
 
 	@Override
-	default <T> String Decl(String x, Function<T, String> s) {
+	default String Decl(String x, Function<?, String> s) {
 		return getTypeAndName(s) + " = " + x + "; " + s.apply(null);
 	}
 
-	default <T> String getTypeAndName(Function<T, String> s) {
+	default String getTypeAndName(Function<?, String> s) {
 		for (Method m: s.getClass().getMethods()) {
 			if (m.getName().equals("apply")) {
 				return m.getReturnType() + " " + m.getParameters()[0].getName();
@@ -34,7 +34,7 @@ interface Print extends MuExpJava<String>, MuJavaAlg<String, String, String> {
 	}
 
 	@Override
-	default <T> String For(String x, Function<T, String> s) {
+	default String For(String x, Function<?, String> s) {
 		return "for (" + getTypeAndName(s) + ": " + x + ")" + s.apply(null);
 	}
 
