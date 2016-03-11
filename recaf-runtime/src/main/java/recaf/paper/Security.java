@@ -4,7 +4,6 @@ import static recaf.core.EvalJavaHelper.toValue;
 
 import recaf.core.direct.IEval;
 import recaf.core.direct.NoOp;
-import recaf.demo.direct.Policy;
 
 //BEGIN_SECURITY
 public class Security<R> implements NoOp<R> {
