@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import java.lang.reflect.Method;
 
-interface Print extends MuExpJava<String>, MuJavaStm<String, String, String> {
+interface Print extends MuExpJava<String>, MuStmJava<String, String, String> {
 
 	@Override
 	default String Method(String s) {
@@ -61,21 +61,6 @@ interface Print extends MuExpJava<String>, MuJavaStm<String, String, String> {
 	@Override
 	default String Lit(Object x) {
 		return x.toString();
-	}
-
-	@Override
-	default String Mul(String l, String r) {
-		return l + " * " + r;
-	}
-
-	@Override
-	default String Plus(String l, String r) {
-		return l + " + " + r;
-	}
-
-	@Override
-	default String Eq(String l, String r) {
-		return l + " == " + r;
 	}
 
 	@Override
