@@ -18,7 +18,7 @@ public class Security<R> implements NoOp<R> {
 	public IEval Field(IEval recv, String name) {
 		return () -> {
 			Object obj = recv.eval();
-			if (policy.check(SecurityOperation.READ, toValue(obj), name)){
+			if (policy.check(Policy.READ, toValue(obj), name)){
 				return NoOp.super.Field(() -> obj, name).eval();
 			}
 			else
@@ -33,7 +33,7 @@ public class Security<R> implements NoOp<R> {
 			if (obj instanceof ReflectRef){
 				String fldName = ((ReflectRef<?>) obj).getFieldName();
 				Object recv = ((ReflectRef<?>) obj).getObject();
-				if (policy.check(SecurityOperation.UPDATE, toValue(recv), fldName)){
+				if (policy.check(Policy.UPDATE, toValue(recv), fldName)){
 					return NoOp.super.Assign(() -> obj, rhs).eval();
 				}
 				else

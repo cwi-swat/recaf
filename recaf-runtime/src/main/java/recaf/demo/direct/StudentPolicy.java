@@ -3,13 +3,13 @@ package recaf.demo.direct;
 public class StudentPolicy implements Policy{
 
 	@Override
-	public boolean check(SecurityOperation op, Object obj, String name) {
-		if (op.equals(SecurityOperation.READ)){
+	public boolean check(int op, Object obj, String name) {
+		if (op == Policy.READ){
 			if (obj instanceof Student){
 				return ((Student) obj).grade != "F";
 			}
 		}
-		else if (op.equals(SecurityOperation.UPDATE)){
+		else if (op == Policy.UPDATE){
 			if (obj instanceof Student){
 				return ((Student) obj).section == 1;
 			}
