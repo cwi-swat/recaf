@@ -21,7 +21,7 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, S
 	public Subject<R, R> Method(SD<R> body) {
 		body.accept(null,
 				r ->     { result.onNext(r); }, 
-				() ->    { result.onCompleted(); },
+				() ->    {  },
 				label -> { },
 				label -> { },
 				ex ->    { result.onError(ex);});
@@ -50,11 +50,18 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, S
 		};
 	}
 	
-	public <T> SD<R> AwaitFor(Supplier<Observable<R>> coll, Function<Ref<R>, SD<R>> body){
+	public <T> SD<R> YieldFrom(ISupply<Observable<R>> exp) {
+		return (label, rho, sigma, brk, contin, err) -> {
+			get(exp).accept(v -> { 
+				result.mergeWith(v);
+				sigma.call();
+			} , err);
+		};
+	}
+	
+	public <T> SD<R> AwaitFor(Supplier<CompletableFuture<R>> coll, Function<T, SD<R>> body){
 		throw new UnsupportedOperationException();
 	}
 
-	public <U> SD<R> YieldFrom(ISupply<Observable<U>> exp) {
-		throw new UnsupportedOperationException();
-	}
+
 }

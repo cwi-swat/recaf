@@ -1,0 +1,38 @@
+package generated;
+import java.util.concurrent.ExecutionException;
+
+import recaf.demo.cps.StreamExt;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+
+public class TestSimpleStream_with_yieldFrom {
+  
+    private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
+ 
+	recaf Observable<Integer> simpleStream() {
+		yield! 1;
+		yield! 2;
+		yield! 3;
+		yieldFrom! simpleStream2();
+		yield! 4;
+		yield! 5;
+	}  
+  
+	recaf Observable<Integer> simpleStream2() {
+	    yield! 11;
+	    yield! 22;
+	    yield! 33;
+	    yield! 44;
+	    yield! 55;
+	  }
+  
+  public static void main(String args[]) throws InterruptedException, ExecutionException {
+	Subscription sub = new TestSimpleStream_with_yieldFrom().simpleStream().subscribe(new Action1<Integer>() {
+        @Override
+        public void call(Integer s) {
+              System.out.println(s);
+        }
+    });
+  }
+}
