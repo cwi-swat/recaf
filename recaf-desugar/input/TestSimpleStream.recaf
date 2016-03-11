@@ -3,11 +3,13 @@ import java.util.concurrent.ExecutionException;
 
 import recaf.demo.cps.StreamExt;
 import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
 
-public class TestStream {
+public class TestSimpleStream {
   
   private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
- 
+  
   /*
   recaf Stream<Integer> scan(Stream<Integer> src, Integer state, Integer acc) {
    yield! state;
@@ -19,16 +21,21 @@ public class TestStream {
      }
   }
   */ 
-   
+ 
   recaf Observable<Integer> simpleStream() {
     yield! 1;
     yield! 2;
     yield! 3;
     yield! 4;
     yield! 5;
-  }   
+  }  
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-    new TestStream().simpleStream().subscribe(n -> System.out.println(n));
+	Subscription sub = new TestSimpleStream().simpleStream().subscribe(new Action1<Integer>() {
+        @Override
+        public void call(Integer s) {
+              System.out.println(s);
+        }
+    });
   }
 }

@@ -11,11 +11,12 @@ import recaf.core.cps.SD;
 import recaf.core.cps.StmtJava;
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import rx.subjects.ReplaySubject;
 import rx.subjects.Subject;
 
 public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, SD<R>> {
 	
-	PublishSubject<R> result = PublishSubject.create();
+	ReplaySubject<R> result = ReplaySubject.create();
 
 	public Subject<R, R> Method(SD<R> body) {
 		body.accept(null,
@@ -44,6 +45,7 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, S
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> { 
 				result.onNext(v);
+				sigma.call();
 			} , err);
 		};
 	}
