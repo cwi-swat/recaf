@@ -3,7 +3,7 @@ package generated;
 import recaf.demo.direct.Memo;
 
 public class TestFibMemo {
-  private static recaf Memo<Integer, Integer> alg = new Memo<Integer, Integer>("fib");
+  private static recaf Memo<Integer> alg = new Memo<Integer>();
 
   private recaff Integer fib(Integer x) {
   	if(x < 2) {

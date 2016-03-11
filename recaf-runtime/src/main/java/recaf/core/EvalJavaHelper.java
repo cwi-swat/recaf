@@ -3,6 +3,7 @@ package recaf.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.apache.commons.beanutils.MethodUtils;
 
@@ -74,6 +75,16 @@ public class EvalJavaHelper {
 		}
 		return null;
 	}
+	
+	public static IEval delayObject(Object obj){
+		return new IEval() {
+			
+			@Override
+			public Object eval() throws Throwable {
+				return obj;
+			}
+		};
+	}
 
 	public static Object[] evaluateArguments(IEval[] args) throws Throwable {
 		Object[] evaluatedArgs = new Object[args.length];
@@ -81,6 +92,10 @@ public class EvalJavaHelper {
 			evaluatedArgs[i] = toValue(args[i].eval());
 		}
 		return evaluatedArgs;
+	}
+	
+	public static IEval[] delayObjects(Object[] args) throws Throwable {
+		return Arrays.asList(args).stream().map(EvalJavaHelper::delayObject).toArray(size -> new IEval[size]);
 	}
 	
 }

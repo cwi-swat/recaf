@@ -3,47 +3,58 @@ package recaf.paper;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-interface IEval {
-	Object eval() throws Throwable;
+
+//BEGIN_TRACING
+interface Tracing extends MuExpJavaBase {
+	default IEval Var(String x, Object v){ 
+		return () -> {
+			System.out.println(x + " = " + v);
+			return MuExpJavaBase.super.Var(x, v).eval();
+		};
+	}
 }
+//END_TRACING
 
 
-class MuExpJavaBase implements MuExpJava<IEval> {
-	public IEval Lit(Object x) {
+//BEGIN_MUEXPJAVA_IMPL
+interface IEval { Object eval() throws Throwable; }
+
+interface MuExpJavaBase extends MuExpJava<IEval> {
+	default IEval Lit(Object x) {
 		return () -> x;
 	}
 
-	public IEval Mul(IEval l, IEval r) {
+	default IEval Mul(IEval l, IEval r) {
 		return () -> ((Integer)l.eval()) * ((Integer)r.eval());
 	}
 
-	public IEval Plus(IEval l, IEval r) {
+	default IEval Plus(IEval l, IEval r) {
 		return () -> ((Integer)l.eval()) + ((Integer)r.eval());
 	}
 
-	public IEval Eq(IEval l, IEval r) {
+	default IEval Eq(IEval l, IEval r) {
 		return () -> l.eval() == r.eval();
 	}
 
-	public IEval This(Object x) {
+	default IEval This(Object x) {
 		return () -> x;
 	}
 
-	public IEval Field(IEval x, String f) {
+	default IEval Field(IEval x, String f) {
 		return () -> {
 			Object o = x.eval();
 			return o.getClass().getField(f).get(o);
 		};
 	}
 	
-	private static Object[] evalArgs(IEval[] es) throws Throwable {
+	static Object[] evalArgs(IEval[] es) throws Throwable {
 		Object[] args = new Object[es.length];
 		for (int i = 0; i < es.length; i++) 
 			args[i] = es[i].eval();
 		return args;
 	}
 	
-	public IEval New(Class<?> c, IEval... es) {
+	default IEval New(Class<?> c, IEval... es) {
 		return () -> {
 			Object[] args = evalArgs(es);
 			for (Constructor<?> cons : c.getDeclaredConstructors()) 
@@ -52,11 +63,11 @@ class MuExpJavaBase implements MuExpJava<IEval> {
 				} catch (Exception e) {
 					continue;
 				}
-			throw new RuntimeException("could not find constructor");
+			throw new RuntimeException("no constructor");
 		};
 	}
 
-	public IEval Invoke(IEval x, String m, IEval... es) {
+	default IEval Invoke(IEval x, String m, IEval... es) {
 		return () -> {
 			Object recv = x.eval();
 			Object[] args = evalArgs(es);
@@ -67,16 +78,16 @@ class MuExpJavaBase implements MuExpJava<IEval> {
 					} catch (Exception e) {
 						continue;
 					}
-			throw new RuntimeException("could not find method " + m);
+			throw new RuntimeException("no such method " + m);
 		};
 	}
 
-	public IEval Lambda(Object f) {
+	default IEval Lambda(Object f) {
 		return () -> f;
 	}
 
-	public IEval Var(String x, Object it) {
+	default IEval Var(String x, Object it) {
 		return () -> it;
 	}
-
 }
+//END_MUEXPJAVA_IMPL
