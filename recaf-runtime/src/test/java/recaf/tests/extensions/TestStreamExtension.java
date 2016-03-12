@@ -9,8 +9,8 @@ import recaf.tests.CompiletimeException;
 public class TestStreamExtension extends BaseTest {
 
 	@Test
-	public void TestSimpleStream() throws CompiletimeException, RuntimeException {
-		String output = compileAndRun("TestSimpleStream");
+	public void TestStream_with_yield() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestStream_with_yield");
 		Assert.assertEquals("1\n" + 
 				"2\n" + 
 				"3\n" + 
@@ -19,8 +19,8 @@ public class TestStreamExtension extends BaseTest {
 	}
 	
 	@Test
-	public void TestSimpleStream_with_yieldFrom() throws CompiletimeException, RuntimeException {
-		String output = compileAndRun("TestSimpleStream_with_yieldFrom");
+	public void TestStream_with_yieldFrom() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestStream_with_yieldFrom");
 		Assert.assertEquals("1\n" + 
 				"2\n" + 
 				"3\n" + 

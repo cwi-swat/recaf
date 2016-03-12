@@ -6,8 +6,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class TestSimpleStream_with_yieldFrom {
-  
+public class TestStream_with_yieldFrom {
+ 
     private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
  
 	recaf Observable<Integer> simpleStream() {
@@ -28,7 +28,7 @@ public class TestSimpleStream_with_yieldFrom {
 	  }
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	Subscription sub = new TestSimpleStream_with_yieldFrom().simpleStream().subscribe(new Action1<Integer>() {
+	Subscription sub = new TestStream_with_yieldFrom().simpleStream().subscribe(new Action1<Integer>() {
         @Override
         public void call(Integer s) {
               System.out.println(s);
