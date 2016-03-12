@@ -11,7 +11,7 @@ import recaf.core.ISupply;
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
 
-public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
+public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, SD<R>, CD<R>> {
 	
 	default <T> BiConsumer<K<T>, K<Throwable>> get(ISupply<T> exp) {
 		return (k, err) -> {
@@ -29,6 +29,20 @@ public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, E, SD<R>, CD<R>> {
 	@Override
 	default SD<R> Empty() {
 		return (label, rho, sigma, brk, contin, err) -> sigma.call();
+	}
+	
+	@Override
+	default SD<R> ExpStat(ISupply<Void> e) {
+		return (label, rho, sigma, brk, contin, err) -> {
+			try {
+				e.get();
+			}
+			catch (Throwable t) {
+				err.accept(t);
+				return;
+			}
+			sigma.call();
+		};
 	}
 
 	@Override
