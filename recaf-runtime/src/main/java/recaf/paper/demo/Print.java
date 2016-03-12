@@ -31,7 +31,7 @@ interface Print<R> extends MuExpJava<String>, MuStmJava<String, String> {
 	}
 
 	@Override
-	default String For(String x, Function<?, String> s) {
+	default <S> String For(String x, Function<S, String> s) {
 		return "for (" + getTypeAndName(s) + ": " + x + ")" + s.apply(null);
 	}
 

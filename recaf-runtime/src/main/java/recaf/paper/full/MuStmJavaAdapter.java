@@ -1,6 +1,7 @@
 package recaf.paper.full;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import recaf.paper.expr.IEval;
 import recaf.paper.stm.MuJava;
@@ -9,7 +10,7 @@ public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 	MuJava<R, S> base();
 	
 	static <T> T eval(IEval e) {
-		try { return (T)e.eval(); } 
+		try { return (T) e.eval(); } 
 		catch (Throwable t) { throw new RuntimeException(t); }
 	}
 	
@@ -24,8 +25,8 @@ public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 	}
 	
 	@Override
-	default S For(IEval e, Function<?, S> s) {
-		return base().For(() -> (Iterable)eval(e), s);
+	default <T> S For(IEval e, Function<T, S> s) {
+		return base().For(() -> (Iterable<T>) eval(e), s);
 	}
 	
 	@Override
