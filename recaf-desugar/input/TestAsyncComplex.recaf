@@ -1,11 +1,11 @@
 package generated;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import recaf.demo.cps.AsyncNoEval;
+import recaf.demo.cps.Async;
  
 public class TestAsyncComplex {
 
-    private static recaf AsyncNoEval<Integer> alg = new AsyncNoEval<Integer>();
+    private static recaf Async<Integer> alg = new Async<Integer>() {};
     
 	public static void pause(long sleeptime) {
 	    try { 

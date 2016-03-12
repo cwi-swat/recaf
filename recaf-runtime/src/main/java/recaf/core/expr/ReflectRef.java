@@ -1,4 +1,4 @@
-package recaf.core;
+package recaf.core.expr;
 
 import java.lang.reflect.Field;
 

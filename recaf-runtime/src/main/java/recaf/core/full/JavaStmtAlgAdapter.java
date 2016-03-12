@@ -1,37 +1,40 @@
-package recaf.core.expr;
+package recaf.core.full;
+
+import static recaf.core.expr.EvalJavaHelper.toValue;
 
 import java.util.function.Function;
 
 import recaf.core.Ref;
 import recaf.core.alg.JavaStmtAlg;
+import recaf.core.alg.JavaStmtOnlyAlg;
 import recaf.core.direct.IEval;
 
-public interface JavaStmtAlgAdapter<R, S, C> extends StmtAlg<R, IEval, S, C>{
-	JavaStmtAlg<R, S, C> base();
+public interface JavaStmtAlgAdapter<R, S, C> extends JavaStmtAlg<R, IEval, S, C>{
+	JavaStmtOnlyAlg<R, S, C> base();
 
 	@Override
 	default <T> S Decl(IEval exp, Function<Ref<T>, S> body) {
-		return base().Decl(() -> (T)exp.eval(), body);
+		return base().Decl(() -> (T)toValue(exp.eval()), body);
 	}
 
 	@Override
 	default <T> S ForEach(IEval exp, Function<Ref<T>, S> body) {
-		return base().ForEach(() -> (Iterable)exp.eval(), body); 
+		return base().ForEach(() -> (Iterable<T>)toValue(exp.eval()), body); 
 	}
 
 	@Override
 	default <T> S ForDecl(IEval init, Function<Ref<T>, S> body) {
-		return base().ForDecl(() -> (T)init.eval(), body); 
+		return base().ForDecl(() -> (T)toValue(init.eval()), body); 
 	}
 
 	@Override
 	default S ForBody(IEval cond, S update, S body) {
-		return base().ForBody(() -> (Boolean)cond.eval(), update, body);
+		return base().ForBody(() -> (Boolean)toValue(cond.eval()), update, body);
 	}
 
 	@Override
 	default <T extends Throwable> S Throw(IEval e) {
-		return base().Throw(() -> (Throwable)e.eval());
+		return base().Throw(() -> (Throwable)toValue(e.eval()));
 	}
 
 	@Override
@@ -41,7 +44,7 @@ public interface JavaStmtAlgAdapter<R, S, C> extends StmtAlg<R, IEval, S, C>{
 
 	@Override
 	default <T> S Switch(IEval expr, C... cases) {
-		return base().Switch(() -> expr.eval(), cases);
+		return base().Switch(() -> toValue(expr.eval()), cases);
 	}
 
 	@Override
@@ -56,27 +59,27 @@ public interface JavaStmtAlgAdapter<R, S, C> extends StmtAlg<R, IEval, S, C>{
 
 	@Override
 	default S For(S init, IEval cond, S update, S body) {
-		return base().For(init, () -> (Boolean)cond.eval(), update, body);
+		return base().For(init, () -> (Boolean)toValue(cond.eval()), update, body);
 	}
 
 	@Override
 	default S If(IEval cond, S s) {
-		return base().If(() -> (Boolean)cond.eval(), s);
+		return base().If(() -> (Boolean)toValue(cond.eval()), s);
 	}
 
 	@Override
 	default S If(IEval cond, S s1, S s2) {
-		return base().If(() -> (Boolean)cond.eval(), s1, s2);
+		return base().If(() -> (Boolean)toValue(cond.eval()), s1, s2);
 	}
 
 	@Override
 	default S While(IEval cond, S s) {
-		return base().While(() -> (Boolean)cond.eval(), s);
+		return base().While(() -> (Boolean)toValue(cond.eval()), s);
 	}
 
 	@Override
 	default S DoWhile(S s, IEval cond) {
-		return base().DoWhile(s, () -> (Boolean)cond.eval());
+		return base().DoWhile(s, () -> (Boolean)toValue(cond.eval()));
 	}
 
 	@Override
@@ -106,7 +109,7 @@ public interface JavaStmtAlgAdapter<R, S, C> extends StmtAlg<R, IEval, S, C>{
 
 	@Override
 	default S Return(IEval supplier) {
-		return base().Return(() -> (R)supplier.eval());
+		return base().Return(() -> (R)toValue(supplier.eval()));
 	}
 
 	@Override

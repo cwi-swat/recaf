@@ -1,6 +1,6 @@
-package recaf.core.direct;
+package recaf.core.expr;
 
-import static recaf.core.EvalJavaHelper.toValue;
+import static recaf.core.expr.EvalJavaHelper.toValue;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -10,10 +10,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import recaf.core.EvalJavaHelper;
-import recaf.core.IRef;
-import recaf.core.ReflectRef;
 import recaf.core.alg.JavaExprAlg;
+import recaf.core.direct.IEval;
 
 public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 
@@ -372,8 +370,10 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 		return () -> {
 			Object lo = toValue(l.eval());
 			Object ro = toValue(r.eval());
+
 			String lc = lo.getClass().getName();
 			String rc = ro.getClass().getName();
+			
 			Object res = null;
 			switch (lc) {
 			case "java.lang.Integer":

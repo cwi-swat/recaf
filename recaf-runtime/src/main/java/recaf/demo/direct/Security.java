@@ -1,12 +1,12 @@
 package recaf.demo.direct;
 
-import static recaf.core.EvalJavaHelper.toValue;
+import static recaf.core.expr.EvalJavaHelper.toValue;
 
-import recaf.core.ReflectRef;
 import recaf.core.direct.IEval;
-import recaf.core.direct.NoOp;
+import recaf.core.expr.ReflectRef;
+import recaf.core.full.FullJavaDirect;
 
-public class Security<R> implements NoOp<R> {
+public class Security<R> implements FullJavaDirect<R> {
 	
 	private Policy policy;
 	
@@ -19,7 +19,7 @@ public class Security<R> implements NoOp<R> {
 		return () -> {
 			Object obj = recv.eval();
 			if (policy.check(Policy.READ, toValue(obj), name)){
-				return NoOp.super.Field(() -> obj, name).eval();
+				return FullJavaDirect.super.Field(() -> obj, name).eval();
 			}
 			else
 				return null;
@@ -34,13 +34,13 @@ public class Security<R> implements NoOp<R> {
 				String fldName = ((ReflectRef<?>) obj).getFieldName();
 				Object recv = ((ReflectRef<?>) obj).getObject();
 				if (policy.check(Policy.UPDATE, toValue(recv), fldName)){
-					return NoOp.super.Assign(() -> obj, rhs).eval();
+					return FullJavaDirect.super.Assign(() -> obj, rhs).eval();
 				}
 				else
 					return null;
 			}
 			else
-				return NoOp.super.Assign(() -> obj, rhs).eval();
+				return FullJavaDirect.super.Assign(() -> obj, rhs).eval();
 		};
 	}
 

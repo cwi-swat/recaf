@@ -1,8 +1,8 @@
 package generated;
-import recaf.core.cps.NoOp;
+import recaf.core.cps.StmtJavaCPS;
 
 public class TestSwitch_nested_default_beginning {
-    private recaf NoOp<String> alg = new NoOp<String>() {};
+    private recaf StmtJavaCPS<String> alg = new StmtJavaCPS<String>() {};
  
  	public static Void print(String msg) {
 		System.out.println(msg);

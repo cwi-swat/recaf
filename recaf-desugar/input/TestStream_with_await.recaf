@@ -6,7 +6,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class TestStream_with_yield {
+public class TestStream_with_await {
   
   private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
   

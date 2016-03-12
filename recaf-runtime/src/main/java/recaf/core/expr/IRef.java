@@ -1,4 +1,4 @@
-package recaf.core;
+package recaf.core.expr;
 
 public interface IRef<T> {
 	T value();

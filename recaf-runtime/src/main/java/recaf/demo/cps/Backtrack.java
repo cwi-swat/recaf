@@ -3,14 +3,13 @@ package recaf.demo.cps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
-public class Backtrack<R> implements StmtJava<R>, JavaMethodAlg<List<R>, SD<R>> {
+public class Backtrack<R> implements EvalJavaStmt<R>, JavaMethodAlg<List<R>, SD<R>> {
 
 	@Override
 	public List<R> Method(SD<R> body) {

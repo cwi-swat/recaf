@@ -4,9 +4,9 @@ import java.io.StringWriter;
 import java.util.function.Supplier;
 
 import recaf.core.direct.IExec;
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 
-public abstract class GUI implements NoOp<Void> {
+public abstract class GUI implements FullJavaDirect<Void> {
 
 	private int idCount = 0;
 	

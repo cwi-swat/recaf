@@ -1,6 +1,6 @@
 package generated; 
 
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 
 class AC{
 	private int a;
@@ -20,7 +20,7 @@ class AC{
 
 
 public class TestExprSimpleMethodLookup   {
-  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+  private static recaf FullJavaDirect<Object> alg = new FullJavaDirect<Object>() {};
   
   private recaff static int simple(){           
   	AC a = new AC();

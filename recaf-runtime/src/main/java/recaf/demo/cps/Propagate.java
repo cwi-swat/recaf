@@ -2,13 +2,12 @@ package recaf.demo.cps;
 
 import java.util.ArrayDeque;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
-import recaf.core.cps.NoOp;
 import recaf.core.cps.SD;
+import recaf.core.cps.StmtJavaCPS;
 
-public class Propagate<R> implements NoOp<R> {
+public class Propagate<R> implements StmtJavaCPS<R> {
 	// BAD!!!
 	// non reentrant, only single type...
 	// but works across ordinary methods...

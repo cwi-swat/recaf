@@ -9,9 +9,9 @@ import java.util.function.Function;
 
 import recaf.core.ISupply;
 import recaf.core.Ref;
-import recaf.core.alg.JavaStmtAlg;
+import recaf.core.alg.JavaStmtOnlyAlg;
 
-public interface EvalJavaStmt<R, E> extends JavaStmtAlg<R, SD<R>, CD<R>> {
+public interface EvalJavaStmt<R> extends JavaStmtOnlyAlg<R, SD<R>, CD<R>> {
 	
 	default <T> BiConsumer<K<T>, K<Throwable>> get(ISupply<T> exp) {
 		return (k, err) -> {

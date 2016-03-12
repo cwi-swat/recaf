@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.direct.IExec;
-import recaf.core.direct.StmtJava;
+import recaf.core.direct.StmtJavaDirect;
 
-public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, IExec> {
+public class Maybe<R> implements StmtJavaDirect<R>, JavaMethodAlg<Optional<R>, IExec> {
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -1,10 +1,10 @@
 package generated;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import recaf.demo.cps.AsyncNoEval;
+import recaf.demo.cps.Async;
  
 public class TestAsyncNoAwait {
-    private static recaf AsyncNoEval<Integer> alg = new AsyncNoEval<Integer>();
+    private static recaf Async<Integer> alg = new Async<Integer>() {};
     
     recaf CompletableFuture<Integer> op() {
     	if (1 > 5) {

@@ -1,19 +1,20 @@
 package generated; 
 
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 
-class AB{
-	private int a;
-	
-	@Override
-	public String toString(){
-		return "AB("+a+")";
-	} 
-}
 
 
 public class TestExprNoConstructor  {
-  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+  private static recaf FullJavaDirect<Object> alg = new FullJavaDirect<Object>() {};
+
+class AB{
+    private int a;
+    
+    @Override
+    public String toString(){
+        return "AB("+a+")";
+    } 
+}
   
   private recaff static AB simple(){           
   	AB a = new AB();
