@@ -458,6 +458,8 @@ public interface EvalJavaExpr extends JavaExprAlg<IEval> {
 	@Override
 	default IEval New(Class<?> clazz, IEval... args) {
 		return () -> {
+			// todo: this does not deal with non-static inner classes, which require
+			// the enclosing instance as first param to the constructor. 
 			Object[] evaluatedArgs = EvalJavaHelper.evaluateArguments(args);
 			Constructor<?> constructor = EvalJavaHelper.findConstructor(clazz, evaluatedArgs);
 			constructor.setAccessible(true);

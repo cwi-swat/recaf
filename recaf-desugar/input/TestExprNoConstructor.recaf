@@ -7,14 +7,14 @@ import recaf.core.full.FullJavaDirect;
 public class TestExprNoConstructor  {
   private static recaf FullJavaDirect<Object> alg = new FullJavaDirect<Object>() {};
 
-class AB{
+  static class AB {
     private int a;
     
     @Override
     public String toString(){
         return "AB("+a+")";
     } 
-}
+  }
   
   private recaff static AB simple(){           
   	AB a = new AB();

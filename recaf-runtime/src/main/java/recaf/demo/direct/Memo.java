@@ -34,7 +34,7 @@ public class Memo<R> implements FullJavaDirect<R> {
 				memo.put(key, val);
 			}
 			else {
-				System.out.println("Memoized call: " + key);
+				//System.out.println("Memoized call: " + key);
 			}
 			return memo.get(key);
 		};
