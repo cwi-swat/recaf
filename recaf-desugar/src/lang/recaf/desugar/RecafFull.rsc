@@ -40,7 +40,7 @@ Expr stm2alg((Stm)`<Expr e>;`, Id alg, Names names)
     Expr e2 := expr2alg(unwrapRefs(e, names), alg, names);
  
 Expr injectExpr(Expr e, Id alg, Names names)
-  = (Expr)`<Id alg>.Exp(<Expr e2>)`
+  = e2 //(Expr)`<Id alg>.Exp(<Expr e2>)`
   when
     Expr e2 := expr2alg(unwrapRefs(e, names), alg, names);
 
