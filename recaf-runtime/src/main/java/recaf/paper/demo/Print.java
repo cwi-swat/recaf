@@ -17,7 +17,7 @@ interface Print<R> extends MuExpJava<String>, MuStmJava<String, String> {
 	}
 
 	@Override
-	default String Decl(String x, Function<?, String> s) {
+	default <T> String Decl(String x, Function<T, String> s) {
 		return getTypeAndName(s) + " = " + x + "; " + s.apply(null);
 	}
 
