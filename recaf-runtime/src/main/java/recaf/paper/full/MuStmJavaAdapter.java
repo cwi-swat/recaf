@@ -1,7 +1,6 @@
 package recaf.paper.full;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.paper.expr.IEval;
 import recaf.paper.stm.MuJava;
@@ -20,7 +19,7 @@ public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 	}
 	
 	@Override
-	default S Decl(IEval x, Function<?, S> s) {
+	default <T> S Decl(IEval x, Function<T, S> s) {
 		return base().Decl(() -> eval(x), s); 
 	}
 	
