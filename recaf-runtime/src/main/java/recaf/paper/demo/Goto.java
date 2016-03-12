@@ -1,10 +1,12 @@
-package recaf.paper;
+package recaf.paper.demo;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import recaf.core.cps.K0;
+import recaf.paper.stm.MuJavaCPS;
+import recaf.paper.stm.SD;
 
 // Only support jumping backwards. 
 

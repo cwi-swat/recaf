@@ -1,4 +1,4 @@
-package recaf.paper;
+package recaf.paper.demo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+
+import recaf.paper.expr.IEval;
+import recaf.paper.expr.MuExpJavaBase;
 
 //BEGIN_MEMO
 interface Memo extends MuExpJavaBase {

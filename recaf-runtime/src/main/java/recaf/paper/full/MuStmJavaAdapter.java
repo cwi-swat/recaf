@@ -1,10 +1,11 @@
-package recaf.paper;
+package recaf.paper.full;
 
 import java.util.function.Function;
 
-public interface MuStmJavaAdapter<R, S> extends MuStmJava<R, S, IEval> {
-	R Method(S s);
+import recaf.paper.expr.IEval;
+import recaf.paper.stm.MuJava;
 
+public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 	MuJava<R, S> base();
 	
 	static <T> T eval(IEval e) {

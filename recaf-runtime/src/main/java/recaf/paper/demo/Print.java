@@ -1,19 +1,16 @@
-package recaf.paper;
+package recaf.paper.demo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import recaf.paper.expr.MuExpJava;
+import recaf.paper.full.MuStmJava;
+
 import java.lang.reflect.Method;
 
-interface Print extends MuExpJava<String>, MuStmJava<String, String, String> {
-
-	@Override
-	default String Method(String s) {
-		return s;
-	}
-
+interface Print<R> extends MuExpJava<String>, MuStmJava<String, String> {
 	@Override
 	default String Exp(String e) {
 		return e;

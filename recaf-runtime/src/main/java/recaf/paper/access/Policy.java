@@ -1,4 +1,4 @@
-package recaf.paper;
+package recaf.paper.access;
 
 //BEGIN_POLICY
 public interface Policy {

@@ -1,4 +1,4 @@
-package recaf.paper;
+package recaf.paper.stm;
 
 import java.util.Iterator;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ import recaf.core.cps.K0;
 // otherwise yield etc (and backtracking don't work).
 
 //BEGIN_MUJAVA_CPS
-interface MuJavaCPS<R> extends MuJava<R, SD<R>> {
+public interface MuJavaCPS<R> extends MuJava<R, SD<R>> {
 	default R Method(SD<R> s) {
 		R r[] = (R[]) new Object[1];
 		s.accept(v -> r[0] = v, () -> {});
@@ -44,7 +44,7 @@ interface MuJavaCPS<R> extends MuJava<R, SD<R>> {
 		return (r, s) -> {if (c.get()) s1.accept(r, s); else s2.accept(r, s);};
 	}
 
-	default SD<R> Return(Supplier<? extends R> e) {
+	default SD<R> Return(Supplier<R> e) {
 		return (r, s) -> r.accept(e.get());
 	}
 

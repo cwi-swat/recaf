@@ -1,8 +1,7 @@
-package recaf.paper;
+package recaf.paper.expr;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-
 
 //BEGIN_TRACING
 interface Tracing extends MuExpJavaBase {
@@ -17,29 +16,18 @@ interface Tracing extends MuExpJavaBase {
 
 
 //BEGIN_MUEXPJAVA_IMPL
-interface IEval { Object eval() throws Throwable; }
-
-interface MuExpJavaBase extends MuExpJava<IEval> {
+public interface MuExpJavaBase extends MuExpJava<IEval> {
+	@Override
 	default IEval Lit(Object x) {
 		return () -> x;
 	}
 
-	default IEval Mul(IEval l, IEval r) {
-		return () -> ((Integer)l.eval()) * ((Integer)r.eval());
-	}
-
-	default IEval Plus(IEval l, IEval r) {
-		return () -> ((Integer)l.eval()) + ((Integer)r.eval());
-	}
-
-	default IEval Eq(IEval l, IEval r) {
-		return () -> l.eval() == r.eval();
-	}
-
+	@Override
 	default IEval This(Object x) {
 		return () -> x;
 	}
 
+	@Override
 	default IEval Field(IEval x, String f) {
 		return () -> {
 			Object o = x.eval();
@@ -54,6 +42,7 @@ interface MuExpJavaBase extends MuExpJava<IEval> {
 		return args;
 	}
 	
+	@Override
 	default IEval New(Class<?> c, IEval... es) {
 		return () -> {
 			Object[] args = evalArgs(es);
@@ -67,6 +56,7 @@ interface MuExpJavaBase extends MuExpJava<IEval> {
 		};
 	}
 
+	@Override
 	default IEval Invoke(IEval x, String m, IEval... es) {
 		return () -> {
 			Object recv = x.eval();
@@ -81,13 +71,16 @@ interface MuExpJavaBase extends MuExpJava<IEval> {
 			throw new RuntimeException("no such method " + m);
 		};
 	}
-
+	
+	@Override
 	default IEval Lambda(Object f) {
 		return () -> f;
 	}
 
+	@Override
 	default IEval Var(String x, Object it) {
 		return () -> it;
 	}
+
 }
 //END_MUEXPJAVA_IMPL

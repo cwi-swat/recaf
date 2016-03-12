@@ -1,8 +1,10 @@
-package recaf.paper;
+package recaf.paper.methods;
 
+import recaf.paper.stm.IExec;
+import recaf.paper.stm.Return;
 
 //BEGIN_TYPE_PRESERVING_METHOD
-interface TypePreserving<R> extends MuJavaBase<R> {
+public interface TypePreserving<R> {
   default R Method(IExec s) {
     try { s.exec(); } 
 	  catch (Return r) { return (R)r.value; }

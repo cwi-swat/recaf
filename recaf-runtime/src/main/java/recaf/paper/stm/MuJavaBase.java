@@ -1,17 +1,10 @@
-package recaf.paper;
+package recaf.paper.stm;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 //BEGIN_MUJAVA_IMPL
-interface IExec { void exec() throws Throwable; }
-
-class Return extends RuntimeException { 
-	Object value;
-	Return(Object value) { this.value = value; }
-}
-
-interface MuJavaBase<R> extends MuJava<R, IExec> {
+public interface MuJavaBase<R> extends MuJava<R, IExec> {
 	static <T> T run(IExec s) {
 		try { s.exec(); } 
 		catch (Return r) { return (T)r.value; }
@@ -35,7 +28,7 @@ interface MuJavaBase<R> extends MuJava<R, IExec> {
 		return () -> { if (c.get()) s1.exec(); else  s2.exec(); };
 	}
 
-	default IExec Return(Supplier<? extends R> e) {
+	default IExec Return(Supplier<R> e) {
 		return () -> { throw new Return(e.get()); };
 	}
 

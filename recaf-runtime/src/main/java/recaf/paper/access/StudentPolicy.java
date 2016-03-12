@@ -1,4 +1,4 @@
-package recaf.paper;
+package recaf.paper.access;
 
 import recaf.demo.direct.Student;
 

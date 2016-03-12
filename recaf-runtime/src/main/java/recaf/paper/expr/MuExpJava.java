@@ -1,6 +1,7 @@
-package recaf.paper;
+package recaf.paper.expr;
 
 @SuppressWarnings("unchecked")
+public
 //BEGIN_MUEXPJAVA
 interface MuExpJava<E> {
 	E Lit(Object x);

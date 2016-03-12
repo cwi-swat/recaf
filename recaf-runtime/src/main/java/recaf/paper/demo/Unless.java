@@ -1,6 +1,8 @@
-package recaf.paper;
+package recaf.paper.demo;
 
 import java.util.function.Supplier;
+
+import recaf.paper.stm.MuJava;
 
 public interface Unless<R, S> extends MuJava<R, S> {
 	default 

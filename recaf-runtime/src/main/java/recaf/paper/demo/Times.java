@@ -1,9 +1,11 @@
-package recaf.paper;
+package recaf.paper.demo;
 
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
+
+import recaf.paper.stm.MuJava;
 
 public interface Times<R, S> extends MuJava<R, S> {
 	static Iterable<Integer> range(Integer n) {

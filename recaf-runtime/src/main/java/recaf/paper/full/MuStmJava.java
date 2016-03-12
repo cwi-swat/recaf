@@ -1,10 +1,10 @@
-package recaf.paper;
+package recaf.paper.full;
 
 import java.util.function.Function;
 
+public
 //BEGIN_MUSTMJAVA
-interface MuStmJava<R, S, E> {
-	R Method(S s);
+interface MuStmJava<S, E> {
 	S Exp(E e);
 	S Decl(E x, Function<?, S> s);
 	S For(E e, Function<?, S> s);
