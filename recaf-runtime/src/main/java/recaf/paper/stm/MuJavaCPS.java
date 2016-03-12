@@ -11,12 +11,6 @@ import recaf.core.cps.K0;
 
 //BEGIN_MUJAVA_CPS
 public interface MuJavaCPS<R> extends MuJava<R, SD<R>> {
-	default R Method(SD<R> s) {
-		R r[] = (R[]) new Object[1];
-		s.accept(v -> r[0] = v, () -> {});
-		return r[0];
-	}
-
 	default SD<R> Exp(Supplier<Void> e) {
 		return (r, s) -> { e.get(); s.call(); };
 	}

@@ -3,13 +3,13 @@ package recaf.paper.access;
 import recaf.paper.expr.IEval;
 import recaf.paper.expr.MuExpJavaBase;
 import recaf.paper.full.MuStmJavaAdapter;
-import recaf.paper.methods.TypePreserving;
+import recaf.paper.methods.TPDirect;
 import recaf.paper.stm.IExec;
 import recaf.paper.stm.MuJava;
 import recaf.paper.stm.MuJavaBase;
 
 //BEGIN_SECURITY
-public class Security<R> implements TypePreserving<R>, MuStmJavaAdapter<R, IExec>, MuExpJavaBase {
+public class Security<R> implements TPDirect<R>, MuStmJavaAdapter<R, IExec>, MuExpJavaBase {
 	private Policy policy;
 	
 	public Security(Policy policy) {

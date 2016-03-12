@@ -4,7 +4,7 @@ import recaf.paper.stm.IExec;
 import recaf.paper.stm.Return;
 
 //BEGIN_TYPE_PRESERVING_METHOD
-public interface TypePreserving<R> {
+public interface TPDirect<R> {
   default R Method(IExec s) {
     try { s.exec(); } 
 	  catch (Return r) { return (R)r.value; }
