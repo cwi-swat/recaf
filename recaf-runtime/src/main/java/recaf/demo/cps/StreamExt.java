@@ -59,9 +59,7 @@ public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, S
 		};
 	}
 	
-	public <T> SD<R> AwaitFor(Supplier<CompletableFuture<R>> coll, Function<T, SD<R>> body){
+	public <T> SD<R> AwaitFor(Supplier<Observable<R>> coll, Function<T, SD<R>> body){
 		throw new UnsupportedOperationException();
 	}
-
-
 }
