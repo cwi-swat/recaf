@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/cwi-swat/recaf.svg?token=EYsxboxiFVSqpFARwkTX&branch=master)](https://travis-ci.com/cwi-swat/recaf)
-
 ## Recaf
 Recaf is a source transformation system for Java that liberates the programmer from fixed semantics. 
 
