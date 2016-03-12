@@ -17,3 +17,9 @@ interface Maybe<R> extends MuJavaBase<R> {
 	}
 }
 //END_MAYBE
+
+class Test2 {
+	public static void main(String[] args) {
+		new Maybe<String>() {};
+	}
+}

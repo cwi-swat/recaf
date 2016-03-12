@@ -8,9 +8,7 @@ interface MaybeUsing<R>
 //END_MAYBE_USING
 
 class Test {
-	
 	public static void main(String[] args) {
-		MaybeUsing<String> x = new MaybeUsing<String>() {
-		};
+		new MaybeUsing<String>() {};
 	}
 }
