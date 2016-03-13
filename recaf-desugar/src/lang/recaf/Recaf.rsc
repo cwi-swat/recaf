@@ -6,6 +6,11 @@ syntax KId
   = @category="MetaKeyword" Id
   ; 
 
+
+syntax Expr
+  = "#" KId "(" { Expr ","}*  ")"
+  ;
+
 syntax Stm
    // return -like
    = KId "!" Expr ";" // ! is needed, otherwise amb with local var dec.
