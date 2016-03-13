@@ -2,7 +2,7 @@ package generated;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import recaf.demo.cps.Async;
- 
+
 public class TestAsyncWithAwait {
    private static recaf Async<Integer> alg = new Async<Integer>() {};
 

@@ -2,7 +2,7 @@ package generated;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture;
 
-import recaf.demo.cps.AsyncNoEval;
+import recaf.demo.cps.Async;
 import recaf.demo.cps.StreamExt;
 import rx.Observable;
 import rx.Subscription;
@@ -10,7 +10,7 @@ import rx.functions.Action1;
 
 public class TestStream_with_await {
    
-  CompletableFuture<Integer> secondOp(recaf AsyncNoEval<Integer> alg) {
+  CompletableFuture<Integer> secondOp(recaf Async<Integer> alg) {
       if (1 < 2) { 	
    	    return 42;
   	  }
@@ -20,7 +20,7 @@ public class TestStream_with_await {
   Observable<Integer> simpleStream2(recaf StreamExt<Integer> alg) {
       yield! 1;
       yield! 2;
-      Integer x = await! secondOp(new AsyncNoEval<Integer>());
+      Integer x = await! secondOp(new Async<Integer>(){});
       yield! x;
       yield! 4;
       yield! 5;
