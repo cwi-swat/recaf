@@ -21,4 +21,19 @@ public class TestIterExtension extends BaseTest {
 		String output = compileAndRun("TestFibIter");
 		Assert.assertEquals("55", output);	
 	}
+	
+	@Test
+	public void TestIter_YieldEachRec() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestIter_YieldEachRec");
+		Assert.assertEquals("i = 10\n" + 
+				"i = 9\n" + 
+				"i = 8\n" + 
+				"i = 7\n" + 
+				"i = 6\n" + 
+				"i = 5\n" + 
+				"i = 4\n" + 
+				"i = 3\n" + 
+				"i = 2\n" + 
+				"i = 1", output);	
+	}
 }
