@@ -24,8 +24,9 @@ public class TestBacktracking {
      System.err.println("Choice 1: " + x);
      choose Integer y = asList(4, 5, 6);
      System.err.println("Choice 2: " + y);
-     guard! x * y == 8; 
-     return new Pair(x, y);
+     if (x * y == 8) { 
+	   return new Pair(x, y);
+	 }
   }
   
   static Iterable<Integer> range(int n) {

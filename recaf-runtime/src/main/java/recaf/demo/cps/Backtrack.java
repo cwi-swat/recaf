@@ -30,16 +30,6 @@ public class Backtrack<R> implements EvalJavaStmt<R>, JavaMethodAlg<List<R>, SD<
 		};
 	}
 	
-	public SD<R> Guard(ISupply<Boolean> cond) {
-		return (label, rho, sigma, contin, brk, err) -> {
-			get(cond).accept(b -> {
-				if (b) {
-					sigma.call();
-				}
-			}, err);
-		};
-	}
-	
 	@Override
 	public SD<R> Return() {
 		throw new AssertionError("Cannot not return a value when backtracking");
