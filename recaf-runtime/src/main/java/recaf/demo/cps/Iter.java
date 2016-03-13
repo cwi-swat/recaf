@@ -3,6 +3,7 @@ package recaf.demo.cps;
 import java.util.Iterator;
 
 import recaf.core.ISupply;
+import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.K0;
@@ -89,6 +90,6 @@ public class Iter<R> implements EvalJavaStmt<R>, JavaMethodAlg<Iterable<R>, SD<R
 	}
 
 	public <U> SD<R> YieldFrom(ISupply<Iterable<U>> exp) {
-		return ForEach(exp, e -> Yield(() -> e));
+		return ForEach(exp, (Ref<U> e) -> Yield(() -> e.value));
 	}
 }

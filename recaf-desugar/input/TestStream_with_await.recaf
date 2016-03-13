@@ -1,37 +1,33 @@
 package generated;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 
+import recaf.demo.cps.AsyncNoEval;
 import recaf.demo.cps.StreamExt;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class TestStream_with_await {
-  
-  private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
-  
-  /*
-  recaf Stream<Integer> scan(Stream<Integer> src, Integer state, Integer acc) {
-   yield! state;
-   awaitFor(Integer next : src) {
-     try {
-        yield! (await accumulateAsync(state, next));
-     } catch(e) {
-        return; 
-     }
+   
+  CompletableFuture<Integer> secondOp(recaf AsyncNoEval<Integer> alg) {
+      if (1 < 2) { 	
+   	    return 42;
+  	  }
+  	  return 41;
   }
-  */ 
- 
-  recaf Observable<Integer> simpleStream() {
-    yield! 1;
-    yield! 2;
-    yield! 3;
-    yield! 4;
-    yield! 5;
-  }  
+  
+  Observable<Integer> simpleStream2(recaf StreamExt<Integer> alg) {
+      yield! 1;
+      yield! 2;
+      Integer x = await! secondOp(new AsyncNoEval<Integer>());
+      yield! x;
+      yield! 4;
+      yield! 5;
+  } 
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	Subscription sub = new TestStream_with_yield().simpleStream().subscribe(new Action1<Integer>() {
+	Subscription sub = new TestStream_with_await().simpleStream2(new StreamExt<Integer>()).subscribe(new Action1<Integer>() {
         @Override
         public void call(Integer s) {
               System.out.println(s);

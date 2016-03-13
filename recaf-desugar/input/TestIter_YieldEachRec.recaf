@@ -1,0 +1,23 @@
+package generated;
+import recaf.demo.cps.Iter; 
+import java.util.stream.IntStream;
+import java.util.Iterator;
+import java.util.function.Predicate;
+
+public class TestIter_YieldEachRec {
+  private static recaf Iter<Integer> alg = new Iter<Integer>();  
+  
+  recaf Iterable<Integer> naturalsDownFrom(int n) {
+    if (n >0) {
+    	yield! n;
+    	yieldFrom! naturalsDownFrom(n-1);
+    }
+  }
+  
+  public static void main(String args[]) {
+    for (Integer i: new TestIter_YieldEachRec().naturalsDownFrom(10)) {
+      System.out.println("i = " + i);
+    }
+  }
+
+}

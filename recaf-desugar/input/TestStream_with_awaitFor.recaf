@@ -1,0 +1,38 @@
+package generated;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
+
+import recaf.demo.cps.AsyncNoEval;
+import recaf.demo.cps.StreamExt;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+
+public class TestStream_with_awaitFor {
+	
+    private recaf StreamExt<Integer> alg = new StreamExt<Integer>();
+  
+ 	recaf Observable<Integer> simpleStream() {
+	    yield! 1;
+	    yield! 2;
+	    yield! 3;
+	    yield! 4;
+	    yield! 5;
+	 }  
+	  
+	recaf Observable<Integer> simpleStream2(Observable<Integer> stream) {
+	    yield! 1;
+		awaitFor(Integer next : stream) {
+			yield! 42;
+		}
+	} 
+  
+    public static void main(String args[]) throws InterruptedException, ExecutionException {
+	  Subscription sub = new TestStream_with_awaitFor().simpleStream2(new TestStream_with_awaitFor().simpleStream()).subscribe(new Action1<Integer>() {
+        @Override
+        public void call(Integer s) {
+              System.out.println(s);
+        }
+      });
+    }
+}
