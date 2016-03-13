@@ -1,5 +1,7 @@
 package recaf.core;
 
+import recaf.core.expr.IRef;
+
 // todo: extract interface to make useable with fields in expression eval.
 public final class Ref<X> implements IRef<X>{
 	public X value ;

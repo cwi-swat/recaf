@@ -1,15 +1,14 @@
 package recaf.demo.cps;
 
 import java.util.Iterator;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
-public class Iter<R> implements StmtJava<R>, JavaMethodAlg<Iterable<R>, SD<R>> {
+public class Iter<R> implements EvalJavaStmt<R>, JavaMethodAlg<Iterable<R>, SD<R>> {
 
 	@SuppressWarnings("serial")
 	private static final class Yield extends RuntimeException {

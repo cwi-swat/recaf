@@ -9,9 +9,10 @@ import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
 
-public abstract class Async<R,E> implements EvalJavaStmt<R, E>, JavaMethodAlg<Future<R>, SD<R>> {
+public interface Async<R> extends EvalJavaStmt<R>, JavaMethodAlg<Future<R>, SD<R>> {
 
-	public Future<R> Method(SD<R> body) {
+	@Override
+	default Future<R> Method(SD<R> body) {
 		CompletableFuture<R> promise = new CompletableFuture<R>();
 
 		CompletableFuture.supplyAsync(() -> {
@@ -27,7 +28,7 @@ public abstract class Async<R,E> implements EvalJavaStmt<R, E>, JavaMethodAlg<Fu
 		return promise;
 	}
 
-	public <T> SD<R> Await(ISupply<CompletableFuture<T>> e, Function<T, SD<R>> body) {
+	default <T> SD<R> Await(ISupply<CompletableFuture<T>> e, Function<T, SD<R>> body) {
 		return (label, rho, sigma, brk, contin, err) -> get(e).accept(f -> {
 			f.whenComplete((a, ex) -> {
 				if (a == null) {

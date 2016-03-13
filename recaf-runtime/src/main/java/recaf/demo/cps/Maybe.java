@@ -2,16 +2,15 @@ package recaf.demo.cps;
 
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
 
-public class Maybe<R> implements StmtJava<R>, JavaMethodAlg<Optional<R>, SD<R>> {
+public class Maybe<R> implements EvalJavaStmt<R>, JavaMethodAlg<Optional<R>, SD<R>> {
 
 	@Override
 	public Optional<R> Method(SD<R> body) {

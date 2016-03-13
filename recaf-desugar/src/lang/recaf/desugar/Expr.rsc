@@ -14,6 +14,12 @@ import IO;
 //   exprName: AmbName "." Id // statics 
 //  ;
 
+Expr expr2alg((Expr)`#<KId k>(<{Expr ","}* es>)`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}* es2>)`
+  when 
+    {Expr ","}* es2 := args2alg(es, alg, names),
+    Id method := [Id]capitalize("<k>");
+
 Expr expr2alg((Expr)`(<{FormalParam ","}* fps>) -\> <Expr e>`, Id alg, Names names)
   = (Expr)`<Id alg>.Closure((<{FormalParam ","}* fps>) -\> <Expr e2>)`
   when
@@ -124,7 +130,6 @@ Expr id2strExpr(Id x) = [Expr]"\"<x>\"";
   i = 0;
   while (i < size(es.args)) {
     if (Expr e := es.args[i]) {
-      println(e);
       es = appl(es.prod, es.args[0..i] + [expr2alg(e, alg, names)] + es.args[i+1..]);
       //es.args[i] = expr2alg(e, alg, names);
     } 

@@ -1,7 +1,7 @@
 package generated;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import recaf.demo.cps.AsyncWithEval;
+import recaf.demo.cps.AsyncFull;
  
 class MyPrinter{
 	public MyPrinter(){}
@@ -14,7 +14,7 @@ class MyPrinter{
  
 public class TestAsyncComplex2 {
 
-    private static recaf AsyncWithEval<Integer> alg = new AsyncWithEval<Integer>();
+    private static recaf AsyncFull<Integer> alg = new AsyncFull<Integer>() {};
 
 	public Void pause(Integer sleeptime) {
 	    try {   

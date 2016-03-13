@@ -4,9 +4,9 @@ import java.util.function.Function;
 
 import recaf.core.ISupply;
 import recaf.core.Ref;
-import recaf.core.alg.JavaStmtAlg;
+import recaf.core.alg.JavaStmtOnlyAlg;
 
-public interface EvalJavaStmt<R> extends JavaStmtAlg<R, IExec, ICase> {
+public interface EvalJavaStmt<R> extends JavaStmtOnlyAlg<R, IExec, ICase> {
 
 	@Override
 	default IExec ExpStat(ISupply<Void> e) {

@@ -1,9 +1,9 @@
 package generated; 
 
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 
 public class TestExprFieldSuper extends BaseTestExprFieldSuper {
-  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+  private static recaf FullJavaDirect<Object> alg = new FullJavaDirect<Object>() {};
   
   private int x = 5;
   

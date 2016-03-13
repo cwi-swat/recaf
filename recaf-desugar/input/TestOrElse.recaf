@@ -1,0 +1,25 @@
+package generated;
+
+import recaf.demo.direct.OrElse;
+
+public class TestOrElse {
+
+  private static recaf OrElse<Object> alg = new OrElse<Object>() {};
+
+  Integer someMethod(int i) {
+    System.out.println("Called: " + i);
+    if (i % 2 != 0) {
+      return null;
+    }
+    return i;
+  }
+
+  recaff Object orElse() {
+     return #orElse(null, someMethod(1), someMethod(2), someMethod(3)); 
+  }
+
+  public static void main(String args[]) {
+     new TestOrElse().orElse();
+  }
+
+}

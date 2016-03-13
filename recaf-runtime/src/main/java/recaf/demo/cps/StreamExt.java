@@ -5,16 +5,14 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import recaf.core.ISupply;
-import recaf.core.Ref;
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 import rx.subjects.Subject;
 
-public class StreamExt<R> implements StmtJava<R>, JavaMethodAlg<Subject<R, R>, SD<R>> {
+public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R>, SD<R>> {
 	
 	ReplaySubject<R> result = ReplaySubject.create();
 

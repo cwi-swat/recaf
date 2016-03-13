@@ -4,9 +4,9 @@ import java.util.function.Function;
 
 import recaf.core.ISupply;
 import recaf.core.direct.IExec;
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 
-public interface Using<R> extends NoOp<R> {
+public interface Using<R> extends FullJavaDirect<R> {
 
 	default <U extends AutoCloseable> IExec Using(ISupply<U> resource, Function<U, IExec> body) {
 		return l -> {

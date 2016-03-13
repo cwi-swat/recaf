@@ -1,6 +1,6 @@
 package recaf.core.alg;
 
-import recaf.core.IRef;
+import recaf.core.expr.IRef;
 
 public interface JavaExprAlg<E> {
 

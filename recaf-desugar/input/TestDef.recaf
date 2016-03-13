@@ -1,10 +1,10 @@
 package generated;
 
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 
 
 public class TestDef {
-   private static recaf NoOp<Void> alg = new NoOp<Void>() {};
+   private static recaf FullJavaDirect<Void> alg = new FullJavaDirect<Void>() {};
    
    static recaf void doSomething() {
       int sum = 0;

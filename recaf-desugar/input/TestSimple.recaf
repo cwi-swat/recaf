@@ -1,6 +1,6 @@
 package generated; 
 import recaf.core.Ref;
-import recaf.core.direct.NoOp;
+import recaf.core.full.FullJavaDirect;
 import java.util.stream.IntStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
@@ -19,7 +19,7 @@ class A{
 }
 
 public class TestSimple    {
-  private static recaf NoOp<Object> alg = new NoOp<Object>() {};
+  private static recaf FullJavaDirect<Object> alg = new FullJavaDirect<Object>() {};
   
   private recaff static Integer simple(){           
   	int a = 4; 

@@ -1,9 +1,9 @@
 package generated;
-import recaf.core.cps.NoOp;
+import recaf.core.cps.StmtJavaCPS;
 
 public class TestFor_ordinary {
 
-    private recaf NoOp<Integer> alg = new NoOp<Integer>() {};
+    private recaf StmtJavaCPS<Integer> alg = new StmtJavaCPS<Integer>() {};
 	
     recaf Integer meth() {              
         int sum = 0;

@@ -1,38 +1,42 @@
 package recaf.demo.direct;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import recaf.core.direct.IEval;
-import recaf.core.direct.NoOp;
-import static recaf.core.EvalJavaHelper.toValue;
+import recaf.core.full.FullJavaDirect;
 
-public class Memo<I,R> implements NoOp<R> {
+import static recaf.core.expr.EvalJavaHelper.toValue;
+
+public class Memo<R> implements FullJavaDirect<R> {
 	
-	private Map<I,R> map = new HashMap<I,R>();
-	
-	private String memoizedMethod;
-	
-	public Memo(String memoizedMethod){
-		this.memoizedMethod = memoizedMethod;
-	}
+	private Map<Object,Object> memo = new HashMap<>();
 	
 	@Override
-	public IEval Invoke(IEval obj, String method, IEval... args) {
+	public IEval Invoke(IEval x, String m, IEval... es) {
+		// NB: (I)Refs should hash/equals on their contained value.
 		return () -> {
-			if (method == memoizedMethod){
-				I input = (I) toValue(args[0].eval());
-				if (map.containsKey(input))
-					return map.get(input);
-				else{
-					R result = (R) NoOp.super.Invoke(obj, method, args).eval();
-					map.put(input, result);
-					return result;
-				}
+			List<Object> key = new ArrayList<>(es.length + 2);
+			key.add(toValue(x.eval()));
+			key.add(m);
+			for (int i = 0; i < es.length; i++) 
+				key.add(toValue(es[i].eval()));
+			if (!memo.containsKey(key)) {
+				IEval[] es2 = Arrays.copyOf(es, es.length);
+				IntStream.range(0, es.length).forEach(i -> {
+					es2[i] = () -> key.get(i + 2);	
+				});
+				Object val = FullJavaDirect.super.Invoke(() -> key.get(0), m, es2).eval();
+				memo.put(key, val);
 			}
-			else
-				return NoOp.super.Invoke(obj, method, args).eval();
+			else {
+				//System.out.println("Memoized call: " + key);
+			}
+			return memo.get(key);
 		};
 	}
-
 }

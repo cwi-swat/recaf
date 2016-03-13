@@ -356,12 +356,12 @@ Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Block b> <BlockSt
 
 // TODO: final modifiers.... (we don't support it now)
 Expr varDec2alg(Type t, (VarDec)`<Id x>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.Decl(null, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.Decl(null, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> {return <Expr k>;})`
   when 
     Type t2 := boxed(t);
   
 Expr varDec2alg(Type t, (VarDec)`<Id x> = <VarInit e>`, Expr k, Id alg, Names names) 
-  = (Expr)`<Id alg>.Decl(<Expr ecps>, <Id x> -\> {return <Expr k>;})`
+  = (Expr)`<Id alg>.Decl(<Expr ecps>, (recaf.core.Ref\<<Type t2>\> <Id x>) -\> {return <Expr k>;})`
   when
     Type t2 := boxed(t),
     Expr ecps := varInit2alg(t2, e, alg, names);

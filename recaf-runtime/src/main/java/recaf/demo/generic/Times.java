@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import recaf.core.alg.JavaStmtAlg;
+import recaf.core.alg.JavaStmtOnlyAlg;
 
-public interface Times<R, E, S, C> extends JavaStmtAlg<R, S, C> {
+public interface Times<R, E, S, C> extends JavaStmtOnlyAlg<R, S, C> {
 	
 	static Iterable<Integer> range(Integer n) {
 		return new Iterable<Integer>() {

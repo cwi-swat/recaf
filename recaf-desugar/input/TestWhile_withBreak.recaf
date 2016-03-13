@@ -1,9 +1,9 @@
 package generated;
 import java.util.*;
-import recaf.core.cps.NoOp;
+import recaf.core.cps.StmtJavaCPS;
 
 public class TestWhile_withBreak {
-    private recaf NoOp<Integer> alg = new NoOp<Integer>() {};
+    private recaf StmtJavaCPS<Integer> alg = new StmtJavaCPS<Integer>() {};
 	
 	public recaf Integer meth() {
         Integer sum = 0;

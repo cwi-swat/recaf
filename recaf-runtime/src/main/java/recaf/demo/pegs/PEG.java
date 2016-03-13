@@ -41,10 +41,10 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 		};
 	}
 	
-	default <T, U> Parser<U> Let(Supplier<Parser<T>> parser, Function<T, Parser<? extends U>> body) {
+	default <T, U> Parser<U> Let(Supplier<Parser<T>> parser, Function<? super T, Parser<? extends U>> body) {
 		return (s, p) -> {
 			Result<T> r = parser.get().parse(s, p);
-			// this unwrapping has to with contra variance 
+			// this unwrapping has to do with contra variance 
 			Result<? extends U> r2 = body.apply(r.getValue()).parse(s, r.getPos()); 
 			return new Result<U>(r2.getValue(), r2.getPos());
 		};
@@ -108,11 +108,12 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 	}
 	
 	
-	default <T> Parser<T> Choice(List<Parser<T>> alts) {
+	default <T> Parser<T> Choice(List<Parser<? extends T>> alts) {
 		return (s, p) -> {
-			for (Parser<T> a: alts) {
+			for (Parser<? extends T> a: alts) {
 				try {
-					return a.parse(s, p);
+					Result<? extends T> r = a.parse(s, p);
+					return new Result<T>(r.getValue(), r.getPos());
 				}
 				catch (Fail f) {
 					continue;
@@ -122,11 +123,11 @@ public interface PEG<R> extends JavaMethodAlg<Parser<R>, Parser<R>>{
 		};
 	}
 	
-	default <T> Parser<T> Alt(Supplier<String> ignored, Parser<T> body) {
+	default <T> Parser<? extends T> Alt(Supplier<String> ignored, Parser<? extends T> body) {
 		return body;
 	}
 	
-	default <T> Parser<T> Return(Supplier<T> x) {
+	default <T> Parser<T> Return(Supplier<? extends T> x) {
 		return (s, p) -> new Result<T>(x.get(), p);
 	}
 	

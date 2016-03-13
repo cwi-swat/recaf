@@ -2,15 +2,14 @@ package recaf.demo.cps;
 
 import java.util.ArrayDeque;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
+import recaf.core.cps.EvalJavaStmt;
 import recaf.core.cps.K0;
 import recaf.core.cps.SD;
-import recaf.core.cps.StmtJava;
 
-public class Coroutine<R, T> implements StmtJava<R>, JavaMethodAlg<Coroutine.Co<T,R>, SD<R>> {
+public class Coroutine<R, T> implements EvalJavaStmt<R>, JavaMethodAlg<Coroutine.Co<T,R>, SD<R>> {
 	public static interface Co<T, U> {
 		U resume(T t);
 		void run();

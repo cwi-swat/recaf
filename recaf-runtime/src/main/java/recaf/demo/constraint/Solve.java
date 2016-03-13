@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.Constraint;
@@ -76,21 +75,17 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 		};
 	}
 	
-	public <T> Supplier<T> Exp(T t) {
-		return () -> t;
-	}
-	
-	public <T extends IntVar> IExec Var(Supplier<Integer> from, Supplier<Integer> to, Function<? super IntVar, IExec> body) {
+	public <T extends IntVar> IExec Var(int from, int to, Function<? super IntVar, IExec> body) {
 		return l -> {
 			// todo: use reflection on body to obtain the variable name.
-			IntVar x = VariableFactory.bounded(nextName(), from.get(), to.get(), solver);
+			IntVar x = VariableFactory.bounded(nextName(), from, to, solver);
 			vars.add(x);
 			body.apply(x).exec(null);
 		};
 	}
 	
-	public IExec Solve(Supplier<Constraint> x) {
-		return l -> { solver.post(x.get()); };
+	public IExec Solve(Constraint x) {
+		return l -> { solver.post(x); };
 	}
 	
 	public IExec Seq(IExec s1, IExec s2) {
