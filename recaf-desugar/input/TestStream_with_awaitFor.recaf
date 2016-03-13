@@ -2,7 +2,6 @@ package generated;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture;
 
-import recaf.demo.cps.AsyncNoEval;
 import recaf.demo.cps.StreamExt;
 import rx.Observable;
 import rx.Subscription;
