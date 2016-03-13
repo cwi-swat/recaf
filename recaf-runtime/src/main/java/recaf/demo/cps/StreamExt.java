@@ -57,7 +57,12 @@ public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R
 		};
 	}
 	
-	public <T> SD<R> AwaitFor(Supplier<Observable<R>> coll, Function<T, SD<R>> body){
-		throw new UnsupportedOperationException();
+	public <T> SD<T> AwaitFor(ISupply<Observable<R>> coll, Function<R, SD<T>> body){
+		return (label, rho, sigma, brk, contin, err) -> {
+			get(coll).accept(v -> { 
+				v.subscribe(r -> body.apply(r).accept(null,rho, sigma, brk, contin, err));
+				sigma.call();
+			} , err);
+		};
 	}
 }

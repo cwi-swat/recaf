@@ -42,4 +42,18 @@ public class TestStreamExtension extends BaseTest {
 				"4\n" + 
 				"5", output);	
 	}
+	
+	@Test
+	public void TestStream_with_awaitFor() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestStream_with_awaitFor");
+		Assert.assertEquals("1\n" + 
+				"42\n" + 
+				"42\n" + 
+				"42\n" + 
+				"42\n" + 
+				"42", output);	
+	}
+	
+
+
 }
