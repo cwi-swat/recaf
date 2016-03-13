@@ -1,60 +1,11 @@
-package recaf.paper.demo;
+package recaf.paper.expr;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
-import java.util.function.Function;
 
-import recaf.paper.expr.MuExpJava;
-import recaf.paper.full.MuStmJava;
-
-import java.lang.reflect.Method;
-
-interface Print<R> extends MuExpJava<String>, MuStmJava<String, String> {
-	@Override
-	default String Exp(String e) {
-		return e;
-	}
-
-	@Override
-	default <T> String Decl(String x, Function<T, String> s) {
-		return getTypeAndName(s) + " = " + x + "; " + s.apply(null);
-	}
-
-	static String getTypeAndName(Function<?, String> s) {
-		for (Method m: s.getClass().getMethods()) {
-			if (m.getName().equals("apply")) {
-				return m.getReturnType() + " " + m.getParameters()[0].getName();
-			}
-		}
-		return null;
-	}
-
-	@Override
-	default <S> String For(String x, Function<S, String> s) {
-		return "for (" + getTypeAndName(s) + ": " + x + ")" + s.apply(null);
-	}
-
-	@Override
-	default String If(String c, String s1, String s2) {
-		return "if (" + c + ")" + s1 + " else " + s2;
-	}
-
-	@Override
-	default String Return(String e) {
-		return "return " + e + ";";
-	}
-
-	@Override
-	default String Seq(String s1, String s2) {
-		return s1 + s2;
-	}
-
-	@Override
-	default String Empty() {
-		return ";";
-	}
-
+interface Print extends MuExpJava<String> {
 	@Override
 	default String Lit(Object x) {
 		return x.toString();

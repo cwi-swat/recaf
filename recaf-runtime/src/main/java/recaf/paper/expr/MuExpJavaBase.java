@@ -3,18 +3,6 @@ package recaf.paper.expr;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-//BEGIN_TRACING
-interface Tracing extends MuExpJavaBase {
-	default IEval Var(String x, Object v){ 
-		return () -> {
-			System.out.println(x + " = " + v);
-			return MuExpJavaBase.super.Var(x, v).eval();
-		};
-	}
-}
-//END_TRACING
-
-
 //BEGIN_MUEXPJAVA_IMPL
 public interface MuExpJavaBase extends MuExpJava<IEval> {
 	@Override

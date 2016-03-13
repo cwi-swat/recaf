@@ -14,32 +14,18 @@ public class Backtrack<R> implements EvalJavaStmt<R>, JavaMethodAlg<List<R>, SD<
 	@Override
 	public List<R> Method(SD<R> body) {
 		List<R> result = new ArrayList<>();
-		try {
-			body.accept(null, ret -> {
-				result.add(ret);
-			}, () -> {}, l -> {}, l -> {}, exc -> { throw new RuntimeException(exc); });
-		}
-		catch (Fail f) {
-			
-		}
+		body.accept(null, ret -> {
+			result.add(ret);
+		}, () -> {}, l -> {}, l -> {}, exc -> { throw new RuntimeException(exc); });
 		return result;
-	}
-	
-	private static final class Fail extends RuntimeException {
-		
 	}
 	
 	public <T> SD<R> Choose(ISupply<Iterable<T>> choices, Function<? super T, SD<R>> body) {
 		return (label, rho, sigma, contin, brk, err) -> {
 			get(choices).accept(iter -> {
 				for (T t: iter) {
-					try {
-						body.apply(t).accept(null, rho, sigma, contin, brk, err);
-					}
-					catch (Fail f) {
-					}
+					body.apply(t).accept(null, rho, sigma, contin, brk, err);
 				}
-				throw new Fail();
 			}, err);;
 		};
 	}
@@ -47,10 +33,9 @@ public class Backtrack<R> implements EvalJavaStmt<R>, JavaMethodAlg<List<R>, SD<
 	public SD<R> Guard(ISupply<Boolean> cond) {
 		return (label, rho, sigma, contin, brk, err) -> {
 			get(cond).accept(b -> {
-				if (!b) {
-					throw new Fail();
+				if (b) {
+					sigma.call();
 				}
-				sigma.call();
 			}, err);
 		};
 	}
