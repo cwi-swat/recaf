@@ -5,12 +5,13 @@ import java.util.function.Function;
 import recaf.paper.expr.IEval;
 import recaf.paper.stm.MuJava;
 
+//BEGIN_MU_STM_ADAPTER
 public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 	MuJava<R, S> base();
 	
 	static <T> T eval(IEval e) {
 		try { return (T) e.eval(); } 
-		catch (Throwable t) { throw new RuntimeException(t); }
+		catch (Throwable t) {throw new RuntimeException(t);}
 	}
 	
 	@Override
@@ -38,11 +39,14 @@ public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 		return base().Return(() -> eval(e));
 	}
 	
+	@Override
 	default S Seq(S s1, S s2) {
 		return base().Seq(s1, s2);
 	}
 	
+	@Override
 	default S Empty() {
 		return base().Empty();
 	}
 }
+//END_MU_STM_ADAPTER
