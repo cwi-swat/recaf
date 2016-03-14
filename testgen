@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mvn -DGEN=true clean dependency:copy-dependencies test
