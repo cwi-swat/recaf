@@ -1,3 +1,6 @@
 package recaf.paper.stm;
 
-public interface IExec { void exec() throws Throwable; }
+public 
+//BEGIN_IEXEC
+interface IExec { void exec() throws Throwable; }
+//END_IEXEC

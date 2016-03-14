@@ -2,7 +2,6 @@ package recaf.demo.cps;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
