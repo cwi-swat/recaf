@@ -141,7 +141,6 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 		String op() {
 			return "-";
 		}
-		
 	}
 
 	public Sub Minus(IntVar lhs, IntVar rhs) {
@@ -176,7 +175,6 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 		return IntConstraintFactory.arithm(lhs, ">", rhs);
 	}
 	
-
 	public Constraint LtEq(LinExp lhs, int rhs) {
 		return IntConstraintFactory.arithm(lhs.lhs, lhs.op(), lhs.rhs, "<=", rhs);
 	}
@@ -188,7 +186,6 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	public Constraint LtEq(IntVar lhs, IntVar rhs) {
 		return IntConstraintFactory.arithm(lhs, "<=", rhs);
 	}
-	
 	
 	public Constraint Lt(LinExp lhs, int rhs) {
 		return IntConstraintFactory.arithm(lhs.lhs, lhs.op(), lhs.rhs, "<", rhs);
@@ -213,7 +210,6 @@ public class Solve implements JavaMethodAlg<Iterable<Map<String,Integer>>, IExec
 	public Constraint Eq(IntVar lhs, IntVar rhs) {
 		return IntConstraintFactory.arithm(lhs, "==", rhs);
 	}
-	
 	
 	public Constraint NotEq(LinExp lhs, int rhs) {
 		return IntConstraintFactory.arithm(lhs.lhs, lhs.op(), lhs.rhs, "!=", rhs);

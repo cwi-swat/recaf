@@ -4,18 +4,19 @@ import recaf.demo.constraint.Solve;
 import java.util.Map;
 import org.chocosolver.solver.variables.IntVar;
 
-public class TestSolve {
+public class TestSolve_alldifferent {
   private static recaf Solve alg = new Solve();
   
   recaff Iterable<Map<String,Integer>> example() {
-    var 0, 5, IntVar x;
-    var 0, 5, IntVar y;
-    solve! x + y < 5;
-    solve! x - y > 1;
+    var 0, 1, IntVar w;
+    var -1, 2, IntVar x;
+    var 2, 4, IntVar y;
+    var 5, 7, IntVar z;
+    solve! alldifferent(w, x, y, z);
   }
 
   public static void main(String args[]) {
-    for (Map<String,Integer> sol: new TestSolve().example()) {
+    for (Map<String,Integer> sol: new TestSolve_alldifferent().example()) {
       System.out.println(sol);
     } 
   }
