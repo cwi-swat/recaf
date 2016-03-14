@@ -20,6 +20,13 @@ Expr expr2alg((Expr)`#<KId k>(<{Expr ","}* es>)`, Id alg, Names names)
     {Expr ","}* es2 := args2alg(es, alg, names),
     Id method := [Id]capitalize("<k>");
 
+Expr expr2alg((Expr)`#<KId k> <Block b>`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>(<Expr b2>)`
+  when 
+    Expr b2 := block2alg(b, alg, names), 
+    Id method := [Id]capitalize("<k>");
+
+
 Expr expr2alg((Expr)`(<{FormalParam ","}* fps>) -\> <Expr e>`, Id alg, Names names)
   = (Expr)`<Id alg>.Closure((<{FormalParam ","}* fps>) -\> <Expr e2>)`
   when

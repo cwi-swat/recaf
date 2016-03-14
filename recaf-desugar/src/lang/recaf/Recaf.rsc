@@ -9,6 +9,7 @@ syntax KId
 
 syntax Expr
   = "#" KId "(" { Expr ","}*  ")"
+  | "#" KId Block
   ;
 
 syntax Stm
