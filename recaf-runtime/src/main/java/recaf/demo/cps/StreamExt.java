@@ -1,11 +1,14 @@
 package recaf.demo.cps;
 
+import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import recaf.core.ISupply;
 import recaf.core.alg.JavaMethodAlg;
 import recaf.core.cps.EvalJavaStmt;
+import recaf.core.cps.K;
+import recaf.core.cps.K0;
 import recaf.core.cps.SD;
 import rx.Observable;
 import rx.subjects.ReplaySubject;
@@ -14,11 +17,11 @@ import rx.subjects.Subject;
 public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R>, SD<R>> {
 	
 	ReplaySubject<R> result = ReplaySubject.create();
-
+	
 	public Subject<R, R> Method(SD<R> body) {
 		body.accept(null,
-				r ->     { result.onNext(r); }, 
-				() ->    {  },
+				r ->     { }, 
+				() ->    { },
 				label -> { },
 				label -> { },
 				ex ->    { result.onError(ex);});
@@ -32,7 +35,7 @@ public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R
 				if (a == null) {
 					err.accept(ex);
 				} else {
-					body.apply(a).accept(null, rho, sigma, brk, contin, err);
+					body.apply(a).accept(null, rho, sigma, brk, contin, err); 
 				}
 			});
 		} , err);
@@ -50,17 +53,30 @@ public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R
 	public <T> SD<R> YieldFrom(ISupply<Observable<R>> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> { 
-				result.mergeWith(v);
-				sigma.call();
+			    sigma.call();
 			} , err);
 		};
+	}
+	
+	private <T> void loop(Iterator<R> iter, Function<R, SD<T>> body, K<T> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err){
+		body.apply(iter.next()).accept(null,
+		   rho, 
+		   () -> {
+			   if (iter.hasNext())
+				   loop(iter, body, rho, sigma, brk, contin, err);
+			   else
+				   sigma.call();
+		   }, brk, contin, err);
 	}
 	
 	public <T> SD<T> AwaitFor(ISupply<Observable<R>> coll, Function<R, SD<T>> body){
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(coll).accept(v -> { 
-				v.subscribe(r -> body.apply(r).accept(null,rho, sigma, brk, contin, err));
-				sigma.call();
+				
+				Iterator<R> it = v.toBlocking().toIterable().iterator();
+				
+				loop(it, body, rho, sigma, brk, contin, err);
+				
 			} , err);
 		};
 	}

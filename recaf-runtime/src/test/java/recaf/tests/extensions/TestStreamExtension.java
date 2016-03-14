@@ -54,6 +54,14 @@ public class TestStreamExtension extends BaseTest {
 				"42", output);	
 	}
 	
-
-
+	@Test
+	public void TestStream_complex() throws CompiletimeException, RuntimeException {
+		String output = compileAndRun("TestStream_Complex");
+		Assert.assertEquals("0\n" + 
+				"1\n" + 
+				"3\n" + 
+				"6\n" + 
+				"10\n" + 
+				"15", output);	
+	}
 }

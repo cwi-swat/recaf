@@ -12,7 +12,7 @@ public class TestStream_with_yieldFrom {
  
 	recaf Observable<Integer> simpleStream() {
 		yield! 1;
-		yield! 2;
+		yield! 2; 
 		yield! 3;
 		yieldFrom! simpleStream2();
 		yield! 4;
