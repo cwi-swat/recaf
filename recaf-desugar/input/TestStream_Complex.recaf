@@ -1,0 +1,46 @@
+package generated;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
+
+import recaf.demo.cps.Async;
+import recaf.demo.cps.StreamExt;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+
+public class TestStream_Complex {
+
+   CompletableFuture<Integer> accumulateAsync(recaf Async<Integer> alg, Integer state, Integer next) {
+      state = state + next;
+	  return state;
+   }  
+  
+   Observable<Integer> scan(recaf StreamExt<Integer> alg, 
+   						    Observable<Integer> src, 
+   						    Integer state) {
+     yield! state; 
+     awaitFor(Integer next : src) {
+       Integer x = await! accumulateAsync(new Async<Integer>(){}, state, next);
+       yield! x;
+	 }
+  }
+ 
+  Observable<Integer> simpleStream(recaf StreamExt<Integer> alg) {
+      yield! 1;
+      yield! 2;
+      yield! 3; 
+      yield! 4;
+      yield! 5;
+  } 
+  
+  public static void main(String args[]) throws InterruptedException, ExecutionException {
+	Subscription sub = new TestStream_Complex().scan(new StreamExt<Integer>(), 
+													 new TestStream_Complex().simpleStream(new StreamExt<Integer>()),
+													 0).subscribe(new Action1<Integer>() {
+        @Override
+        public void call(Integer s) {
+              System.out.println(s);
+        }
+    });
+  }
+}
