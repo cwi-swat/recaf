@@ -27,37 +27,25 @@ public class TestSWUL {
 
    recaf JPanel gridBagTest() {
       panel border {
-        center panel gridBag(4, 4) {
+        center panel gridBag {
           row 4:
-            columns {
-              span 1: button { text! "Button1"; }
-              span 3: button { text! "Button2"; }
-            }
+              cell button { text! "Button1"; }
+              cell(3) button { text! "Button2"; }
           row 4: 
-            columns {
-              span 2: button { text! "Button3"; }
-              span 1: ;
-              span 1: button { text! "Button4"; }
-            }
+              cell(2) button { text! "Button3"; }
+              none!;
+              cell(1, 3) button { text! "Button4"; }
           row 4:
-            columns {
-              span 1: ;
-              span 1: button { text! "Button5"; }
-              span 1: button { text! "Button6"; }
-              span 1: expandDown!;
-            }
+              none!;
+              cell button { text! "Button5"; }
+              cell button { text! "Button6"; }
           row 4:
-            columns {
-              span 2: button { text! "Button7"; }
-              span 1: button { text! "Button8"; }
-              span 1: expandDown!;
-            }
+              cell(2,2) button { text! "Button7"; }
+              cell button { text! "Button8"; }
           row 4:
-            columns {
-              span 1: expandDOwn!;
-              span 1: ;
-              span 2: button { text! "Button9"; }
-            }
+              none!;
+              none!;
+              cell(2) button { text! "Button9"; }
          }
       }
    }
@@ -116,7 +104,7 @@ public class TestSWUL {
             JFrame frame = new JFrame("Welcome!");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             TestSWUL swul = new TestSWUL();
-            frame.setContentPane(swul.widgetORama());
+            frame.setContentPane(swul.gridBagTest());
             frame.pack();
             frame.setVisible(true);
         });

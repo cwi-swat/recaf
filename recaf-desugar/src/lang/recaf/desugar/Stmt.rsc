@@ -45,11 +45,11 @@ Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names
     Id method := [Id]capitalize("<ext>");
 
 // while like
-Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ cs>) <Block b>`, Id alg, Names names) 
+Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ cs>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ ecps>, <Expr bcps>)`
   when 
     {Expr ","}+ ecps := injectExprs(cs, alg, names),
-    Expr bcps := block2alg(b, alg, names),
+    Expr bcps := stm2alg(s, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // combinations of while/for.
@@ -122,11 +122,11 @@ Expr items2alg(list[Item] items:[Item x, *xs], Id alg, Names names)
     Expr xcps := item2alg(x, alg, names),
     (Expr)`java.util.Arrays.asList(<{Expr ","}* es>)` := items2alg(xs, alg, names);
 
-Expr item2alg((Item)`<KId kw> <Expr e>: <BlockStm+ stms>`, Id alg, Names names)
-  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr stmscps>)`
+Expr item2alg((Item)`<KId kw> <{Expr ","}+ es>: <BlockStm+ stms>`, Id alg, Names names)
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ escps>, <Expr stmscps>)`
   when 
     Id method := [Id]capitalize("<kw>"),
-    Expr ecps := injectExpr(e, alg, names),
+    {Expr ","}+ escps := injectExprs(es, alg, names),
     Expr stmscps := block2alg((Block)`{<BlockStm+ stms>}`, alg, names);
   
 Expr item2alg((Item)`<KId kw> <FormalParam f>: <BlockStm+ stms>`, Id alg, Names names)
