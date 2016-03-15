@@ -1,0 +1,26 @@
+package generated; 
+
+import recaf.paper.demo.Debug;
+ 
+public class TestDebug {
+  private static recaf Debug<Integer> alg = new Debug<Integer>() {};
+  
+  public int x = 3;
+  
+  public int dup(int x){
+    return 2*x;
+  }
+  
+  private recaff Integer simple(){   
+    debug! this.dup(this.x);      
+  	return this.dup(this.x);
+  } 
+
+  
+  public static void main(String args[]) {
+    TestDebug s = new TestDebug();
+    int n = s.simple();
+    System.out.println(n);
+    
+  }
+}
