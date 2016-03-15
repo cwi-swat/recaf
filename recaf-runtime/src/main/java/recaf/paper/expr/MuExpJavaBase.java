@@ -19,7 +19,8 @@ public interface MuExpJavaBase extends MuExpJava<IEval> {
 	default IEval Field(IEval x, String f) {
 		return () -> {
 			Object o = x.eval();
-			return o.getClass().getField(f).get(o);
+			Class<?> clazz = o.getClass();
+			return clazz.getField(f).get(o);
 		};
 	}
 	
