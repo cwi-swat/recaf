@@ -25,7 +25,31 @@ public class TestSWUL {
      }
    }
 
-//border = raised bevel border
+   recaf JPanel gridBagTest() {
+      panel border {
+        center panel gridBag {
+          row 4:
+              cell button { text! "Button1"; }
+              cell(3) button { text! "Button2"; }
+          row 4: 
+              cell(2) button { text! "Button3"; }
+              none!;
+              cell(1, 3) button { text! "Button4"; }
+          row 4:
+              none!;
+              cell button { text! "Button5"; }
+              cell button { text! "Button6"; }
+          row 4:
+              cell(2,2) button { text! "Button7"; }
+              cell button { text! "Button8"; }
+          row 4:
+              none!;
+              none!;
+              cell(2) button { text! "Button9"; }
+         }
+      }
+   }
+
    recaf JPanel widgetORama() {
      ButtonGroup radiogroup1 = new ButtonGroup();
      ButtonGroup someGroup = new ButtonGroup();
@@ -79,8 +103,12 @@ public class TestSWUL {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Welcome!");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JPanel panel = new JPanel();
             TestSWUL swul = new TestSWUL();
-            frame.setContentPane(swul.widgetORama());
+            panel.add(swul.example1());
+            panel.add(swul.gridBagTest());
+            panel.add(swul.widgetORama());
+            frame.setContentPane(panel);
             frame.pack();
             frame.setVisible(true);
         });

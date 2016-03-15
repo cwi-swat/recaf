@@ -1,6 +1,8 @@
 package recaf.demo.swul;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -35,6 +37,9 @@ public class SWUL<R extends JComponent> implements StmtJavaDirect<R>, JavaMethod
 	private ArrayDeque<JComponent> componentStack = new ArrayDeque<>();
 	private ArrayDeque<LayoutManager> layoutStack = new ArrayDeque<>();
 	private ArrayDeque<Object> layoutAttrs = new ArrayDeque<>();
+	private ArrayDeque<Integer> rowStack = new ArrayDeque<>();
+	private ArrayDeque<Integer> colStack = new ArrayDeque<>();
+	
 	
 	private JComponent result;
 	
@@ -75,7 +80,14 @@ public class SWUL<R extends JComponent> implements StmtJavaDirect<R>, JavaMethod
 		
 		JComponent parent = componentStack.peek();
 		if (layoutStack.peek() instanceof BorderLayout) {
-//			System.out.println("ADDING with layout: " + c);
+			if (parent instanceof JScrollPane) {
+				((JScrollPane)parent).setViewportView(c);
+			}
+			else {
+				parent.add(c, layoutAttrs.peek());
+			}
+		}
+		else if (layoutStack.peek() instanceof GridBagLayout) {
 			if (parent instanceof JScrollPane) {
 				((JScrollPane)parent).setViewportView(c);
 			}
@@ -215,17 +227,56 @@ public class SWUL<R extends JComponent> implements StmtJavaDirect<R>, JavaMethod
 			this.body = body;
 		}
 	}
-	
-	// Gridlayout
+
 	public IExec Grid(List<Row> rows) {
+		return l -> withGridLayout(new GridLayout(rows.size(), rows.get(0).cols), rows);
+	}	
+	
+	private void withGridLayout(LayoutManager layout, List<Row> rows) throws Throwable {
+		componentStack.peek().setLayout(layout);
+		pushLayout(layout);
+		rowStack.push(0);
+		for (Row row: rows) {
+			colStack.push(0);
+			row.body.exec(null);
+			colStack.pop();
+			rowStack.push(rowStack.pop() + 1);
+		}
+		rowStack.pop();
+		popLayout();
+	}
+	
+	public IExec GridBag(List<Row> rows) {
+		return l -> withGridLayout(new GridBagLayout(), rows);
+	}
+	
+	public IExec Cell(IExec body) {
+		return Cell(() -> 1, body);
+	}
+	
+	public IExec Cell(Supplier<Integer> width, IExec body) {
+		return Cell(width, () -> 1, body);
+		
+	}
+	
+	public IExec Cell(Supplier<Integer> width, Supplier<Integer> height, IExec body) {
 		return l -> {
-			GridLayout layout = new GridLayout(rows.size(), rows.get(0).cols);
-			componentStack.peek().setLayout(layout);
-			pushLayout(layout);
-			for (Row row: rows) {
-				row.body.exec(null);
-			}
-			popLayout();
+			GridBagConstraints c = new GridBagConstraints();
+			c.gridwidth = width.get();
+			c.gridheight = height.get();
+			c.gridx = colStack.peek();
+			c.gridy = rowStack.peek();
+			c.fill = GridBagConstraints.BOTH;
+			layoutAttrs.push(c);
+			colStack.push(colStack.pop() + width.get());
+			body.exec(null);
+			layoutAttrs.pop();
+		};
+	}
+	
+	public IExec None() {
+		return l -> {
+			colStack.push(colStack.pop() + 1);
 		};
 	}
 	
@@ -234,7 +285,6 @@ public class SWUL<R extends JComponent> implements StmtJavaDirect<R>, JavaMethod
 	}
 	
 	// Properties
-	
 	
 	public IExec Value(Supplier<Object> v) {
 		return l -> {
