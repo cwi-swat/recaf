@@ -1,0 +1,88 @@
+
+package generated;
+
+import javax.swing.*;
+import recaf.demo.swul.SWUL;
+
+public class TestSWUL {
+
+   static recaf SWUL<JPanel> alg = new SWUL<JPanel>();
+
+   recaf JPanel example1() {
+     panel { 
+       label text! "Welcome!";
+       panel border {
+          center label text! "Hello world!";
+          south panel grid {
+              row 2:  
+                button {
+                  text! "cancel";
+                  action { System.out.println("Cancel"); }
+                }
+                button text! "ok";
+            }
+       }
+     }
+   }
+
+//border = raised bevel border
+   recaf JPanel widgetORama() {
+     ButtonGroup radiogroup1 = new ButtonGroup();
+     ButtonGroup someGroup = new ButtonGroup();
+     panel border {
+       border! BorderFactory.createRaisedBevelBorder();
+       north scrollPane panel grid {
+         row 2: textArea { 
+                  rows! 10;
+                  columns! 10;
+                  text! "A 10 by 10 textarea";
+                }
+                tree { }
+        }
+        center panel grid {
+          row 3: 
+              label { text! "This an JLabel"; } 
+              button { text! "This is a JButton"; } 
+              slider { }
+          row 3:
+              radioButton {
+                text! "JRadioButton in a group";
+                group! radiogroup1;
+                selected! true;
+              }
+              textField { text! "a JTextField"; } 
+              progressBar { value! 23; } 
+          row 3: 
+            checkBox { text! "a JCheckBox in a group"; }
+            comboBox { }
+            toggleButton { 
+              text! "a JToggleButton"; 
+              group! someGroup;
+            }
+          row 3:
+            radioButton {
+              text! "another JRadioButton";
+              group!  radiogroup1;
+            }
+            label { }
+            toggleButton { 
+                text! "another JToggleButton"; 
+                group! someGroup;
+                selected! true;
+             } 
+        }
+      }
+   }
+
+
+   public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Welcome!");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            TestSWUL swul = new TestSWUL();
+            frame.setContentPane(swul.widgetORama());
+            frame.pack();
+            frame.setVisible(true);
+        });
+    }
+}
