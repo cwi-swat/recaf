@@ -5,6 +5,9 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// here it shows that Java 8 interfaces are not true mixins (abstract super classes)
+// the calls to super are always bound to concrete super interfaces; as a result
+// this PEgwithLayout cannot be used with MemoPEG...
 public class PEGwithLayout<R> implements PEG<R> {
 
 	/*
