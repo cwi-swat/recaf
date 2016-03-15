@@ -18,9 +18,10 @@ syntax Stm
    
    // for, while and try like, and combinations
    | KId "(" FormalParam ":" Expr ")" Stm
+   // todo, fix this, it can be stm!empty
    | KId "(" Expr ")" Block // block otherwise amb with method call and empty
    | KId "(" {Expr ","}+ "," FormalParam ":" Expr ")" Stm
-   | KId Block 
+   | KId Stm!exprStm!emptyBlock 
  
    // with continuation blocks (not implemented)
    | KId "(" FormalParam ":" Expr ")" Stm Rest+

@@ -72,10 +72,18 @@ Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ es>, <FormalParam f>: <Expr e>) <Stm 
 }
 
 // try-like
-Expr stm2alg((Stm)`<KId ext> <Block b>`, Id alg, Names names) 
-  = (Expr)`<Id alg>.<Id method>(<Expr bcps>)`
+//Expr stm2alg((Stm)`<KId ext> <Block b>`, Id alg, Names names) 
+//  = (Expr)`<Id alg>.<Id method>(<Expr bcps>)`
+//  when 
+//    Expr bcps := block2alg(b, alg, names),
+//    Id method := [Id]capitalize("<ext>");
+
+
+// try-like
+Expr stm2alg((Stm)`<KId ext> <Stm s>`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>(<Expr scps>)`
   when 
-    Expr bcps := block2alg(b, alg, names),
+    Expr scps := stm2alg(s, alg, names),
     Id method := [Id]capitalize("<ext>");
 
 // switch-like
