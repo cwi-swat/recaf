@@ -103,8 +103,12 @@ public class TestSWUL {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Welcome!");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JPanel panel = new JPanel();
             TestSWUL swul = new TestSWUL();
-            frame.setContentPane(swul.gridBagTest());
+            panel.add(swul.example1());
+            panel.add(swul.gridBagTest());
+            panel.add(swul.widgetORama());
+            frame.setContentPane(panel);
             frame.pack();
             frame.setVisible(true);
         });
