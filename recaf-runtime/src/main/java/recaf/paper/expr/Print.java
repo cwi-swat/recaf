@@ -23,12 +23,12 @@ interface Print extends MuExpJava<String> {
 
 	@Override
 	default String New(Class<?> c, String... es) {
-		return "new " + c.getName() + "(" + es + ")";
+		return "new " + c.getName() + "(" + String.join(", ", es)  + ")";
 	}
 
 	@Override
 	default String Invoke(String x, String m, String... es) {
-		return x + "." + m + "(" + es + ")";
+		return x + "." + m + "(" + String.join(", ", es) + ")";
 	}
 
 	@Override
