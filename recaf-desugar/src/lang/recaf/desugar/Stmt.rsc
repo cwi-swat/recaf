@@ -30,6 +30,12 @@ Expr stm2alg((Stm)`<KId ext>! <Expr e>;`, Id alg, Names names)
     Expr ecps := injectExpr(e, alg, names),
     Id method := [Id]capitalize("<ext>");
 
+// return-like
+Expr stm2alg((Stm)`<KId ext>!;`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>()`
+  when
+    Id method := [Id]capitalize("<ext>");
+
 // for like
 Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names names) 
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> {return <Expr scps>;})`
@@ -39,10 +45,10 @@ Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) <Stm s>`, Id alg, Names
     Id method := [Id]capitalize("<ext>");
 
 // while like
-Expr stm2alg((Stm)`<KId ext> (<Expr c>) <Block b>`, Id alg, Names names) 
-  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr bcps>)`
+Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ cs>) <Block b>`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ ecps>, <Expr bcps>)`
   when 
-    Expr ecps := injectExpr(c, alg, names),
+    {Expr ","}+ ecps := injectExprs(cs, alg, names),
     Expr bcps := block2alg(b, alg, names),
     Id method := [Id]capitalize("<ext>");
 
@@ -94,10 +100,10 @@ Expr stm2alg((Stm)`<KId ext> (<FormalParam f>: <Expr e>) {<Item+ items>}`, Id al
     Expr itemscps := items2alg([ i | i <- items ], alg, names),
     Id method := [Id]capitalize("<ext>");
 
-Expr stm2alg((Stm)`<KId ext> (<Expr e>) {<Item+ items>}`, Id alg, Names names) 
-  = (Expr)`<Id alg>.<Id method>(<Expr ecps>, <Expr itemscps>)`
+Expr stm2alg((Stm)`<KId ext> (<{Expr ","}+ es>) {<Item+ items>}`, Id alg, Names names) 
+  = (Expr)`<Id alg>.<Id method>(<{Expr ","}+ ecps>, <Expr itemscps>)`
   when 
-    Expr ecps := injectExpr(e, alg, names),
+    {Expr ","}+ ecps := injectExprs(es, alg, names),
     Expr itemscps := items2alg([ i | i <- items ], alg, names),
     Id method := [Id]capitalize("<ext>");
 

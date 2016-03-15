@@ -25,7 +25,43 @@ public class TestSWUL {
      }
    }
 
-//border = raised bevel border
+   recaf JPanel gridBagTest() {
+      panel border {
+        center panel gridBag(4, 4) {
+          row 4:
+            columns {
+              span 1: button { text! "Button1"; }
+              span 3: button { text! "Button2"; }
+            }
+          row 4: 
+            columns {
+              span 2: button { text! "Button3"; }
+              span 1: ;
+              span 1: button { text! "Button4"; }
+            }
+          row 4:
+            columns {
+              span 1: ;
+              span 1: button { text! "Button5"; }
+              span 1: button { text! "Button6"; }
+              span 1: expandDown!;
+            }
+          row 4:
+            columns {
+              span 2: button { text! "Button7"; }
+              span 1: button { text! "Button8"; }
+              span 1: expandDown!;
+            }
+          row 4:
+            columns {
+              span 1: expandDOwn!;
+              span 1: ;
+              span 2: button { text! "Button9"; }
+            }
+         }
+      }
+   }
+
    recaf JPanel widgetORama() {
      ButtonGroup radiogroup1 = new ButtonGroup();
      ButtonGroup someGroup = new ButtonGroup();
