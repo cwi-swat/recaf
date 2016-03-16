@@ -9,8 +9,8 @@ import recaf.paper.methods.MuJavaMethod;
 import recaf.paper.stm.MuJavaCPS;
 import recaf.paper.stm.SD;
 
-//BEGIN_CHOOSE
-interface Choose<R> extends MuJavaCPS<R>, 
+//BEGIN_BACKTRACK
+interface Backtrack<R> extends MuJavaCPS<R>, 
   MuJavaMethod<List<R>, SD<R>> {
 	
 	default List<R> Method(SD<R> body) {
@@ -27,4 +27,4 @@ interface Choose<R> extends MuJavaCPS<R>,
 		}; 
 	}
 }
-//END_CHOOSE
+//END_BACKTRACK
