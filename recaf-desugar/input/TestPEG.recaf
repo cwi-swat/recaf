@@ -9,9 +9,9 @@ public class TestPEG {
 
   abstract class Exp { }
   
-  class BinOp extends Exp {
+  class Bin extends Exp {
     String op; Exp lhs, rhs;
-    BinOp(String op, Exp lhs, Exp rhs) {
+    Bin(String op, Exp lhs, Exp rhs) {
       this.op = op;
       this.lhs = lhs;
       this.rhs = rhs;
@@ -24,8 +24,8 @@ public class TestPEG {
   
   class Int extends Exp {
     int value;
-    Int(int n) {
-      this.value = n;
+    Int(String n) {
+      this.value = Integer.parseInt(n);
     }
     @Override
     public String toString() {
@@ -35,13 +35,15 @@ public class TestPEG {
   
   class XML extends Exp {
     Exp exp;
-    XML(Exp exp) {
+    String tag;
+    XML(String tag, Exp exp) {
+      this.tag = tag;
       this.exp = exp;
     }
     
     @Override
     public String toString() {
-      return "<xml>" + exp + "</xml>";
+      return "<" + tag + ">" + exp + "</" + tag + ">";
     }
   }
   
@@ -52,55 +54,54 @@ public class TestPEG {
   }
   
   recaf Parser<Exp> exp() {
-    let Exp e = sum();
+    let Exp e = addSub();
     return e;
   }
 
-  recaf Parser<Exp> sum() {
-    let Exp v1 = product();
-    star Exp exp = (v1) {
-      regexp String op = "[+\\-]";
-      let Exp v2 = product();
-      return new BinOp(op, exp, v2);
-    }
-    return exp;
-  }
-  
-  
   recaf Parser<Exp> xml(String tag) {
     lit! "<" + tag + ">";
     let Exp e = exp();
     lit! "</" + tag + ">";
-    return new XML(e); 
+    return new XML(tag, e); 
   }
   
-  recaf Parser<Exp> product() {
-    let Exp v1 = value();
-    star Exp exp = (v1) {
-      regexp String op = "[*/]";
-      let Exp v2 = value();
-      return new BinOp(op, exp, v2);
+  
+//BEGIN_PARSER_ADDSUB
+  recaf Parser<Exp> addSub() {
+    let Exp l = mulDiv();
+    star Exp e = (l) {
+      regexp String o = "[+\\-]";
+      let Exp r = mulDiv();
+      return new Bin(o, e, r);
     }
-    return exp;
+    return e;
   }
+//END_PARSER_ADDSUB
+
+//BEGIN_PARSER_MULDIV
+  recaf Parser<Exp> mulDiv() {
+    let Exp l = primary();
+    star Exp e = (l) {
+      regexp String o = "[*/]";
+      let Exp r = primary();
+      return new Bin(o, e, r);
+    }
+    return e;
+  }
+//END_PARSER_MULDIV
   
-  recaf Parser<Exp> value() {
+//BEGIN_PARSER_PRIMARY
+  recaf Parser<Exp> primary() {
     choice {
-     alt "value":
-      regexp String n = "[0-9]+";
-      return new Int(Integer.parseInt(n));
-      
-     alt "xml":
-       let Exp e = xml("xml");
-       return e;
-      
-     alt "bracket":
-      lit! "(";
-      let Exp e = exp();
-      lit! ")";
-      return e;
+      alt "value":
+        regexp String n = "[0-9]+";
+        return new Int(n);
+      alt "bracket":
+        lit! "("; let Exp e = addSub(); lit! ")";
+        return e;
     }
   }
+//END_PARSER_PRIMARY
   
   public static String genExp(int n)  {
     if (n == 0) {
@@ -113,10 +114,10 @@ public class TestPEG {
   }
   
   public static void main(String args[]) {
-    Parser<Exp> p = new TestPEG(new PEG<Exp>() {}).exp();
-    System.out.println(p.parse("<xml>(1+2)*(3+4)</xml>", 0).getValue());
+    //Parser<Exp> p = new TestPEG(new PEG<Exp>() {}).exp();
+    //System.out.println(p.parse("<xml>(1+2)*(3+4)</xml>", 0).getValue());
     
-    p = new TestPEG(new PEG<Exp>() {}).exp();
+    Parser<Exp> p = new TestPEG(new PEG<Exp>() {}).exp();
     System.out.println(p.parse("(1+2)*(3+4)", 0).getValue());
     
     p = new TestPEG(new MemoPEG<Exp>()).exp();
