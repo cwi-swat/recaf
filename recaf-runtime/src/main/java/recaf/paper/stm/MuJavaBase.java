@@ -18,7 +18,9 @@ public interface MuJavaBase<R> extends MuJava<R, IExec> {
 	}
 
 	default IExec If(Supplier<Boolean> c, IExec s1, IExec s2) {
-		return () -> { if (c.get()) s1.exec(); else  s2.exec(); };
+		return () -> { 
+			if (c.get()) s1.exec(); 
+			else s2.exec(); };
 	}
 
 	default IExec Return(Supplier<R> e) {

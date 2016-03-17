@@ -35,7 +35,9 @@ public interface MuJavaCPS<R> extends MuJava<R, SD<R>> {
 	}
 
 	default SD<R> If(Supplier<Boolean> c, SD<R> s1, SD<R> s2) {
-		return (r, s) -> {if (c.get()) s1.accept(r, s); else s2.accept(r, s);};
+		return (r, s) -> {
+			if (c.get()) s1.accept(r, s); 
+			else s2.accept(r, s);};
 	}
 
 	default SD<R> Return(Supplier<R> e) {
