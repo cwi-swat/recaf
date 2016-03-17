@@ -1,12 +1,11 @@
-package recaf.demo.direct;
+package recaf.paper.demo;
 
 import java.io.StringWriter;
 import java.util.function.Supplier;
 
-import recaf.core.direct.IExec;
-import recaf.core.full.FullJavaDirect;
+import recaf.paper.stm.IExec;
 
-public abstract class GUI implements FullJavaDirect<Void> {
+public abstract class GUIImpl implements GUI {
 
 	private int idCount = 0;
 	
@@ -14,21 +13,24 @@ public abstract class GUI implements FullJavaDirect<Void> {
 		return "id" + idCount++;
 	}
 	
-	public abstract IExec Tag(Supplier<String> t, IExec body);
-
-	public abstract IExec Button(Supplier<String> label, IExec body);
-
-	public abstract IExec Echo(Supplier<String> exp);	
+	public Void Method(IExec s) {
+		try {
+			s.exec();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
 	
-	
-	public static class Render extends GUI {
+	public static class Render extends GUIImpl {
 		private StringWriter writer;
 		private int indent = 0;
 		
-
+		
 		public Render(StringWriter writer) {
 			this.writer = writer;
 		}
+		
 		// this algebra will be shared, so we never return the DOM text;
 		// it needs to be requested explicitly.
 		// Ideally we want to construct a dom object of some kind...
@@ -54,11 +56,11 @@ public abstract class GUI implements FullJavaDirect<Void> {
 		
 		@Override
 		public IExec Tag(Supplier<String> t, IExec body) {
-			return l -> {
+			return () -> {
 				String tag = t.get();
 				output("<" + tag + ">\n");
 				indent();
-				body.exec(null);
+				body.exec();
 				dedent();
 				output("</" + tag + ">\n");
 			};
@@ -67,12 +69,12 @@ public abstract class GUI implements FullJavaDirect<Void> {
 		@Override
 		public IExec Button(Supplier<String> label, IExec body) {
 			// in render, we don't execute the body.
-			return l -> output("<button id=\"" + nextId() + "\">" + escapeHTML(label.get()) + "</button>\n");
+			return () -> output("<button id=\"" + nextId() + "\">" + escapeHTML(label.get()) + "</button>\n");
 		}
 		
 		@Override
 		public IExec Echo(Supplier<String> exp) {
-			return l -> output(escapeHTML(exp.get()));
+			return () -> output(escapeHTML(exp.get()));
 		}
 		
 		private static String escapeHTML(String s) {
@@ -93,7 +95,7 @@ public abstract class GUI implements FullJavaDirect<Void> {
 		
 	}
 
-	public static class Handle extends GUI {
+	public static class Handle extends GUIImpl {
 		private final String buttonClicked;
 
 		public Handle(String buttonClicked) {
@@ -108,10 +110,10 @@ public abstract class GUI implements FullJavaDirect<Void> {
 		@Override
 		public IExec Button(Supplier<String> label, IExec body) {
 			// in handle, we execute the body if the current button was clickd.
-			return l -> {
+			return () -> {
 				String id = nextId();
 				if (buttonClicked.equals(id)) {
-					body.exec(null);
+					body.exec();
 				}
 			};
 		}

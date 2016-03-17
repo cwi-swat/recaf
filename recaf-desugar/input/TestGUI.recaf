@@ -4,6 +4,7 @@ import recaf.demo.direct.GUI.Render;
 import recaf.demo.direct.GUI.Handle;
 import java.util.stream.IntStream;
 import java.util.Iterator;
+import java.io.StringWriter;
 
 
 public class TestGUI {
@@ -20,43 +21,44 @@ public class TestGUI {
     }
   }
   
-  Iterable<Integer> range(int n) {
+  static Iterable<Integer> range(int n) {
     return new Iterable<Integer>() {
        public Iterator<Integer> iterator() {
          return IntStream.range(0, n).iterator();
        }
     };
   }
-
-  recaf void theGUI(int n) {
-    h2("Demo");
-    
-    tag ("div") {
-      for (int i = 0; i < n; i++) {
+  
+  static void println(String x) {
+    System.out.println(x);
+  }
+  
+  static 
+  //BEGIN_HELLOES
+  void hello(recaf GUI alg, int n) {
+    tag ("div") 
+      for (int i: range(n)) 
          tag ("p") {
-           echo! "Hello & goodbye " + i + "!\n";
-           button ("Click " + i ) {
-             if (i % 2 == 0) { 
-               System.out.println("clicked even button " + i);
-             }
-             else {
-               System.out.println("clicked odd button " + i);
-             }
-           }
+           echo! "Hello world " + i + "!\n";
+           button ("Click " + i) 
+             if (i % 2 == 0) println("even " + i);
+             else println("odd " + i);
          }
-      }
-    }
+  }
+  //END_HELLOES
+  
+  static void sendToServer(String x) {
+    System.out.println(x);
   }
   
   public static void main(String args[]) {
-    Render alg = new Render();
-    TestGUI tg = new TestGUI(alg);
-    tg.theGUI(10);
-    String html = alg.getHTML();
-    System.out.println(html);
-    GUI handle = new Handle("id2");
-    tg = new TestGUI(handle);
-    tg.theGUI(10);
+    //BEGIN_CLIENT_GUI
+    StringWriter w = new StringWriter();
+    hello(new Render(w), 10);
+    sendToServer(w.toString());
+    // ... receive the clicked id; assume it's "id2"
+    hello(new Handle("id2"), 10); // prints out even 2
+    //END_CLIENT_GUI
   }
 
 }
