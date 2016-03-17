@@ -40,7 +40,7 @@ public class TestGUI {
       for (int i: range(n)) 
          tag ("p") {
            echo! "Hello world " + i + "!\n";
-           button ("Click " + i ) 
+           button ("Click " + i) 
              if (i % 2 == 0) println("even " + i);
              else println("odd " + i);
          }
