@@ -22,5 +22,4 @@ public interface Using<R> extends FullJavaDirect<R> {
 			}
 		};
 	}
-
 }
