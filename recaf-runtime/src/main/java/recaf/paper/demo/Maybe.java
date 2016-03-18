@@ -9,12 +9,12 @@ import recaf.paper.stm.MuJavaBase;
 
 //BEGIN_MAYBE
 interface Maybe<R> extends MuJavaBase<R> {
-	default <T> IExec Maybe(Supplier<Optional<T>> x, Function<T, IExec> s) {
-		return () -> {
-			Optional<T> opt = x.get();
-			if (opt.isPresent()) s.apply(opt.get()).exec();
-		};
-	}
+  default <T> IExec Maybe(Supplier<Optional<T>> x, 
+                          Function<T, IExec> s) {
+    return () -> { 
+	    Optional<T> opt = x.get();
+	    if (opt.isPresent()) s.apply(opt.get()).exec(); };
+  }
 }
 //END_MAYBE
 
