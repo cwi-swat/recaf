@@ -1,9 +1,9 @@
 package recaf.paper.demo;
 
 import recaf.paper.expr.IEval;
-import recaf.paper.expr.MuStmPrintEvalAdapter;
 import recaf.paper.expr.Pair;
 import recaf.paper.expr.PrintAndEval;
+import recaf.paper.full.MuStmPrintEvalAdapter;
 import recaf.paper.methods.TPDirect;
 import recaf.paper.stm.IExec;
 import recaf.paper.stm.MuJava;
