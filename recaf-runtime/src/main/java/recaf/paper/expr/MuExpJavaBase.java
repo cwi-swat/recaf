@@ -20,11 +20,15 @@ public interface MuExpJavaBase extends MuExpJava<IEval> {
 		return () -> {
 			Object o = x.eval();
 			Class<?> clazz = o.getClass();
-			return clazz.getField(f).get(o);
+			try {
+				return clazz.getField(f).get(o);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		};
 	}
 	
-	static Object[] evalArgs(IEval[] es) throws Throwable {
+	static Object[] evalArgs(IEval[] es)  {
 		Object[] args = new Object[es.length];
 		for (int i = 0; i < es.length; i++) 
 			args[i] = es[i].eval();

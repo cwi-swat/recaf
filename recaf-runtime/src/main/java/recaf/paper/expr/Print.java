@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
+public
 interface Print extends MuExpJava<String> {
 	@Override
 	default String Lit(Object x) {

@@ -290,13 +290,13 @@ Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>;}`, Id alg, Names n
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names);
 
-Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Block b>}`, Id alg, Names names)
+Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Stm b>}`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr bcps>; }, (<FormalParam f>) -\> { return <Id alg>.Empty(); })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names),
-    Expr bcps := block2alg(b, alg, names);
+    Expr bcps := stm2alg(b, alg, names);
 
 
 default Expr block2alg((Block)`{<Stm s>}`, Id alg, Names names) 
@@ -359,13 +359,13 @@ Expr block2alg((Block)`{<FormalParam f> = <KId kw>! <Expr e>; <BlockStm+ ss>}`, 
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 //KId FormalParam "=" "(" Expr ")" Block
-Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Block b> <BlockStm+ ss>}`, Id alg, Names names)
+Expr block2alg((Block)`{<KId kw> <FormalParam f> = (<Expr e>) <Stm b> <BlockStm+ ss>}`, Id alg, Names names)
   = (Expr)`<Id alg>.<Id method>(<Expr ecps>, (<FormalParam f>) -\> { return <Expr bcps>; }, (<FormalParam f>) -\> { return <Expr sscps>; })`
   when
     Id method := [Id]capitalize("<kw>"),
     Type rt := boxed(typeOf(f)),
     Expr ecps := injectExpr(e, alg, names),
-    Expr bcps := block2alg(b, alg, names),
+    Expr bcps := stm2alg(b, alg, names),
     Expr sscps := block2alg((Block)`{<BlockStm+ ss>}`, alg, names);
 
 // TODO: final modifiers.... (we don't support it now)
