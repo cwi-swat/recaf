@@ -2,10 +2,11 @@ package recaf.paper.demo;
 
 import recaf.paper.expr.IEval;
 import recaf.paper.expr.MuExpJavaBase;
-import recaf.paper.full.MuStmJavaAdapter;
+import recaf.paper.full.MuStmIEvalJavaAdapter;
+import recaf.paper.full.MuStmJavaManualAdapter;
 import recaf.paper.stm.IExec;
 
-public interface OrElse<R> extends MuStmJavaAdapter<R, IExec>, MuExpJavaBase {
+public interface OrElse<R> extends MuStmIEvalJavaAdapter<R, IExec>, MuExpJavaBase {
 	//BEGIN_ORELSE
 	default IEval OrElse(IEval ...es) {
 		return () -> {

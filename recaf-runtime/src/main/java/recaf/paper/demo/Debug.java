@@ -20,7 +20,8 @@ public class Debug<R> implements MuStmPrintEvalAdapter<R, IExec>, PrintAndEval, 
 	public 
 	//BEGIN_DEBUG
 	IExec Debug(Pair<IEval, String> e) {
-		return () -> System.err.println("DEBUG: " + e.snd + " => " + e.fst.eval());
+		return () -> System.err.println("DEBUG: " + e.snd 
+				          + " => " + e.fst.eval());
 	}
 	//END_DEBUG
 }

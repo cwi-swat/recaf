@@ -1,42 +1,39 @@
 package recaf.paper.full;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import recaf.paper.expr.IEval;
 import recaf.paper.stm.MuJava;
 
-//BEGIN_MU_STM_ADAPTER
-public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
+//BEGIN_MU_STM_GENERIC_ADAPTER
+public interface MuStmJavaAdapter<R, S, E> extends MuStmJava<S, E> {
 	MuJava<R, S> base();
 	
-	static <T> T eval(IEval e) {
-		try { return (T) e.eval(); } 
-		catch (Throwable t) {throw new RuntimeException(t);}
+	<T> Supplier<T> adapt(E e);
+	
+	@Override
+	default S Exp(E e) {
+		return base().Exp(adapt(e));
 	}
 	
 	@Override
-	default S Exp(IEval e) {
-		return base().Exp(() -> { eval(e); return null;});
+	default <T> S Decl(E x, Function<T, S> s) {
+		return base().Decl(adapt(x), s); 
 	}
 	
 	@Override
-	default <T> S Decl(IEval x, Function<T, S> s) {
-		return base().Decl(() -> eval(x), s); 
+	default <T> S For(E e, Function<T, S> s) {
+		return base().For(adapt(e), s);
 	}
 	
 	@Override
-	default <T> S For(IEval e, Function<T, S> s) {
-		return base().For(() -> (Iterable<T>) eval(e), s);
+	default S If(E c, S s1, S s2) {
+		return base().If(adapt(c), s1, s2);
 	}
 	
 	@Override
-	default S If(IEval c, S s1, S s2) {
-		return base().If(() -> eval(c), s1, s2);
-	}
-	
-	@Override
-	default S Return(IEval e) {
-		return base().Return(() -> eval(e));
+	default S Return(E e) {
+		return base().Return(adapt(e));
 	}
 	
 	@Override
@@ -49,4 +46,4 @@ public interface MuStmJavaAdapter<R, S> extends MuStmJava<S, IEval> {
 		return base().Empty();
 	}
 }
-//END_MU_STM_ADAPTER
+//END_MU_STM_GENERIC_ADAPTER
