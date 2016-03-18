@@ -8,7 +8,7 @@ public
 interface Tracing extends MuExpJavaBase {
 	default IEval Var(String x, Object v){ 
 		return () -> {
-			System.out.println(x + " = " + v);
+			System.err.println(x + " = " + v);
 			return MuExpJavaBase.super.Var(x, v).eval();
 		};
 	}
