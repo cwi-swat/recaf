@@ -40,14 +40,18 @@ public class PEGwithLayout<R> implements PEG<R> {
 		return PEG.super.Regexp(x, withLayout(body));
 	}
 
+	
 	@Override
 	public Parser<Void> Lit(Supplier<String> x) {
 		return Seq(layout, PEG.super.Lit(x));
 	}
 	
 	@Override
+	//BEGIN_SEQ_LAYOUT
 	public <T, U> Parser<U> Seq(Parser<T> p1, Parser<U> p2) {
 		return PEG.super.Seq(p1, PEG.super.Seq(layout, p2));
 	}
+	//END_SEQ_LAYOUT
+
 	
 }
