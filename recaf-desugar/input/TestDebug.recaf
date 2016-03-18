@@ -1,9 +1,9 @@
 package generated; 
 
-import recaf.paper.demo.Debug;
+import recaf.paper.demo.DebugPaper;
  
 public class TestDebug {
-  private static recaf Debug<Integer> alg = new Debug<Integer>() {};
+  private static recaf DebugPaper<Integer> alg = new DebugPaper<Integer>() {};
   
   public int x = 3;
   

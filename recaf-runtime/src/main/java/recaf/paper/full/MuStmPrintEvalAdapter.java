@@ -1,8 +1,9 @@
-package recaf.paper.expr;
+package recaf.paper.full;
 
 import java.util.function.Function;
 
-import recaf.paper.full.MuStmJava;
+import recaf.paper.expr.IEval;
+import recaf.paper.expr.Pair;
 import recaf.paper.stm.MuJava;
 
 public interface MuStmPrintEvalAdapter<R, S> extends MuStmJava<S, Pair<IEval, String>> {
