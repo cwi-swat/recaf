@@ -36,7 +36,7 @@ syntax Stm
    
    // decl like
    | KId FormalParam ";"
-   | KId FormalParam "=" "(" Expr ")" Block
+   | KId FormalParam "=" "(" Expr ")" Stm!empty
    | KId {Expr ","}+ "," FormalParam ";"
    | KId FormalParam "=" Expr ";"
    | KId {Expr ","}+ "," FormalParam "=" Expr ";"
