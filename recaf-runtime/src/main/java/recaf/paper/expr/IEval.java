@@ -2,5 +2,5 @@ package recaf.paper.expr;
 
 public 
 //BEGIN_IEVAL
-interface IEval { Object eval() throws Throwable; }
+interface IEval { Object eval(); }
 //END_IEVAL

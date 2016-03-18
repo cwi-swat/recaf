@@ -1,6 +1,8 @@
 package recaf.paper.expr;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public interface MuExpJavaZip<E1, E2> extends MuExpJava<Pair<E1, E2>> {
 
@@ -38,16 +40,19 @@ public interface MuExpJavaZip<E1, E2> extends MuExpJava<Pair<E1, E2>> {
 	@Override
 	@SuppressWarnings(value = { "unchecked" })
 	default Pair<E1, E2> New(Class<?> c, Pair<E1, E2>... es) {
-		Pair<E1[], E2[]> unzipped = unzip(es);
-		return new Pair<>(alg1().New(c, unzipped.fst), alg2().New(c, unzipped.snd));
+		//Pair<E1[], E2[]> unzipped = unzip(es);
+		E1[] fst = (E1[]) Arrays.asList(es).stream().map(x -> x.fst).collect(Collectors.toList()).toArray();
+		E2[] snd = (E2[]) Arrays.asList(es).stream().map(x -> x.snd).collect(Collectors.toList()).toArray();
+		return new Pair<>(alg1().New(c, fst), alg2().New(c, snd));
 	}
 
 	@Override
 	@SuppressWarnings(value = { "unchecked" })
 	default Pair<E1, E2> Invoke(Pair<E1, E2> x, String m, Pair<E1, E2>... es) {
-		Pair<E1[], E2[]> unzipped = unzip(es);
-		return new Pair<>(alg1().Invoke(x.fst, m, unzipped.fst),
-				alg2().Invoke(x.snd, m, unzipped.snd));
+		E1[] fst = (E1[]) Arrays.asList(es).stream().map(y -> y.fst).collect(Collectors.toList()).toArray();
+		E2[] snd = (E2[]) Arrays.asList(es).stream().map(y -> y.snd).collect(Collectors.toList()).toArray();
+		return new Pair<>(alg1().Invoke(x.fst, m, fst),
+				alg2().Invoke(x.snd, m, snd));
 	}
 
 	@Override
