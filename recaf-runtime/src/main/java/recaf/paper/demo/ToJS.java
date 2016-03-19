@@ -25,7 +25,11 @@ class Remote {
 	}
 }
 
-public class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJavaMethod<Remote, String> {
+public 
+//BEGIN_TOJS
+class ToJS implements MuStmJava<String, String>, MuExpJava<String>
+//END_TOJS
+, MuJavaMethod<Remote, String> {
 
 	private Object remote;
 	private List<String> classStubs = new ArrayList<>();
@@ -37,16 +41,16 @@ public class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJav
 
 	@Override
 	public <T> String Decl(String x, Function<T, String> s) {
-		return "let " + x + " = " + s.apply(null);
+		return "let " + getName(s) + " = " + x + "; "+ s.apply(null);
 	}
 
 	@Override
 	public <T> String For(String x, Function<T, String> s) {
-		return "for (let " + getName(s) + " of " + x + ")" + s.apply(null); 
+		return "for (let " + getName(s) + " of " + x + ") " + s.apply(null); 
 	}
 
 	private <T> String getName(Function<T, String> s) {
-		return "todo";
+		return getParams(s);
 	}
 
 	@Override
@@ -96,7 +100,7 @@ public class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJav
 
 	@Override
 	public String Invoke(String x, String m, String... es) {
-		return x + "." + m + "(" + sepList(es )+ ")";
+		return x + "." + m + "(" + sepList(es) + ")";
 	}
 
 	@Override
@@ -136,7 +140,9 @@ public class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJav
 
 	@Override
 	public Remote Method(String s) {
-		return new Remote(remote, "function (self, " + sepList(classStubs.toArray()) + ") {" + s + "}");
+		String stubs = sepList(classStubs.toArray());
+		String args = stubs.isEmpty() ? "self" : "self, " + stubs;
+		return new Remote(remote, "function (" + args + ") {" + s + "}");
 	}
 	
 	private String sepList(Object[] os) {
@@ -152,7 +158,8 @@ public class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJav
 	
 	public static void main(String[] args) {
 		ToJS js = new ToJS();
-		Remote src = js.Method(js.If(js.Lit(true), js.Return(js.New(Integer.class)), js.Return(js.Lit(null))));
+		Remote src = js.Method(js.If(js.Lit(true), js.For(js.Var("iter", "iter"), x -> 
+		  js.Return(js.Var("x", x))), js.Return(js.Lit(null))));
 		System.out.println(src.getCode());
 	}
 
