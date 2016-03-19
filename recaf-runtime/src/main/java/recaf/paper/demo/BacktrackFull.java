@@ -3,20 +3,18 @@ package recaf.paper.demo;
 import java.util.function.Function;
 
 import recaf.paper.expr.IEval;
-import recaf.paper.full.FullMuJavaFromGenericCPS;
+import recaf.paper.full.FullMuJavaCPS;
 import recaf.paper.stm.SD;
 
-public class BacktrackFull<R> implements FullMuJavaFromGenericCPS<R> {
+public 
+//BEGIN_BACKTRACK_FULL
+interface BacktrackFull<R> extends FullMuJavaCPS<R> {
 
-	@Override
-	public Backtrack<R> base() {
-		return new Backtrack<R>() {
-		};
+	default Backtrack<R> base() {
+		return new Backtrack<R>() {};
 	}
-
-	// Should be in Choose interface (?)
-	public <T> SD<R> Choose(IEval e, Function<T, SD<R>> body) {
-		return base().Choose(() -> (Iterable<T>) adapt(e), body);
+	default <T> SD<R> Choose(IEval e, Function<T, SD<R>> body){
+		return base().Choose(adapt(e), body);
 	}
-
 }
+//END_BACKTRACK_FULL
