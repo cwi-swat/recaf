@@ -17,15 +17,22 @@ import rx.subjects.Subject;
 public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R>, SD<R>> {
 	
 	ReplaySubject<R> result = ReplaySubject.create();
+	int depth = 0; // light depth tracking
 	
 	public Subject<R, R> Method(SD<R> body) {
+		depth++;
 		body.accept(null,
-				r ->     { }, 
-				() ->    { },
+				r -> { 
+					depth--;
+					if (depth==0) result.onCompleted(); 
+				}, 
+				() -> { 
+					depth--;
+					if (depth==0) result.onCompleted(); 
+				},
 				label -> { },
 				label -> { },
-				ex ->    { result.onError(ex);});
-		
+				ex ->    { result.onError(ex);  }) ;
 		return result;
 	}
 	
@@ -53,7 +60,7 @@ public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R
 	public <T> SD<R> YieldFrom(ISupply<Observable<R>> exp) {
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(exp).accept(v -> { 
-			    sigma.call();
+				sigma.call();		
 			} , err);
 		};
 	}

@@ -11,7 +11,7 @@ public class TestUsingWithError {
   private static recaf Using<String> alg = new Using<String>() {};
    
   static recaf String usingExample(String path)  {
-     using (BufferedReadr br : new BufferedReader(new FileReader(path))){
+     using (BufferedReader br : new BufferedReader(new FileReader(path))){
         return br.readLine();
      }
   }
