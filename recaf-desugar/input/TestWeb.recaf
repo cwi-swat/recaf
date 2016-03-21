@@ -1,16 +1,19 @@
 package generated;
 
 import recaf.paper.demo.ToJS;
-import static recaf.paper.demo.ToJS.HTTPResponse;
-import static recaf.paper.demo.ToJS.HTTPRequest;
+import recaf.paper.demo.HTTPResponse;
+import recaf.paper.demo.HTTPRequest;
 
 public class TestWeb extends ToJS.Browser {
   
   recaf ToJS alg = new ToJS();
-  
+
+  //BEGIN_HELLOWORLD_WEB  
   recaff HTTPResponse helloWorld(HTTPRequest req) {
-     document.getElementById("greeting").append("Hello world " + req.params.get("name"));
+     document.write("<h1>Hello world " 
+         + req.params.get("name") + "</h1>");
   }
+  //END_HELLOWORLD_WEB
   
   public static void main(String args[]) {
      HTTPResponse r = new TestWeb().helloWorld(new HTTPRequest());

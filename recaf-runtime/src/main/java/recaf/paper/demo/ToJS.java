@@ -27,7 +27,7 @@ class Console {
 
 public 
 //BEGIN_TOJS
-class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJavaMethod<ToJS.HTTPResponse, String>
+class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJavaMethod<HTTPResponse, String>
 //END_TOJS
  {
 	
@@ -36,25 +36,6 @@ class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJavaMethod
 		public Console console;
 	}
 
-	public static class HTTPRequest {
-		
-	}
-
-	public static class HTTPResponse {
-		private HTTPRequest req;
-		private String js;
-
-		public HTTPResponse(HTTPRequest req, String js) {
-			this.req = req;
-			this.js = js;
-		}
-
-		public String getJs() {
-			return js;
-		}
-	}
-
-	
 	private HTTPRequest request;
 
 	@Override
