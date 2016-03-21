@@ -1,0 +1,20 @@
+package generated;
+
+import recaf.paper.demo.ToJS;
+import static recaf.paper.demo.ToJS.HTTPResponse;
+import static recaf.paper.demo.ToJS.HTTPRequest;
+
+public class TestWeb extends ToJS.Browser {
+  
+  recaf ToJS alg = new ToJS();
+  
+  recaff HTTPResponse helloWorld(HTTPRequest req) {
+     document.getElementById("greeting").append("Hello world " + req.params.get("name"));
+  }
+  
+  public static void main(String args[]) {
+     HTTPResponse r = new TestWeb().helloWorld(new HTTPRequest());
+     System.out.println(r.getJs());
+  }
+
+}

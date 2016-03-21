@@ -116,8 +116,9 @@ Expr amb2alg((AmbName)`<Id x>`, Id alg, Names names)
   = expr2alg((Expr)`<Id x>`, alg, names);
 
 Expr amb2alg((AmbName)`<AmbName a>.<Id x>`, Id alg, Names names)
-  = expr2alg((Expr)`<Expr a2>.<Id x>`, alg, names)
+  = (Expr)`<Id alg>.Field(<Expr a2>, <Expr name>)`
   when
+    Expr name := id2strExpr(x),
     a2 := amb2alg(a, alg, names);
 
 Expr expr2alg((Expr)`<Expr e>.<TypeArgs? _><Id m>(<{Expr ","}* es>)`, Id alg, Names names)

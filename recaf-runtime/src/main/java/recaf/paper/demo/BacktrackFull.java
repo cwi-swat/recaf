@@ -9,7 +9,6 @@ import recaf.paper.stm.SD;
 public 
 //BEGIN_BACKTRACK_FULL
 interface BacktrackFull<R> extends FullMuJavaCPS<R> {
-
 	default Backtrack<R> base() {
 		return new Backtrack<R>() {};
 	}

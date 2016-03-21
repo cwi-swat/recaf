@@ -2,37 +2,60 @@ package recaf.paper.demo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
+import org.w3c.dom.Node;
+
+import recaf.core.expr.IRef;
 import recaf.paper.expr.MuExpJava;
 import recaf.paper.full.MuStmJava;
 import recaf.paper.methods.MuJavaMethod;
 
-class Remote {
 
-	private Object self;
-	private String code;
-
-	public Remote(Object self, String code) {
-		this.self = self;
-		this.code = code;
+class Document {
+	// Stubs for the browser document
+	public Node getElementById(String s) {
+		return null;
 	}
+}
 
-	public String getCode() {
-		return code;
+class Console {
+	// Stubs for the console.
+	void log(Object obj) {
 	}
 }
 
 public 
 //BEGIN_TOJS
-class ToJS implements MuStmJava<String, String>, MuExpJava<String>
+class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJavaMethod<ToJS.HTTPResponse, String>
 //END_TOJS
-, MuJavaMethod<Remote, String> {
+ {
+	
+	public static class Browser {
+		public Document document;
+		public Console console;
+	}
 
-	private Object remote;
-	private List<String> classStubs = new ArrayList<>();
+	public static class HTTPRequest {
+		
+	}
+
+	public static class HTTPResponse {
+		private HTTPRequest req;
+		private String js;
+
+		public HTTPResponse(HTTPRequest req, String js) {
+			this.req = req;
+			this.js = js;
+		}
+
+		public String getJs() {
+			return js;
+		}
+	}
+
+	
+	private HTTPRequest request;
 
 	@Override
 	public String Exp(String x) {
@@ -76,6 +99,9 @@ class ToJS implements MuStmJava<String, String>, MuExpJava<String>
 
 	@Override
 	public String Lit(Object x) {
+		if (x instanceof String) {
+			return "'" + x + "'";
+		}
 		return "" + x;
 	}
 
@@ -92,9 +118,6 @@ class ToJS implements MuStmJava<String, String>, MuExpJava<String>
 	@Override
 	public String New(Class<?> c, String... es) {
 		String name = c.getSimpleName();
-		if (!classStubs.contains(name)) {
-			classStubs.add(name);
-		}
 		return "new " + name + "(" + sepList(es) + ")";
 	}
 
@@ -135,14 +158,35 @@ class ToJS implements MuStmJava<String, String>, MuExpJava<String>
 
 	@Override
 	public String Var(String x, Object it) {
+		if (it instanceof IRef<?>) {
+			it = ((IRef<?>)it).value();
+		}
+		if (it instanceof HTTPRequest) {
+			this.request = (HTTPRequest) it;
+			return "req";
+		}
 		return x;
 	}
+	
+	// These are not in MuJava, but just to make the example work
+	public String Ref(String x, Object it) {
+		return Var(x,  ((IRef<?>)it).value());
+	}
+	
+	public String Plus(String x, String y) {
+		return "(" + x + " + " + y + ")";
+	}
+	
+	public String ExpStat(String x) {
+		return x + ";";
+	}
+	// End of additional stuff.
 
 	@Override
-	public Remote Method(String s) {
-		String stubs = sepList(classStubs.toArray());
-		String args = stubs.isEmpty() ? "self" : "self, " + stubs;
-		return new Remote(remote, "function (" + args + ") {" + s + "}");
+	public HTTPResponse Method(String s) {
+		// create response object containing the JS code function (req) {...} and the
+		// serialized form of the request.
+		return new HTTPResponse(request, "function (req) {" + s + "}");
 	}
 	
 	private String sepList(Object[] os) {
@@ -157,10 +201,12 @@ class ToJS implements MuStmJava<String, String>, MuExpJava<String>
 	}
 	
 	public static void main(String[] args) {
+		//System.out.println(null instanceof Response);
 		ToJS js = new ToJS();
-		Remote src = js.Method(js.If(js.Lit(true), js.For(js.Var("iter", "iter"), x -> 
-		  js.Return(js.Var("x", x))), js.Return(js.Lit(null))));
-		System.out.println(src.getCode());
+		HTTPRequest z = new HTTPRequest();
+		HTTPResponse response = js.Method(js.If(js.Lit(true), js.For(js.Var("iter", "iter"), x -> 
+		  js.Return(js.Var("x", x))), js.Return(js.Var("z", z))));
+		System.out.println(response.getJs());
 	}
 
 }
