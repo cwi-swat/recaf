@@ -65,7 +65,7 @@ public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R
 		};
 	}
 	
-	private <T> void loop(Iterator<R> iter, Function<R, SD<T>> body, K<T> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err){
+	private <T> void loop(Iterator<T> iter, Function<T, SD<R>> body, K<R> rho, K0 sigma, K<String> brk, K<String> contin, K<Throwable> err){
 		body.apply(iter.next()).accept(null,
 		   rho, 
 		   () -> {
@@ -76,11 +76,11 @@ public class StreamExt<R> implements EvalJavaStmt<R>, JavaMethodAlg<Subject<R, R
 		   }, brk, contin, err);
 	}
 	
-	public <T> SD<T> AwaitFor(ISupply<Observable<R>> coll, Function<R, SD<T>> body){
+	public <T> SD<R> AwaitFor(ISupply<Observable<T>> coll, Function<T, SD<R>> body){
 		return (label, rho, sigma, brk, contin, err) -> {
 			get(coll).accept(v -> { 
 				
-				Iterator<R> it = v.toBlocking().toIterable().iterator();
+				Iterator<T> it = v.toBlocking().toIterable().iterator();
 				
 				loop(it, body, rho, sigma, brk, contin, err);
 				
