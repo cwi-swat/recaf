@@ -56,6 +56,7 @@ class ToJS implements MuStmJava<String, String>, MuExpJava<String>, MuJavaMethod
 	private <T> String getName(Function<T, String> s) {
 		return getParams(s);
 	}
+	
 
 	@Override
 	public String If(String c, String s1, String s2) {
