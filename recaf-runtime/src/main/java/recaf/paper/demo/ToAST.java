@@ -9,8 +9,13 @@ import recaf.paper.demo.ast.If;
 import recaf.paper.demo.ast.Stm;
 import recaf.paper.expr.MuExpJava;
 import recaf.paper.full.MuStmJava;
+import recaf.paper.demo.ast.*;
 
-public class ToAST implements MuStmJava<Stm, Expr>, MuExpJava<Expr> {
+public
+//BEGIN_TOAST
+class ToAST implements MuStmJava<Stm, Expr>, MuExpJava<Expr>
+//END_TOAST
+{
 
 	private Stm callClosure(Object f) {
 		for (java.lang.reflect.Method m: f.getClass().getMethods()) {
@@ -44,74 +49,80 @@ public class ToAST implements MuStmJava<Stm, Expr>, MuExpJava<Expr> {
 	
 	@Override
 	public Stm Exp(Expr x) {
-		return new recaf.paper.demo.ast.Exp(x);
+		return new Exp(x);
 	}
 	
 	
 	@Override
 	public <T> Stm Decl(Expr x, Function<T, Stm> s) {
-		return new recaf.paper.demo.ast.Decl(getName(s), x, s.apply(null));
+		return new Decl(getName(s), x, s.apply(null));
 	}
 	
 
 	@Override
-	public <T> Stm For(Expr x, Function<T, Stm> s) {
-		return new recaf.paper.demo.ast.For(getName(s), x, s.apply(null));
+	public
+	//BEGIN_DEEP_FOR
+	<T> Stm For(Expr x, Function<T, Stm> s) {
+		return new For(getName(s), x, s.apply(null));
 	}
+	//END_DEEP_FOR
 
 	@Override
-	public Stm If(Expr c, Stm s1, Stm s2) {
+	public 
+	//BEGIN_DEEP_IF
+	Stm If(Expr c, Stm s1, Stm s2) {
 		return new If(c, s1, s2);
 	}
+	//END_DEEP_IF
 
 	@Override
 	public Stm Return(Expr x) {
-		return new recaf.paper.demo.ast.Return(x);
+		return new Return(x);
 	}
 
 	@Override
 	public Stm Seq(Stm s1, Stm s2) {
-		return new recaf.paper.demo.ast.Seq(s1, s2);
+		return new Seq(s1, s2);
 	}
 
 	@Override
 	public Stm Empty() {
-		return new recaf.paper.demo.ast.Empty();
+		return new Empty();
 	}
 
 	@Override
 	public Expr Lit(Object x) {
-		return new recaf.paper.demo.ast.Lit(x);
+		return new Lit(x);
 	}
 
 	@Override
 	public Expr This(Object x) {
-		return new recaf.paper.demo.ast.This(x);
+		return new This(x);
 	}
 
 	@Override
 	public Expr Field(Expr x, String f) {
-		return new recaf.paper.demo.ast.Field(x, f);
+		return new Field(x, f);
 	}
 
 	@Override
 	public Expr New(Class<?> c, Expr... es) {
-		return new recaf.paper.demo.ast.New(c, es);
+		return new New(c, es);
 	}
 
 	@Override
 	public Expr Invoke(Expr x, String m, Expr... es) {
-		return new recaf.paper.demo.ast.Invoke(x, m, es);
+		return new Invoke(x, m, es);
 	}
 
 	@Override
 	public Expr Lambda(Object f) {
-		return new recaf.paper.demo.ast.Lambda(getParams(f), callClosure(f));
+		return new Lambda(getParams(f), callClosure(f));
 	}
 
 	@Override
 	public Expr Var(String x, Object it) {
-		return new recaf.paper.demo.ast.Var(x, it);
+		return new Var(x, it);
 	}
 
 }
