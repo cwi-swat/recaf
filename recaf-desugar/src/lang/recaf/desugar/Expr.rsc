@@ -27,6 +27,7 @@ Expr expr2alg((Expr)`#<KId k> <Block b>`, Id alg, Names names)
     Id method := [Id]capitalize("<k>");
 
 
+// TODO: change types Object
 Expr expr2alg((Expr)`(<{FormalParam ","}* fps>) -\> <Expr e>`, Id alg, Names names)
   = (Expr)`<Id alg>.Closure((<{FormalParam ","}* fps>) -\> <Expr e2>)`
   when
