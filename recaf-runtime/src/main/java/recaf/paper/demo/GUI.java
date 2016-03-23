@@ -9,5 +9,6 @@ import recaf.paper.stm.MuJavaBase;
 interface GUI extends MuJavaBase<Void> {
 	IExec Tag(Supplier<String> t, IExec b);
 	IExec Button(Supplier<String> l, IExec b);
+	IExec Echo(Supplier<String> x);	
 }
 //END_GUI_ALG
