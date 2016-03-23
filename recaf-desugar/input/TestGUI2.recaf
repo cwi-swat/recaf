@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.io.StringWriter;
 
 
-public class TestGUI {
+public class TestGUI2 {
    private recaf GUI alg;
 
    public TestGUI(GUI alg) {
@@ -34,27 +34,29 @@ public class TestGUI {
   }
   
   static 
+  //BEGIN_HELLOES
   void hello(recaf GUI alg, int n) {
     tag ("div") 
       for (int i: range(n)) 
          tag ("p") {
-           echo! "Hello world " + i + "!\n";
            button ("Click " + i) 
-             if (i % 2 == 0) println("even " + i);
-             else println("odd " + i);
+          	 println("clicked " + i);  
          }
   }
+  //END_HELLOES
   
   static void sendToServer(String x) {
     System.out.println(x);
   }
   
   public static void main(String args[]) {
+    //BEGIN_CLIENT_GUI
     StringWriter w = new StringWriter();
     hello(new Render(w), 10);
     sendToServer(w.toString());
     // ... receive the clicked id; assume it's "id2"
-    hello(new Handle("id2"), 10); // prints out even 2
+    hello(new Handle("id2"), 10); // prints out "clicked 2"
+    //END_CLIENT_GUI
   }
 
 }
