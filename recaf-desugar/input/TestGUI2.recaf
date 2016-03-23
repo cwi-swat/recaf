@@ -38,10 +38,8 @@ public class TestGUI2 {
   void hello(recaf GUI alg, int n) {
     tag ("div") 
       for (int i: range(n)) 
-         tag ("p") {
-           button ("Click " + i) 
-          	 println("clicked " + i);  
-         }
+        button ("Click " + i) 
+          println("clicked " + i);  
   }
   //END_HELLOES
   
