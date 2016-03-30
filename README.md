@@ -30,12 +30,10 @@ recaf String method(String path)  {
 The code is transformed as method invocations to the ```Using``` object above (named ```alg```) and it is valid Java now.
 ```Java
 String method(String path) {
-  Ref<String> $path = new Ref<String>(path);
   return alg.Method(
-          alg.Using(() -> new BufferedReader(new FileReader($path.value)),
-                    (BufferedReader br) -> {
-                                 return alg.Return(() -> br.readLine());
-				    }));
+           alg.Using(() -> new BufferedReader(new FileReader(path)), (BufferedReader br) -> {
+                        return alg.Return(() -> br.readLine());
+		     }));
 }	
 ```
 
