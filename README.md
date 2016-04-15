@@ -1,5 +1,5 @@
+<img src="/resources/recaf.png" width="150">
 
-## Recaf
 [![Gitter](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 _Recaf_ is an open-source framework for authoring extensions for Java. It transforms code at compile time with a transparent set of rules and defines a basic set of runtime classes that allows the creation of extensions.
