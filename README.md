@@ -63,9 +63,9 @@ String method(String path) {
 ```
 
 ### Team
-Aggelos Biboudis [@biboudis](https://twitter.com/biboudis)
-Pablo Inostroza [@metalinguist](https://twitter.com/metalinguist)
-Tijs van der Storm [@tvdstorm](https://twitter.com/tvdstorm)
+- Aggelos Biboudis [@biboudis](https://twitter.com/biboudis)
+- Pablo Inostroza [@metalinguist](https://twitter.com/metalinguist)
+- Tijs van der Storm [@tvdstorm](https://twitter.com/tvdstorm)
 
 
 
