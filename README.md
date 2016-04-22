@@ -52,7 +52,8 @@ String method(String path) {
 - Direct
   - [Memoization](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/direct/Memo.java)
   - [Security](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/direct/Security.java)
-- Fully Generic [Times/Unless/Until](https://github.com/cwi-swat/recaf/tree/master/recaf-runtime/src/main/java/recaf/demo/generic)
+- Fully Generic 
+  - [Times/Unless/Until](https://github.com/cwi-swat/recaf/tree/master/recaf-runtime/src/main/java/recaf/demo/generic)
 
 ### Getting Started
 
