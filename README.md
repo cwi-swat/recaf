@@ -40,10 +40,32 @@ String method(String path) {
 }	
 ```
 
-### Tests
+#### Extensions
+
+- Manipulating control flow
+  - [Async](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/Async.java)
+  - [Come From](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/ComeFrom.java)
+  - [Backtrack](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/Backtrack.java)
+  - [Coroutines](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/Coroutine.java)
+  - [Yield](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/Iter.java) (Semi-coroutines)
+  - [Rx/Observable](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/StreamExt.java)
+- Direct
+  - [Memoization](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/direct/Memo.java)
+  - [Security](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/direct/Security.java)
+- Fully Generic [Times/Unless/Until](https://github.com/cwi-swat/recaf/tree/master/recaf-runtime/src/main/java/recaf/demo/generic)
+
+### Getting Started
 
 ```shell
 > git clone git@github.com:cwi-swat/recaf.git
 > cd recaf
 > ./testgen # or testnogen to skip generation
 ```
+
+### Team
+Aggelos Biboudis [@biboudis](https://twitter.com/biboudis)
+Pablo Inostroza [@metalinguist](https://twitter.com/metalinguist)
+Tijs van der Storm [@tvdstorm](https://twitter.com/tvdstorm)
+
+
+
