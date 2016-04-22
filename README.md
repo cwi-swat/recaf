@@ -34,10 +34,9 @@ Without diving into the gory details of Recaf, the body of the mothod is transfo
 ```Java
 String method(String path) {
   return alg.Method(
-    alg.Using(() -> new BufferedReader(new FileReader(path)), 
-              (BufferedReader br) -> {
-                return alg.Return(() -> br.readLine());
-              }));
+    alg.Using(() -> new BufferedReader(new FileReader(path)), (BufferedReader br) -> {
+      return alg.Return(() -> br.readLine());
+    }));
 }	
 ```
 
