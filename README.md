@@ -5,8 +5,6 @@ _Recaf_ is an open-source framework for authoring extensions (let's call them _d
 
 The key point is that recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it). The user does not get involved with parsers, language workbenchs and compilers.
 
-[![Gitter](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ### Hello World with a simple example!
 
 Imagine we want to create our own try-with-resources statement for Java! Let's call it ```using```.
