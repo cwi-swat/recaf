@@ -30,7 +30,7 @@ recaf String method(String path)  {
 }
 ```
 
-Without diving into the gory details of Recaf, the body of the mothod is transformed as method invocations to the ```Using``` object above (named ```alg```). Note that this is valid Java now.
+Without diving into the gory details of Recaf, the body of the method is transformed into method invocations to the ```Using``` object above (named ```alg```). Note that this is valid Java now.
 ```Java
 String method(String path) {
   return alg.Method(
