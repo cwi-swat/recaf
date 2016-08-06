@@ -1,13 +1,13 @@
 
 <img src="/resources/recaf.png" width="150">
 
-_Recaf_ is an open-source framework for authoring extensions for Java as libraries. You can redine every syntactic element of the language, add new ones and create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate code, to instrument code and experiment with ideas that involve the manipulation of the semantics of Java programs. 
+_Recaf_ is an open-source framework for authoring extensions (let's call them _dialects_) for Java, as libraries. You can redine every syntactic element of the language, add new ones and create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate code, to instrument code and experiment with ideas that involve the manipulation of the semantics of Java programs. 
 
-The key point is that recaf transforms code at compile time, with a transparent set of rules. The user does not get involved with parsers, language workbenchs and compilers.  
+The key point is that recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it). The user does not get involved with parsers, language workbenchs and compilers.
 
 [![Gitter](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-### Hello World!
+### Hello World with a simple example!
 
 Imagine we want to create our own try-with-resources statement for Java! Let's call it ```using```.
 ```Java
@@ -68,5 +68,7 @@ String method(String path) {
 - Pablo Inostroza [@metalinguist](https://twitter.com/metalinguist)
 - Tijs van der Storm [@tvdstorm](https://twitter.com/tvdstorm)
 
+### Powered by Rascal 
+Under the hood we use the [Rascal Metaprogramming Language](http://www.rascal-mpl.org/). It is included as a runtime dependency in the project. 
 
 
