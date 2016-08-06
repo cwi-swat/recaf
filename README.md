@@ -1,7 +1,7 @@
 
 <img src="/resources/recaf.png" width="150">
 
-_Recaf_ is an open-source framework for authoring extensions (let's call them _dialects_) for Java, as libraries. You can redine every syntactic element of the language, add new ones and create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate code, to instrument code and experiment with ideas that involve the manipulation of the semantics of Java programs. 
+_Recaf_ is an open-source framework for authoring extensions (let's call them _dialects_) as libraries for Java,. You can redine every syntactic element of the language, add new ones and create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate code, to instrument code and experiment with ideas that involve the manipulation of the semantics of Java programs. 
 
 The key point is that recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it). The user does not get involved with parsers, language workbenchs and compilers.
 
