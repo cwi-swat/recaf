@@ -8,18 +8,17 @@ import java.io.StringWriter;
 
 
 public class TestGUI2 {
-   private recaf GUI alg;
+   private GUI  alg;
 
    public TestGUI2(GUI alg) {
      this.alg = alg;
    }
 
 
-  recaf void h2(String title) {
-    tag ("h2") {
-      echo! title;
-    }
-  }
+    void h2(String title) {
+  recaf.core.Ref<String > $title = new recaf.core.Ref<String >(title);
+  alg.Method(alg.Tag(() -> "h2", alg.Echo(() -> $title.value)));
+}
   
   static Iterable<Integer> range(int n) {
     return new Iterable<Integer>() {
@@ -33,14 +32,10 @@ public class TestGUI2 {
     System.out.println(x);
   }
   
-  static 
-  //BEGIN_HELLOES
-  void hello(recaf GUI alg, int n) {
-    tag ("div") 
-      for (int i: range(n)) 
-        button ("Click " + i) 
-          println("clicked " + i);  
-  }
+  static  void hello(GUI  alg, int n) {
+  recaf.core.Ref<Integer> $n = new recaf.core.Ref<Integer>(n);
+  alg.Method(alg.Tag(() -> "div", alg.<Integer>ForEach(() -> range($n.value), (recaf.core.Ref<Integer> i) -> alg.Button(() -> "Click " + i.value, alg.ExpStat(() -> { println("clicked " + i.value); return null; })))));
+}
   //END_HELLOES
   
   static void sendToServer(String x) {
