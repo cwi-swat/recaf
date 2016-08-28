@@ -11,6 +11,8 @@ The key point is that recaf transforms code at compile time, applying a predefin
 
 ### Hello World with a simple example!
 
+[![Join the chat at https://gitter.im/cwi-swat/recaf](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Imagine we want to create our own try-with-resources statement for Java! Let's call it ```using```.
 ```Java
 String method(String path)  {
