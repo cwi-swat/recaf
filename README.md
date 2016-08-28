@@ -88,7 +88,7 @@ recaf <X> Observable<X> print(Observable<X> src) {
 
 The following example demonstrates language embedding and aspect-oriented language customization. We have defined a DSL for Parsing Expression Grammars (PEGs). The ```lit!``` construct parses an atomic string, and ignores the result. ```let``` is used to bind intermediate parsing results. For terminal symbols, the ```regexp``` construct can be used. The language overloads the standard sequencing and return constructs of Java to encode sequential composition and the result of a parsing process. The constructs ```choice```, ```opt```, ```star```, and ```plus``` correspond to the usual regular EBNF operators. The ```choice``` combinator accepts a list of alternatives. The following parser implements parsing for primary expressions.
 
-```
+```Java
 recaf Parser<Exp> primary() {
    choice {
       alt "value":
