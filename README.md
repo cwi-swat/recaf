@@ -1,7 +1,7 @@
 
 <img src="/resources/recaf.png" width="150">
 
-[![Build Status](https://travis-ci.org/cwi-swat/recaf.svg?branch=master)](https://travis-ci.org/cwi-swat/recaf)
+[![Build Status](https://travis-ci.org/cwi-swat/recaf.svg?branch=master)](https://travis-ci.org/cwi-swat/recaf) [![Join the chat at https://gitter.im/cwi-swat/recaf](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Our paper _Recaf: Java Dialects as Libraries_ will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam (preprint to be available soon).
 
@@ -9,9 +9,15 @@ _Recaf_ is an open-source framework for authoring extensions (let's call them _d
 
 The key point is that recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it). The user does not get involved with parsers, language workbenchs and compilers.
 
-### Hello World with a simple example!
+### Getting Started
 
-[![Join the chat at https://gitter.im/cwi-swat/recaf](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+```shell
+> git clone git@github.com:cwi-swat/recaf.git
+> cd recaf
+> ./testgen # or testnogen to skip generation
+```
+
+### Hello World with a simple example!
 
 Imagine we want to create our own try-with-resources statement for Java! Let's call it ```using```.
 ```Java
@@ -44,7 +50,74 @@ String method(String path) {
 }	
 ```
 
-#### Extensions
+### 
+
+#### Spicing up Java (controlling the flow)
+
+We were able to support three new syntactic constructs that manipulate the control flow of the program. We can add support for generators, async and async* operations by programming the basic denotations of each operation as described in the [Spicing up Dart with Side Effects](https://queue.acm.org/detail.cfm?id=2747873) article.
+
+_Generators_
+```Java
+recaf Iterable<Integer> range(int s, int n) {
+  if (n > 0) {
+    yield! s;
+    yieldFrom! range(s + 1, n - 1);
+  }
+}
+```
+
+_Async_
+```Java
+recaf Future<Integer> task(String url)
+  await String html = fetchAsync(url);
+  return html.length();
+}
+```
+
+_Async*_
+```Java
+recaf <X> Observable<X> print(Observable<X> src) {
+  awaitFor (X x: src) {
+    System.out.println(x);
+    yield! x;
+  }
+}
+```
+
+#### Parsing Expression Grammars (PEGs)
+
+The following example demonstrates language embedding and aspect-oriented language customization. We have defined a DSL for Parsing Expression Grammars (PEGs). The ```lit!``` construct parses an atomic string, and ignores the result. ```let``` is used to bind intermediate parsing results. For terminal symbols, the ```regexp``` construct can be used. The language overloads the standard sequencing and return constructs of Java to encode sequential composition and the result of a parsing process. The constructs ```choice```, ```opt```, ```star```, and ```plus``` correspond to the usual regular EBNF operators. The ```choice``` combinator accepts a list of alternatives. The following parser implements parsing for primary expressions.
+
+```
+recaf Parser<Exp> primary() {
+   choice {
+      alt "value":
+        regexp String n = "[0-9]+";
+        return new Int(n);
+      alt "bracket":
+        lit! "("; let Exp e = addSub(); lit! ")";
+        return e;
+    }   
+}
+```
+
+### Constraint solving as a language
+
+In this example we demonstrate deep embedding of a simple constraint solving language. We have developed a Recaf embedding which translates a subset of Java expressions to the internal constraints of [Choco](http://choco-solver.org/) solver, which can then be solved. Note the use of ```recaff``` as we enable java expression overriding in this example.
+
+```Java
+recaf Solve alg = new Solve();
+recaff Iterable<Map<String,Integer>> example() {
+  var 0, 5, IntVar x;
+  var 0, 5, IntVar y;
+  solve! x + y < 5;
+}
+```
+
+
+### Denotations using Java
+
+We enumerate all the small extensions we developed with Recaf. The code is in plain Java and each file corresponds to one extension.
 
 - Manipulating control flow
   - [Async](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/cps/Async.java)
@@ -56,16 +129,9 @@ String method(String path) {
 - Direct
   - [Memoization](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/direct/Memo.java)
   - [Security](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/direct/Security.java)
+  - [Constraints](https://github.com/cwi-swat/recaf/blob/master/recaf-runtime/src/main/java/recaf/demo/constraint/Solve.java)
 - Fully Generic 
   - [Times/Unless/Until](https://github.com/cwi-swat/recaf/tree/master/recaf-runtime/src/main/java/recaf/demo/generic)
-
-### Getting Started
-
-```shell
-> git clone git@github.com:cwi-swat/recaf.git
-> cd recaf
-> ./testgen # or testnogen to skip generation
-```
 
 ### Team
 - Aggelos Biboudis [@biboudis](https://twitter.com/biboudis)
