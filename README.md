@@ -50,9 +50,10 @@ String method(String path) {
 }	
 ```
 
-### 
+## Language extension gymnastics with Recaf
+In the following section we present some extensions of Java developed with _Recaf_.
 
-#### Spicing up Java (controlling the flow)
+### Spicing up Java (controlling the flow)
 
 We were able to support three new syntactic constructs that manipulate the control flow of the program. We can add support for generators, async and async* operations by programming the basic denotations of each operation as described in the [Spicing up Dart with Side Effects](https://queue.acm.org/detail.cfm?id=2747873) article.
 
