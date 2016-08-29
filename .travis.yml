@@ -3,7 +3,7 @@ language: java
 jdk:
 - oraclejdk8
 
-script: testnogen
+script: mvn -DGEN=false clean dependency:copy-dependencies test
 
 notifications:
   slack: cwi-swat:mE7iJhJBjCpYUb86OmDz53Qf
