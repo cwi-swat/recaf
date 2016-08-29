@@ -1,12 +1,9 @@
 language: java
 
-addons:
-    apt:
-        packages:
-              - oracle-java8-installer
+jdk:
+- oraclejdk8
 
-script: mvn -DGEN=false clean dependency:copy-dependencies test
-
+script: mvn clean dependency:copy-dependencies test
 notifications:
   slack: cwi-swat:mE7iJhJBjCpYUb86OmDz53Qf
   email: false
