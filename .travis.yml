@@ -1,8 +1,9 @@
 language: java
 
-apt:
-    packages:
-          - oracle-java8-installer
+addons:
+    apt:
+        packages:
+              - oracle-java8-installer
 
 script: mvn -DGEN=false clean dependency:copy-dependencies test
 
