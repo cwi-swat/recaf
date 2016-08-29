@@ -16,6 +16,6 @@ public class TestUsing {
 }
   
   public static void main(String args[])  {
-     System.out.println(new TestUsing().usingExample("src/test-generated/README.md"));
+     System.out.println(new TestUsing().usingExample("src/test/resources/test"));
   }
 }

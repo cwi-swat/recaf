@@ -68,9 +68,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.4</version>
                 <configuration>
-                    <systemPropertyVariables>
-                        <generate>${GEN}</generate>
-                    </systemPropertyVariables>
+		  <configuration>
+		    <forkCount>0</forkCount>
+		  </configuration>
+                  <systemPropertyVariables>
+                    <generate>${GEN}</generate>
+                  </systemPropertyVariables>
                 </configuration>
             </plugin>
 		</plugins>

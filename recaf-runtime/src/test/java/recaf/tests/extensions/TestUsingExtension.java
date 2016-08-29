@@ -11,6 +11,6 @@ public class TestUsingExtension extends BaseTest {
 	@Test
 	public void TestUsing() throws CompiletimeException {
 		String output = compileAndRun("TestUsing");
-		Assert.assertEquals("Generated files are excluded from the repo.", output);	
+		Assert.assertEquals("test", output);	
 	}
 }
