@@ -69,7 +69,7 @@ recaf Iterable<Integer> range(int s, int n) {
 
 _Async_
 ```Java
-recaf Future<Integer> task(String url)
+recaf Future<Integer> task(String url) {
   await String html = fetchAsync(url);
   return html.length();
 }
