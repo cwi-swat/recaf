@@ -1,11 +1,13 @@
 package generated;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 import recaf.demo.cps.Async;
 import recaf.demo.cps.StreamExt;
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 public class TestStream_with_await {
@@ -19,11 +21,31 @@ public class TestStream_with_await {
 } 
   
   public static void main(String args[]) throws InterruptedException, ExecutionException {
-	Subscription sub = new TestStream_with_await().simpleStream2(new StreamExt<Integer>()).subscribe(new Action1<Integer>() {
-        @Override
-        public void call(Integer s) {
-              System.out.println(s);
-        }
-    });
+    CountDownLatch latch = new CountDownLatch(1);
+  
+	Subscription sub = new TestStream_with_await()
+								.simpleStream2(new StreamExt<Integer>())
+								.subscribe(new Action1<Integer>() {
+							        @Override
+							        public void call(Integer s) {
+							              System.out.println(s);
+							        }
+        						}, 
+        						new Action1<Throwable>() {
+							        @Override
+							        public void call(Throwable e) {
+							              latch.countDown();
+							        }
+        						}
+        						,
+        						new Action0() {
+							        @Override
+							        public void call() {
+							              latch.countDown();
+							        }
+        						});
+        						
+    latch.await();
+        						
   }
 }

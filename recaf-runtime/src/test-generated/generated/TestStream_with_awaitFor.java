@@ -16,7 +16,7 @@ public class TestStream_with_awaitFor {
  	  Observable<Integer> simpleStream() {
   return (Observable<Integer>)alg.Method(alg.Seq(alg.Yield(() -> 1), alg.Seq(alg.Yield(() -> 2), alg.Seq(alg.Yield(() -> 3), alg.Seq(alg.Yield(() -> 4), alg.Yield(() -> 5))))));
 }  
-	  
+	 
 	  Observable<Integer> simpleStream2(Observable<Integer> stream) {
   recaf.core.Ref<Observable<Integer>> $stream = new recaf.core.Ref<Observable<Integer>>(stream);
   return (Observable<Integer>)alg.Method(alg.Seq(alg.Yield(() -> 1), alg.AwaitFor(() -> $stream.value, (Integer next) -> {return alg.Await(() -> CompletableFuture.supplyAsync(()->42), (Integer x) -> { return alg.Yield(() -> x); });})));
