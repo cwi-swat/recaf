@@ -51,11 +51,11 @@ String method(String path) {
 ```
 
 ## Language extension gymnastics with Recaf
-In the following section we present some extensions of Java developed with _Recaf_.
+In the following section we present some extensions of Java developed with _Recaf_. For demonstration purposes you can browse all extensions in the [directory with the recaf files](recaf-desugar/input) and examine the [generated java code](recaf-runtime/src/test-generated/generated).
 
 ### Spicing up Java (controlling the flow)
 
-We were able to support three new syntactic constructs that manipulate the control flow of the program. We can add support for generators, async and async* operations by programming the basic denotations of each operation as described in the [Spicing up Dart with Side Effects](https://queue.acm.org/detail.cfm?id=2747873) article.
+We support three new syntactic constructs that manipulate the control flow of the program. We can add support for generators, async and async* operations by programming the basic denotations of each operation as described in the [Spicing up Dart with Side Effects](https://queue.acm.org/detail.cfm?id=2747873) article.
 
 _Generators_
 ```Java
