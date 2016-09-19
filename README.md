@@ -9,7 +9,7 @@ _Recaf_ is an open-source framework for authoring extensions (_dialects_) as lib
 
 The key point is that Recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it or even to know anything about it). The user does not get involved with parsers, language workbenchs and compilers.
 
-[1] A. Biboudis, P. Inostroza and T. v. d. Storm Recaf, [Java Dialects as Libraries](https://biboudis.github.io/papers/recaf-gpce16.pdf), will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam.
+[1] A. Biboudis, P. Inostroza and T. v. d. Storm, [Recaf: Java Dialects as Libraries](https://biboudis.github.io/papers/recaf-gpce16.pdf), will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam.
 
 
 ### Getting Started
