@@ -16,7 +16,7 @@ For example, the statement ```return 1 + 1``` is transformed in the following ne
 ```shell
 > git clone git@github.com:cwi-swat/recaf.git
 > cd recaf
-> ./testgen # or testnogen to skip generation
+> ./testnogen # or testgen to regenerate all test files
 ```
 
 ### Hello World with a simple example!
