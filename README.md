@@ -5,12 +5,11 @@
 
 ### What is Recaf?
 
-_Recaf_ is an open-source framework for authoring extensions (_dialects_) as libraries for Java [1]. You can redefine every major syntactic element of the language, either add new ones or create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate code and to instrument code. Last but not least you can experiment with the design and implementation of Java extensions using Java code.
+_Recaf_ is an open-source framework for authoring extensions (_dialects_) as libraries for Java (to appear at [GPCE16](#publications)). You can redefine every major syntactic element of the language, either add new ones or create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate and instrument code. Last but not least you can experiment with the design and implementation of Java extensions in plain Java.
 
-The key point is that Recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it or even to know anything about it). The user does not get involved with parsers, language workbenchs and compilers.
+The key point is that Recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it or even to know anything about it). The user does not get involved with parsers, language workbenchs and compilers. The code is transformed into method calls of a certain interface. The runtime instance of that structure defines the whole operational behavior of the program.
 
-[1] A. Biboudis, P. Inostroza and T. v. d. Storm, [Recaf: Java Dialects as Libraries](https://biboudis.github.io/papers/recaf-gpce16.pdf), will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam.
-
+For example, the statement ```return 1 + 1``` is transformed in the following nested method calls chain: ```alg.Return(alg.Plus(alg.Lit(1), alg.Lit(1)))```.  What happens in reality depends on the implemention of the runtime instance of ```alg```. With Recaf we are able to override not only expressions but also the control flow of the program and orchestrate it with libraries for a certain style of execution e.g., for asynchronous computing, reactive computing. 
 
 ### Getting Started
 
@@ -142,8 +141,6 @@ recaf JPanel example1() {
 }
 ```
 
-### Denotations using Java
-
 We enumerate all the small extensions we developed with Recaf. The code is in plain Java and each file corresponds to one extension.
 
 - Manipulating control flow
@@ -161,10 +158,17 @@ We enumerate all the small extensions we developed with Recaf. The code is in pl
 - Fully Generic 
   - [Times/Unless/Until](https://github.com/cwi-swat/recaf/tree/master/recaf-runtime/src/main/java/recaf/demo/generic)
 
+### Bugs and Feedback
+
+To discuss bugs, improvements and post questions please use our [Github Issues](https://github.com/cwi-swat/recaf/issues). Also, join the chat at https://gitter.im/cwi-swat/recaf! 
+
 ### Team
 - Aggelos Biboudis [@biboudis](https://twitter.com/biboudis)
 - Pablo Inostroza [@metalinguist](https://twitter.com/metalinguist)
 - Tijs van der Storm [@tvdstorm](https://twitter.com/tvdstorm)
+
+### <a name="publications"></a>Publications
+- A. Biboudis, P. Inostroza and T. v. d. Storm, [Recaf: Java Dialects as Libraries](https://biboudis.github.io/papers/recaf-gpce16.pdf), will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam.
 
 ### Powered by Rascal 
 Under the hood we use the [Rascal Metaprogramming Language](http://www.rascal-mpl.org/). It is included as a runtime dependency in the project. 
