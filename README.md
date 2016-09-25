@@ -7,11 +7,7 @@
 
 _Recaf_ is an open-source framework for authoring extensions (_dialects_) as libraries for Java. You can redefine every major syntactic element of the language, either add new ones or create your own flavor of Java that matches your needs. It can be used to give syntactic support to libraries, to generate and instrument code. Last but not least you can experiment with the design and implementation of Java extensions in plain Java.
 
-The key point is that Recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it or even to know anything about it). The user does not get involved with parsers, language workbenchs and compilers. The code is transformed into method calls of a certain interface. The runtime instance of that structure defines the whole operational behavior of the program.
-
-For example, the statement ```return 1 + 1``` is transformed in the following nested method calls chain: ```alg.Return(alg.Plus(alg.Lit(1), alg.Lit(1)))```.  What happens in reality depends on the implemention of the runtime instance of ```alg```. With Recaf we are able to override not only expressions but also the control flow of the program and orchestrate it with libraries for a certain style of execution e.g., for asynchronous computing, reactive computing. 
-
-> Recaf: Java Dialects as Libraries ([pdf](https://biboudis.github.io/papers/recaf-gpce16.pdf)) will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam.
+- Recaf: Java Dialects as Libraries ([pdf](https://biboudis.github.io/papers/recaf-gpce16.pdf)) will be presented at the _15th International Conference on Generative Programming: Concepts & Experience_ ([GPCE'16](http://conf.researchr.org/home/gpce-2016)) in Amsterdam.
 
 ### Getting Started
 
@@ -44,7 +40,12 @@ recaf String method(String path)  {
 }
 ```
 
-Without diving into the gory details of Recaf, the body of the method is transformed into method invocations to the ```Using``` object above (named ```alg```). Note that this is valid Java now.
+The key point is that Recaf transforms code at compile time, applying a predefined set of rewrite rules (no need to hack around it or even to know anything about it). The user does not get involved with parsers, language workbenchs and compilers. The code is transformed into method calls of a certain interface. The runtime instance of that structure defines the whole operational behavior of the program.
+
+For example, the statement ```return 1 + 1``` is transformed in the following nested method calls chain: ```alg.Return(alg.Plus(alg.Lit(1), alg.Lit(1)))```.  What happens in reality depends on the implemention of the runtime instance of ```alg```. With Recaf we are able to override not only expressions but also the control flow of the program and orchestrate it with libraries for a certain style of execution e.g., for asynchronous computing, reactive computing. 
+
+Without diving into the gory details of Recaf, the body of ```method``` above, is transformed into method invocations to the ```Using``` object above (named ```alg```). Note that this is valid Java now. 
+
 ```Java
 String method(String path) {
   return alg.Method(
