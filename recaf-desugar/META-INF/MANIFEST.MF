@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: cpsjava
-Bundle-SymbolicName: cpsjava
+Bundle-Name: recaf
+Bundle-SymbolicName: recaf
 Bundle-Version: 1.0.0
 Require-Bundle: rascal
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

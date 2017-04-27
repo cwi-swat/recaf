@@ -1,21 +1,22 @@
 package generated; 
 
-import recaf.core.direct.IExec;
 import recaf.demo.direct.Using;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-
-public class TestUsing {
+import java.io.IOException;
  
-  private static recaf Using<String, IExec> alg = new Using<String,IExec>() {};
-   
+public class TestUsing {
+  
+  private static recaf Using<String> alg = new Using<String>() {};
+ 
   static recaf String usingExample(String path)  {
      using (BufferedReader br : new BufferedReader(new FileReader(path))){
         return br.readLine();
      }
-  }
+  } 
   
   public static void main(String args[])  {
-     System.out.println(new TestUsing().usingExample("test/resources/test"));
+     System.out.println(new TestUsing().usingExample("src/test/resources/test"));
   }
 }

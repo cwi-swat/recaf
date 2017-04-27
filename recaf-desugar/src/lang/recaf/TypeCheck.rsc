@@ -10,17 +10,18 @@ import String;
 
 set[Message] typeCheck(loc generatedFileLoc, list[loc] sourcePaths, start[CompilationUnit] desugaredCU, start[CompilationUnit] cu) {
   <_, ind> = posIndex(desugaredCU, desugaredCU@\loc);
-  return { relocate(m, ind) | m <- createM3FromFile(generatedFileLoc, 
-      sourcePath = sourcePaths, javaVersion="1.8")@messages };
+  
+  return { relocate(m, ind) | Message m <- createM3FromFile(generatedFileLoc, sourcePath = sourcePaths, javaVersion="1.8").messages};
 }
 
-Message relocate(error(str s, loc l), rel[loc src, loc origin] ind)
-  = error(s, l2)
+default 
+Message relocate(Message m, rel[loc src, loc origin] ind) = m;
+
+Message relocate(error(str s, loc l), rel[loc src, loc origin] ind) = error(s, l2)
   when
     <loc l1, loc l2> <- ind,
     l1.offset == l.offset, l1.length == l.length; 
 
-default Message relocate(Message m, rel[loc src, loc origin] ind) = m;
 
 tuple[loc current, rel[loc src, loc origin] index] posIndex(Tree tree, loc current) {
    //cur = |<src.scheme>://<src.authority><src.path>|(0, 0, <1, 0>, <1,0>);

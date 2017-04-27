@@ -9,13 +9,12 @@ import java.io.IOException;
 
 public class TestUsingWithError {
  
-  private static recaf Using<String> alg = new Using<String>() {};
+  private static Using<String> alg = new Using<String>() {};
    
-  static recaf String usingExample(String path)  {
-     using (BufferedReader br : new BufferedReader(new FileReader(path))){
-        return br.readLine();
-     }
-  }
+  static  String  usingExample(String path) {
+  recaf.core.Ref<String > $path = new recaf.core.Ref<String >(path);
+  return (String )alg.Method(alg.Using(() -> new BufferedReader(new FileReader($path.value)), (BufferedReader br) -> {return alg.Return(() -> br.readLine());}));
+}
   
   
   

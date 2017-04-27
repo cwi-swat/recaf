@@ -49,7 +49,7 @@ public class BaseTest {
 	private static final String RECAF_INPUT = "cwd:///../recaf-desugar/input";
 	private static final String RECAF_FULL_DESUGARING = "lang::recaf::DesugarMain";
 	
-	private static boolean generated_sources = false;
+	private static boolean generated_sources = true;
 	
 	@BeforeClass
 	public static void init() {
@@ -152,7 +152,7 @@ public class BaseTest {
 
 			String[] res = new String[listArgs.size()];
 
-			//LogManager.getLogger().debug("Running JVM: " + listArgs.stream().reduce("", (String s, String a) -> s + " " + a));
+			// LogManager.getLogger().debug("Running JVM: " + listArgs.stream().reduce("", (String s, String a) -> s + " " + a));
 
 			// Execute java runtime.
 			p = r.exec(listArgs.toArray(res));
@@ -179,7 +179,7 @@ public class BaseTest {
 			int exitCode = p.waitFor();
 
 			if (exitCode != 0)
-				throw new RuntimeException("Exit Value: " + p.exitValue());
+				throw new RuntimeException("Exit Value: " + sw.toString());
 
 			p = null;
 

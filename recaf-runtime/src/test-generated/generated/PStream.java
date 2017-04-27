@@ -7,7 +7,6 @@ import java.util.function.Predicate;
 import java.util.function.*;
 import java.util.NoSuchElementException;
 
-   
 public class PStream {
 	
 	public PStream(Iterable<Integer> source) {
