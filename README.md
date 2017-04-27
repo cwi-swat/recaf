@@ -1,5 +1,5 @@
 
-<img src="/resources/recaf.png" width="100">
+<img src="/resources/recaf.png" width="300">
 
 [![Build Status](https://travis-ci.org/cwi-swat/recaf.svg?branch=master)](https://travis-ci.org/cwi-swat/recaf) [![Join the chat at https://gitter.im/cwi-swat/recaf](https://badges.gitter.im/cwi-swat/recaf.svg)](https://gitter.im/cwi-swat/recaf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
