@@ -7,7 +7,9 @@ import java.util.Arrays;
 
 import org.apache.commons.beanutils.MethodUtils;
 
+import recaf.core.direct.Env;
 import recaf.core.direct.IEval;
+import recaf.core.direct.IEvalEnv;
 
 public class EvalJavaHelper {
 	public static Object toValue(Object o){
@@ -93,7 +95,15 @@ public class EvalJavaHelper {
 		}
 		return evaluatedArgs;
 	}
-	
+
+	public static Object[] evaluateArguments(Env env, IEvalEnv[] args) throws Throwable {
+		Object[] evaluatedArgs = new Object[args.length];
+		for (int i = 0; i < args.length; i++) {
+			evaluatedArgs[i] = toValue(args[i].eval(env));
+		}
+		return evaluatedArgs;
+	}
+
 	public static IEval[] delayObjects(Object[] args) throws Throwable {
 		return Arrays.asList(args).stream().map(EvalJavaHelper::delayObject).toArray(size -> new IEval[size]);
 	}
